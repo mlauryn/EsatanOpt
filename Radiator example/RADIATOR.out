@@ -1,0 +1,112 @@
+
+ SOLCYC cycle number: 1
+   Max delta T =  1.2079E+01
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  3.5059E-02
+     at node 70
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 2
+   Max delta T =  4.1146E+00
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  4.4556E-04
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 3
+   Max delta T =  2.1490E+00
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  2.3920E-04
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 4
+   Max delta T =  1.1084E+00
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  1.2511E-04
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 5
+   Max delta T =  5.6774E-01
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  6.4545E-05
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 6
+   Max delta T =  2.8979E-01
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  3.3067E-05
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 7
+   Max delta T =  1.4766E-01
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  1.6879E-05
+     at node 10
+     in submodel RADIATOR
+
+ SOLCYC cycle number: 8
+   Max delta T =  7.5165E-02
+     at node 10
+     in submodel RADIATOR
+   Max delta dT/dt =  8.6007E-06
+     at node 10
+     in submodel RADIATOR
+1
+ ESATAN-TMS  2017 sp2                                                            Page     1
+ 06 April     2018  17:23:42                                                       RADIATOR
+
+ Radiator Sizing Model                                                                                                               
+
+
+
+
+
+  TIMEN =   6047.80      MODULE SLFWBK      DTIMEU = 1.819E-12
+ CSGMIN =   51.8824  AT NODE 30 IN SUB-MODEL  
++                                             RADIATOR                                     
+
+
+ TABLE OUTPUT WITH ZENTS = 'L,T_MIN,TIM_MIN,T_MAX,TIM_MAX'
+ FOR NODES OF ZLABEL = ' '
+
+ ==========================================================================================
+
+
++RADIATOR                                                                                  
+
+
+          NODE   LABEL                            T_MIN       TIM_MIN         T_MAX       
+
+           10    Internal Electronics             38.65       3503.90         40.58
+           20    Unit top                         33.13       3403.90         35.13
+           30    Unit side 1                      34.63       3363.90         36.60
+           40    Unit side 2                      32.14       3283.90         34.20
+           50    Unit side 3                      34.63       3363.90         36.60
+           60    Unit side 4                      32.14       3283.90         34.20
+           70    Radiator                         27.81       3063.90         30.44
+          999    Deep Space                     -270.00         20.00       -270.00
+
+
+
+          NODE      TIM_MAX                                                               
+
+           10       5943.02
+           20       5803.02
+           30       5783.02
+           40       5663.02
+           50       5783.02
+           60       5663.02
+           70       5258.24
+          999         20.00
+
