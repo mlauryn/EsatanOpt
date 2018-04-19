@@ -59,7 +59,7 @@ $CONSTANTS
 # ******************************************************************************
 #
    $REAL
-   RadLen  = 0.2;          # Radiator length
+   RadLen  = 0.4;          # Radiator length
    Period  = 6047.80;      # Orbital period
 #
    $INTEGER

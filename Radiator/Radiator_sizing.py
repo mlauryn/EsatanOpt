@@ -3,7 +3,7 @@ from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
 class Radiator(ExternalCode):
     def setup(self):
-        self.add_input('RadLen', val=0.2)
+        self.add_input('RadLen', val=0.4)
 
         self.add_output('T_max', val=0.0)
 
@@ -18,14 +18,13 @@ class Radiator(ExternalCode):
         self.options['timeout'] = 10.0
         self.options['fail_hard'] = False
         self.options['command'] = [
-            'C:/ESATAN-TMS/2017sp2/Thermal/bin/esatan', 'e', '"C:/Users/44369/EsatanOpt/Radiator example"', 
-            'RADIATOR', self.input_file]
+            'C:/Users/Laurynas/EsatanOpt/Radiator/radiator.bat']
 
     def compute(self, inputs, outputs):
         x = inputs['RadLen']
         var = '{0};'.format(float(x)) 
 
-        # generate the input file for the paraboloid external code
+        # generate the input file for esatan thermal analysis
         generator = InputFileGenerator()
         generator.set_template_file('radiator_templ.txt')
         generator.set_generated_file('radiator.d')
@@ -48,7 +47,7 @@ prob = Problem()
 model = prob.model
 
 # create and connect inputs
-model.add_subsystem('p1', IndepVarComp('RadLen', 0.2))
+model.add_subsystem('p1', IndepVarComp('RadLen', 0.4))
 model.add_subsystem('p2', Radiator())
 
 model.connect('p1.RadLen', 'p2.RadLen')

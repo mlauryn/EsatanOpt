@@ -1,0 +1,3 @@
+BEGIN_ADMIN
+DELETE_MODEL "radiator";
+END_ADMIN

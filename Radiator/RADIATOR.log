@@ -2,7 +2,7 @@
 #@@> ESATAN-TMS  2017 sp2                April     2017
 #@@> ITP Engines UK - www.esatan-tms.com
 #@@>
-#@@> Run date: 06 April     2018  17:23:40
+#@@> Run date: 19 April     2018  23:30:59
 #@@>
 
 $MODEL RADIATOR, GLOBALFILE = radiator.gbl
@@ -66,7 +66,7 @@ $CONSTANTS
 # ******************************************************************************
 #
    $REAL
-   RadLen  = 0.2;          # Radiator length
+   RadLen  = 0.4;          # Radiator length
    Period  = 6047.80;      # Orbital period
 #
    $INTEGER
