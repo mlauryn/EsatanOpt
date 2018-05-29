@@ -1,0 +1,16 @@
+*.log
+*.era
+*.ere
+*.bat
+*.exe
+*.gbl
+*.f
+*.h
+*.mdb
+*.mon
+*.out
+*.tra
+*.d
+*.acd
+*.par
+*.dat

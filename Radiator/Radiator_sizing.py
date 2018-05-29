@@ -1,5 +1,31 @@
+import os
 from openmdao.api import Problem, Group, IndepVarComp, ExternalCode
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
+
+#generate esatan batch mode run files
+#note: location of esatan command line files should be added to your system path variable  
+file = open("radiator.era", 'w')
+file.write('''BEGIN_ADMIN
+DELETE_MODEL "radiator";
+END_ADMIN''')
+file.close()
+
+file = open("radiator.ere", 'w')
+file.write('''BEGIN_MODEL radiator
+ANALYSIS_CASE radiator_sizing;
+DEFINE_ANALYSIS_CASE (
+    analysis_case = radiator_sizing,
+	working_directory = "{path}");
+RUN_ANALYSIS(
+    analysis_case = radiator_sizing,
+    file = "radiator.d");
+END_MODEL'''.format(path=os.getcwd()))
+file.close()
+
+file = open("radiator.bat", "w")
+file.write('''esrde<radiator.ere
+esrda<radiator.era''')
+file.close()
 
 class Radiator(ExternalCode):
     def setup(self):
@@ -18,7 +44,7 @@ class Radiator(ExternalCode):
         self.options['timeout'] = 10.0
         self.options['fail_hard'] = False
         self.options['command'] = [
-            'C:/Users/Laurynas/EsatanOpt/Radiator/radiator.bat']
+            'radiator.bat']
 
     def compute(self, inputs, outputs):
         x = inputs['RadLen']
