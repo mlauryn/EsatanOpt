@@ -1,5 +1,5 @@
 import os
-from openmdao.api import Problem, Group, IndepVarComp, ExternalCode
+from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, ExecComp
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
 #generate esatan batch mode run files
@@ -7,6 +7,8 @@ from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 file = open("radiator.era", 'w')
 file.write('''BEGIN_ADMIN
 DELETE_MODEL "radiator";
+DELETE_FILE (
+    file = "%HOME%\Documents\Esatan\radiator\system\ESATAN-TMS.LCK");
 END_ADMIN''')
 file.close()
 
@@ -23,8 +25,7 @@ END_MODEL'''.format(path=os.getcwd()))
 file.close()
 
 file = open("radiator.bat", "w")
-file.write('''esrde<radiator.ere
-esrda<radiator.era''')
+file.write('''esrde<radiator.ere''')
 file.close()
 
 class Radiator(ExternalCode):
@@ -38,13 +39,15 @@ class Radiator(ExternalCode):
 
         # providing these is optional; the component will verify that any input
         # files exist before execution and that the output files exist after.
-        self.options['external_input_files'] = [self.input_file,]
-        self.options['external_output_files'] = [self.output_file,]
-
+        #self.options['external_input_files'] = [self.input_file,]
+        #self.options['external_output_files'] = [self.output_file,]
+        #self.options['poll_delay'] = 10.0
         self.options['timeout'] = 10.0
         self.options['fail_hard'] = False
         self.options['command'] = [
             'radiator.bat']
+        # this external code does not provide derivatives, use finite difference
+        self.declare_partials(of='*', wrt='*', method='fd')
 
     def compute(self, inputs, outputs):
         x = inputs['RadLen']
@@ -73,14 +76,33 @@ prob = Problem()
 model = prob.model
 
 # create and connect inputs
-model.add_subsystem('p1', IndepVarComp('RadLen', 0.4))
-model.add_subsystem('p2', Radiator())
+indeps = model.add_subsystem('indeps', IndepVarComp())
+indeps.add_output('RadLen', 0.4) 
+indeps.add_output('width', 0.2) 
+model.add_subsystem('esatan', Radiator())
 
-model.connect('p1.RadLen', 'p2.RadLen')
+#objective function is radiator area A
+model.add_subsystem('obj', ExecComp('A = length * width'))
+
+model.connect('indeps.RadLen', ['esatan.RadLen', 'obj.length'])
+model.connect('indeps.width', 'obj.width')
+
+# find optimal solution with SciPy optimize
+prob.driver = ScipyOptimizeDriver()
+prob.driver.options['optimizer'] = 'COBYLA'
+prob.driver.options['disp'] = False
+
+prob.model.add_design_var('indeps.RadLen', lower=0.1, upper=0.5)
+prob.model.add_objective('obj.A')
+#constraint for payload electronics max temperature
+prob.model.add_constraint('esatan.T_max', upper=20)
 
 # run the ExternalCode Component
-prob.setup()
-prob.run_model()
+prob.setup(check=True, mode='fwd')
+#prob.run_model()
+prob.run_driver()
 
-# print the output
-print(prob['p2.T_max'])
+# print the output temperature, minimum radiator length and area
+print(prob['esatan.T_max'])
+print(prob['indeps.RadLen'])
+print(prob['obj.A'])
