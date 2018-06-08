@@ -4,13 +4,6 @@ from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
 #generate esatan batch mode run files
 #note: location of esatan command line files should be added to your system path variable  
-file = open("radiator.era", 'w')
-file.write('''BEGIN_ADMIN
-DELETE_MODEL "radiator";
-DELETE_FILE (
-    file = "%HOME%\Documents\Esatan\radiator\system\ESATAN-TMS.LCK");
-END_ADMIN''')
-file.close()
 
 file = open("radiator.ere", 'w')
 file.write('''BEGIN_MODEL radiator
@@ -47,7 +40,7 @@ class Radiator(ExternalCode):
         self.options['command'] = [
             'radiator.bat']
         # this external code does not provide derivatives, use finite difference
-        self.declare_partials(of='*', wrt='*', method='fd')
+        #self.declare_partials(of='*', wrt='*', method='fd')
 
     def compute(self, inputs, outputs):
         x = inputs['RadLen']
@@ -91,6 +84,8 @@ model.connect('indeps.width', 'obj.width')
 prob.driver = ScipyOptimizeDriver()
 prob.driver.options['optimizer'] = 'COBYLA'
 prob.driver.options['disp'] = False
+#prob.driver.options['optimizer'] = 'SLSQP'
+#prob.driver.opt_settings = {'eps': 1.0e-12, 'ftol':1e-04}
 
 prob.model.add_design_var('indeps.RadLen', lower=0.1, upper=0.5)
 prob.model.add_objective('obj.A')
