@@ -1,0 +1,28 @@
+Design variables [lower limit, upper limit]:
+-outer structure eps, alp x6 [0.02,1]
+-conductivity btw side panels, longer side x4 [0.015*, 0.084**]
+-conductivity btw side panels, midle side x4 [0.013*,0.072**]
+-conductivity btw side panels, shorter side x4 [0.008*,0.026**]
+-PCB to structure conductivity x3 [0.004,1]
+-battery to pcb conductivity [0.4***,26****]
+-solar panel to structure conductivity [0.01, 1]
+-battery heater power 
+-propulsion heater power
+
+Constraints
+-battery temperature 0+45
+-propulsion temperature -10+80
+-avionics temperature -40+85
+-tether temperature operational -40+50
+-tether temperature survival -40+70
+-solar cell temperature -120+120
+
+Objective function
+-minimize total heater power
+
+
+*strip of carbo fibre (1mm thick, width = side length, thermal path length 7 mm), 2 W/mK transverse conductivity from Gilmore page 310
+**maximum conductance derived from esatan conductive interface as fused together aluminum walls
+***1mm thick silicon 0.25 W/mK
+****0.25mm thick boron nitride 4 W/mK
+In the future should update solar generation according to cell temperature

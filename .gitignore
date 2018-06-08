@@ -8,9 +8,9 @@
 *.h
 *.mdb
 *.mon
+*.d
 *.out
 *.tra
-*.d
 *.acd
 *.par
 *.dat
