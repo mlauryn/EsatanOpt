@@ -1,6 +1,6 @@
 #Python script for optimization of MAT remote unit thermal model
 import os
-from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, ExecComp
+from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, SimpleGADriver, ExecComp
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
 #generate RU_cold batch mode run files
@@ -327,8 +327,8 @@ model = prob.model
 
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
-indeps.add_output('batH', val=0.1)
-indeps.add_output('propH', val=0.1)
+indeps.add_output('batH', val=0.2)
+indeps.add_output('propH', val=0.2)
 indeps.add_output('eps', val=0.2)
 indeps.add_output('alp', val=0.4)
 indeps.add_output('GlBat1', val=0.4)
@@ -336,7 +336,7 @@ indeps.add_output('GlBat2', val=0.4)
 indeps.add_output('GlMain', val=0.04)
 indeps.add_output('GlProp', val=0.04)
 indeps.add_output('GlTether', val=0.04)
-indeps.add_output('ci1', val=0.4)
+""" indeps.add_output('ci1', val=0.4)
 indeps.add_output('ci2', val=0.4)
 indeps.add_output('ci3', val=0.4)
 indeps.add_output('ci4', val=0.4)
@@ -347,23 +347,25 @@ indeps.add_output('ci8', val=0.4)
 indeps.add_output('ci9', val=0.4)
 indeps.add_output('ci10', val=0.4)
 indeps.add_output('ci11', val=0.4)
-indeps.add_output('ci12', val=0.4) 
+indeps.add_output('ci12', val=0.4) """ 
 
 
-model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'])
-model.add_subsystem('RU_hot', RU_hot(), promotes_inputs=['*'])
+model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_c'), 
+                    ('tMain','tMain_c'), ('tProp','tProp_c')])
+model.add_subsystem('RU_hot', RU_hot(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_h'), 
+                    ('tMain','tMain_h'), ('tProp','tProp_h'), ('tTether','tTether_h')])
 
-#objective function is total heater power
-model.add_subsystem('obj', ExecComp('Power = batH * 2 + propH'), promotes=['*'])
+#objective function is temperature difference btw hot and cold cases
+model.add_subsystem('obj', ExecComp('deltaT = tBat_h+tProp_h+tMain_h+tTether_h-tBat_c-tProp_c-tMain_c'), 
+                    promotes=['*'])
 
-# find optimal solution with SciPy optimize
-prob.driver = ScipyOptimizeDriver()
-prob.driver.options['optimizer'] = 'COBYLA'
-prob.driver.options['disp'] = True
-prob.driver.opt_settings = {'maxiter': 300, 'tol':1e-02, 'catol':1e-01}
+# find optimal solution with simple GA driver
+prob.driver = SimpleGADriver()
+prob.driver.options['bits'] = {'eps': 5, 'alp': 5, 'GlBat1': 3, 'GlBat2':3, 'GlMain':5, 'GlProp':5, 'GlTether':5}
+prob.driver.options['max_gen'] = 5
+#prob.driver.options['run_parallel'] = 'true'
+prob.driver.options['debug_print'] = ['desvars']
 
-prob.model.add_design_var('batH', lower = 0.0)
-prob.model.add_design_var('propH', lower = 0.0)
 prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
 prob.model.add_design_var('alp', lower = 0.23, upper=0.48)
 prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
@@ -371,7 +373,7 @@ prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
-prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
+""" prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci2', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci3', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci4', lower = 0.008, upper=0.026)
@@ -382,33 +384,33 @@ prob.model.add_design_var('ci8', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci9', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci12', lower = 0.015, upper=0.084)
+prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
 
-prob.model.add_objective('Power')
+prob.model.add_objective('deltaT')
 
 #constraint for  temperatures
-prob.model.add_constraint('RU_cold.tBat', lower=0.0, upper = 45.0)
+""" prob.model.add_constraint('RU_cold.tBat', lower=0.0, upper = 45.0)
 prob.model.add_constraint('RU_cold.tProp', lower=-10.0, upper = 80.0)
 prob.model.add_constraint('RU_cold.tMain', lower=-40.0, upper = 85.0)
 prob.model.add_constraint('RU_hot.tBat', lower=0.0, upper = 45.0)
 prob.model.add_constraint('RU_hot.tProp', lower=-10.0, upper = 80.0)
 prob.model.add_constraint('RU_hot.tMain', lower=-40.0, upper = 85.0)
-prob.model.add_constraint('RU_hot.tTether', lower=-40.0, upper = 50.0)
+prob.model.add_constraint('RU_hot.tTether', lower=-40.0, upper = 50.0) """
 
 # run the ExternalCode Component
 prob.setup(check=True)
-prob.run_model()
-#prob.run_driver()
+#prob.run_model()
+prob.run_driver()
 
 # print the output temperature, minimum radiator length and area
 print(prob['Power'])
-print(prob['RU_cold.tBat'])
-print(prob['RU_cold.tProp'])
-print(prob['RU_cold.tMain'])
-print(prob['RU_cold.tTether'])
-print(prob['RU_hot.tBat'])
-print(prob['RU_hot.tProp'])
-print(prob['RU_hot.tMain'])
-print(prob['RU_hot.tTether'])
+print(prob['tBat_c'])
+print(prob['tProp_c'])
+print(prob['tMain_c'])
+print(prob['tTether_c'])
+print(prob['tBat_h'])
+print(prob['tProp_h'])
+print(prob['tMain_h'])
+print(prob['tTether_h'])
 #print(prob['indeps.RadLen'])
 #print(prob['obj.A'])
