@@ -1,5 +1,5 @@
 #Python script for optimization of MAT remote unit thermal model @hot and cold analysis cases 
-import os
+import os, time
 from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, SimpleGADriver, ExecComp, ExplicitComponent
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
@@ -322,7 +322,7 @@ class RU_hot(ExternalCode):
         outputs['tProp'] = tProp
         outputs['tTether'] = tTether
 
-class PenaltyFunction(ExplicitComponent):
+class penaltyFunction(ExplicitComponent):
     """
     Evaluates temperature constraint violation as 
     component actual and required temperature difference 
@@ -336,16 +336,16 @@ class PenaltyFunction(ExplicitComponent):
         self.add_input('tMain_h',val=0.0)
         self.add_input('tMain_c',val=0.0)
         self.add_input('tTether_h',val=0.0)
-        self.add_output('Penalty',val=0.0)
+        self.add_output('penalty',val=0.0)
 
     def compute(self, inputs, outputs):
-        tBat_c = inputs('tBat_c')
-        tBat_h = inputs('tBat_h')
-        tProp_c = inputs('tProp_c')
-        tProp_h = inputs('tProp_h')
-        tMain_h = inputs('tMain_h')
-        tMain_c = inputs('tMain_c')
-        tTether_h = inputs('tTether_h')
+        tBat_c = inputs['tBat_c']
+        tBat_h = inputs['tBat_h']
+        tProp_c = inputs['tProp_c']
+        tProp_h = inputs['tProp_h']
+        tMain_h = inputs['tMain_h']
+        tMain_c = inputs['tMain_c']
+        tTether_h = inputs['tTether_h']
         tBat_min = 10.0 
         tProp_min = 0.0 
         tMain_min = -30.0 
@@ -371,13 +371,13 @@ indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
 indeps.add_output('batH', val=0.2)
 indeps.add_output('propH', val=0.2)
 indeps.add_output('eps', val=0.2)
-indeps.add_output('alp', val=0.4)
-""" indeps.add_output('GlBat1', val=0.4)
+indeps.add_output('alp', val=0.19)
+indeps.add_output('GlBat1', val=0.4)
 indeps.add_output('GlBat2', val=0.4)
 indeps.add_output('GlMain', val=0.04)
 indeps.add_output('GlProp', val=0.04)
-indeps.add_output('GlTether', val=0.04) """
-""" indeps.add_output('ci1', val=0.4)
+indeps.add_output('GlTether', val=0.04)
+indeps.add_output('ci1', val=0.4)
 indeps.add_output('ci2', val=0.4)
 indeps.add_output('ci3', val=0.4)
 indeps.add_output('ci4', val=0.4)
@@ -388,38 +388,52 @@ indeps.add_output('ci8', val=0.4)
 indeps.add_output('ci9', val=0.4)
 indeps.add_output('ci10', val=0.4)
 indeps.add_output('ci11', val=0.4)
-indeps.add_output('ci12', val=0.4) """ 
+indeps.add_output('ci12', val=0.4) 
 
 
 model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_c'), 
                     ('tMain','tMain_c'), ('tProp','tProp_c')])
 model.add_subsystem('RU_hot', RU_hot(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_h'), 
                     ('tMain','tMain_h'), ('tProp','tProp_h'), ('tTether','tTether_h')])
-model.add_subsystem('PenaltyFunction', PenaltyFunction(), promotes=['*'])
+model.add_subsystem('penaltyFunction', penaltyFunction(), promotes=['*'])
 
 #objective function is total heater power plus penalty of violating temperature constraints
-model.add_subsystem('obj', ExecComp('obj_p = batH + propH + Penalty'), promotes=['*'])
+model.add_subsystem('obj', ExecComp('obj_p = batH + propH + penalty'), promotes=['*'])
 
 
-prob.driver = ScipyOptimizeDriver()
+#run the ExternalCode Component once and record initial values
+prob.setup(check=True)
+prob.run_model()
+
+tBat_c1 =  prob['tBat_c']
+tBat_h1 =  prob['tBat_h']
+tProp_c1 =  prob['tProp_c']
+tProp_h1 =  prob['tProp_h']
+tMain_c1 =  prob['tMain_c']
+tMain_h1 =  prob['tMain_h']
+
+""" prob.driver = ScipyOptimizeDriver()
 prob.driver.options['optimizer']='SLSQP'
 prob.driver.options['disp'] = True
-prob.driver.opt_settings = {'eps': 1.0e-2, 'ftol':1e-04,}
-""" # find optimal solution with simple GA driver
+prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
+# find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'eps': 5, 'alp': 5, 'GlBat1': 3, 'GlBat2':3, 'GlMain':5, 'GlProp':5, 'GlTether':5}
-prob.driver.options['max_gen'] = 5
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, 'GlProp':8, 'GlTether':8,
+    'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, 'ci10':6, 'ci11':6, 'ci12':6}
+prob.driver.options['max_gen'] = 10
 #prob.driver.options['run_parallel'] = 'true'
-prob.driver.options['debug_print'] = ['desvars' """
+prob.driver.options['debug_print'] = ['desvars']
 
+prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
+prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
 prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
-#prob.model.add_design_var('alp', lower = 0.23, upper=0.48)
-""" prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
+prob.model.add_design_var('alp', lower = 0.23, upper=0.48)
+prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
-prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0) """
-""" prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
+prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
+prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci2', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci3', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci4', lower = 0.008, upper=0.026)
@@ -430,7 +444,8 @@ prob.model.add_design_var('ci8', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci9', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
+prob.model.add_design_var('ci12', lower = 0.015, upper=0.084)
+
 
 prob.model.add_objective('obj_p')
 
@@ -443,19 +458,21 @@ prob.model.add_constraint('tProp_h', lower=-10.0, upper = 80.0)
 prob.model.add_constraint('tMain_h', lower=-40.0, upper = 85.0)
 prob.model.add_constraint('tTether_h', lower=-40.0, upper = 50.0) """
 
-# run the ExternalCode Component
-prob.setup(check=True, mode='fwd')
-#prob.run_model()
-prob.run_driver()
+#Run optimization
+tStart = time.time()
+prob.setup(check=True)
+#prob.run_driver()
 
-# print the output temperature, minimum radiator length and area
-print(prob['sumT_c'])
-print(prob['tBat_c'])
-print(prob['tProp_c'])
-print(prob['tMain_c'])
-print(prob['tBat_h'])
-print(prob['tProp_h'])
-print(prob['tMain_h'])
-print(prob['tTether_h'])
-#print(prob['indeps.RadLen'])
-#print(prob['obj.A'])
+#Record final temperatures
+tBat_c2 =  prob['tBat_c']
+tBat_h2 =  prob['tBat_h']
+tProp_c2 =  prob['tProp_c']
+tProp_h2 =  prob['tProp_h']
+tMain_c2 =  prob['tMain_c']
+tMain_h2 =  prob['tMain_h']
+
+print("Temperatures before optimization:, tBat_c1={}, tProp_c1={}, tMain_c1={}, tBat_h1={}, tProp_h1={}, tMain_h1={}".format(tBat_c1, tProp_c1, tMain_c1, tBat_h1, tProp_h1, tMain_h1)) 
+print("Temperatures after optimization:,  tBat_c2={}, tProp_c2={}, tMain_c2={}, tBat_h2={}, tProp_h2={}, tMain_h2={}".format(tBat_c2, tProp_c2, tMain_c2, tBat_h2, tProp_h2, tMain_h2))
+print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat1={}, GlBat2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat1'], prob['GlBat2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
+prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
+print("Optimization run time in minutes:", (time.time()-tStart)/60)

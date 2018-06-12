@@ -170,7 +170,7 @@ class RU_cold(ExternalCode):
         outputs['tProp'] = tProp
         outputs['tTether'] = tTether
 
-class PenaltyFunction(ExplicitComponent):
+class penaltyFunction(ExplicitComponent):
     """
     Evaluates temperature constraint violation as 
     component actual and required temperature difference 
@@ -180,12 +180,12 @@ class PenaltyFunction(ExplicitComponent):
         self.add_input('tBat_c',val=0.0)
         self.add_input('tProp_c',val=0.0)
         self.add_input('tMain_c',val=0.0)
-        self.add_output('Penalty',val=0.0)
+        self.add_output('penalty',val=0.0)
 
     def compute(self, inputs, outputs):
-        tBat_c = inputs('tBat_c')
-        tProp_c = inputs('tProp_c')
-        tMain_c = inputs('tMain_c')
+        tBat_c = inputs['tBat_c']
+        tProp_c = inputs['tProp_c']
+        tMain_c = inputs['tMain_c']
         tBat_min = 10.0 
         tProp_min = 0.0 
         tMain_min = -30.0
@@ -225,11 +225,11 @@ indeps.add_output('ci12', val=0.4)  """
 
 model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_c'), 
                     ('tMain','tMain_c'), ('tProp','tProp_c')])
-model.add_subsystem('PenaltyFunction', PenaltyFunction(), promotes=['*'])
+model.add_subsystem('penaltyFunction', penaltyFunction(), promotes=['*'])
 
 
 #objective function is total heater power plus penalty of violating temperature constraints
-model.add_subsystem('obj', ExecComp('obj_p = batH + propH + Penalty'), promotes=['*'])
+model.add_subsystem('obj', ExecComp('obj_p = batH + propH + penalty'), promotes=['*'])
 
 
 #run the ExternalCode Component once and record initial values
@@ -249,13 +249,13 @@ prob.driver = SimpleGADriver()
 prob.driver.options['bits'] = {'batH':6, 'propH':6}
 """ prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, 'GlProp':8, 'GlTether':8,
     'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, 'ci10':6, 'ci11':6, 'ci12':6} """
-prob.driver.options['max_gen'] = 20
+prob.driver.options['max_gen'] = 5
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
 prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
 prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
-""" prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
+prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
 prob.model.add_design_var('alp', lower = 0.23, upper=0.48)
 prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
@@ -273,14 +273,18 @@ prob.model.add_design_var('ci8', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci9', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
+prob.model.add_design_var('ci12', lower = 0.015, upper=0.084)
 
 prob.model.add_objective('obj_p')
 
 #constraint for  temperatures
 """ prob.model.add_constraint('tBat_c', lower=0.0, upper = 45.0)
 prob.model.add_constraint('tProp_c', lower=-10.0, upper = 80.0)
-prob.model.add_constraint('tMain_c', lower=-40.0, upper = 85.0) """
+prob.model.add_constraint('tMain_c', lower=-40.0, upper = 85.0)
+prob.model.add_constraint('tBat_h', lower=0.0, upper = 45.0)
+prob.model.add_constraint('tProp_h', lower=-10.0, upper = 80.0)
+prob.model.add_constraint('tMain_h', lower=-40.0, upper = 85.0)
+prob.model.add_constraint('tTether_h', lower=-40.0, upper = 50.0) """
 
 #Run optimization
 tStart = time.time()
@@ -294,6 +298,6 @@ tMain_2 =  prob['tMain_c']
 
 print("Temperatures before optimization:, tBat_1={}, tProp_1={}, tMain_1={}".format(tBat_1, tProp_1, tMain_1)) 
 print("Temperatures after optimization:, tBat_2={}, tProp_2={}, tMain_2={}".format(tBat_2, tProp_2, tMain_2))
-""" print("Final design variables: eps={}, alp={}, GlBat1={}, GlBat2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['eps'], prob['alp'], prob['GlBat1'], prob['GlBat2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
-prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12'])) """
+print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat1={}, GlBat2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat1'], prob['GlBat2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
+prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
 print("Optimization run time in minutes:", (time.time()-tStart)/60) 

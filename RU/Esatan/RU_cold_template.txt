@@ -540,7 +540,7 @@ C Boundary Condition Total Volume Heat Load - BatteryHeater2
       QI20 = 0.140000
 C
 C Boundary Condition Heat Load Per Unit Area - SolarFlux
-      QI102 = 0.416243
+      QI102 = 150*A:102*ALP:102
 C
   $EXECUTION
 C
