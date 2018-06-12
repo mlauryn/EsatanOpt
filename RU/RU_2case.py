@@ -1,6 +1,6 @@
-#Python script for optimization of MAT remote unit thermal model
+#Python script for optimization of MAT remote unit thermal model @hot and cold analysis cases 
 import os
-from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, SimpleGADriver, ExecComp
+from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, SimpleGADriver, ExecComp, ExplicitComponent
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
 #generate RU_cold batch mode run files
@@ -322,6 +322,47 @@ class RU_hot(ExternalCode):
         outputs['tProp'] = tProp
         outputs['tTether'] = tTether
 
+class PenaltyFunction(ExplicitComponent):
+    """
+    Evaluates temperature constraint violation as 
+    component actual and required temperature difference 
+    if constraint is violated and 0 if not violated
+    """
+    def setup(self):
+        self.add_input('tBat_c',val=0.0)
+        self.add_input('tBat_h',val=0.0)
+        self.add_input('tProp_c',val=0.0)
+        self.add_input('tProp_h',val=0.0)
+        self.add_input('tMain_h',val=0.0)
+        self.add_input('tMain_c',val=0.0)
+        self.add_input('tTether_h',val=0.0)
+        self.add_output('Penalty',val=0.0)
+
+    def compute(self, inputs, outputs):
+        tBat_c = inputs('tBat_c')
+        tBat_h = inputs('tBat_h')
+        tProp_c = inputs('tProp_c')
+        tProp_h = inputs('tProp_h')
+        tMain_h = inputs('tMain_h')
+        tMain_c = inputs('tMain_c')
+        tTether_h = inputs('tTether_h')
+        tBat_min = 10.0 
+        tProp_min = 0.0 
+        tMain_min = -30.0 
+        tBat_max = 35.0 
+        tProp_max = 70.0 
+        tMain_max = 75.0
+        tTether_max = 75.0
+        deltatBat_c = tBat_min - tBat_c 
+        deltatProp_c = tProp_min - tProp_c 
+        deltatMain_c = tMain_min - tMain_c 
+        deltatBat_h = tBat_h - tBat_max 
+        deltatProp_h = tProp_h - tProp_max 
+        deltatMain_h = tMain_h - tMain_max 
+        deltatTether_h = tTether_h - tTether_max 
+
+        outputs['penalty'] = max(0, deltatBat_c)+max(0, deltatProp_c)+max(0, deltatMain_c)+max(0, deltatBat_h)+max(0, deltatProp_h)+max(0, deltatMain_h)+max(0, deltatTether_h)
+
 prob = Problem()
 model = prob.model
 
@@ -354,10 +395,10 @@ model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'], promotes_output
                     ('tMain','tMain_c'), ('tProp','tProp_c')])
 model.add_subsystem('RU_hot', RU_hot(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_h'), 
                     ('tMain','tMain_h'), ('tProp','tProp_h'), ('tTether','tTether_h')])
+model.add_subsystem('PenaltyFunction', PenaltyFunction(), promotes=['*'])
 
-#objective function is temperature difference btw hot and cold cases
-model.add_subsystem('obj', ExecComp('sumT_c = -tBat_c-tProp_c-tMain_c'), 
-                    promotes=['*'])
+#objective function is total heater power plus penalty of violating temperature constraints
+model.add_subsystem('obj', ExecComp('obj_p = batH + propH + Penalty'), promotes=['*'])
 
 
 prob.driver = ScipyOptimizeDriver()
@@ -391,16 +432,16 @@ prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
 
-prob.model.add_objective('sumT_c')
+prob.model.add_objective('obj_p')
 
 #constraint for  temperatures
-prob.model.add_constraint('tBat_c', lower=0.0, upper = 45.0)
+""" prob.model.add_constraint('tBat_c', lower=0.0, upper = 45.0)
 prob.model.add_constraint('tProp_c', lower=-10.0, upper = 80.0)
 prob.model.add_constraint('tMain_c', lower=-40.0, upper = 85.0)
 prob.model.add_constraint('tBat_h', lower=0.0, upper = 45.0)
 prob.model.add_constraint('tProp_h', lower=-10.0, upper = 80.0)
 prob.model.add_constraint('tMain_h', lower=-40.0, upper = 85.0)
-prob.model.add_constraint('tTether_h', lower=-40.0, upper = 50.0)
+prob.model.add_constraint('tTether_h', lower=-40.0, upper = 50.0) """
 
 # run the ExternalCode Component
 prob.setup(check=True, mode='fwd')
