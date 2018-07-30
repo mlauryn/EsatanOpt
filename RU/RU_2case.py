@@ -359,9 +359,13 @@ class penaltyFunction(ExplicitComponent):
         deltatBat_h = tBat_h - tBat_max 
         deltatProp_h = tProp_h - tProp_max 
         deltatMain_h = tMain_h - tMain_max 
-        deltatTether_h = tTether_h - tTether_max 
+        deltatTether_h = tTether_h - tTether_max
+        const = 2.7 #violation constant
+        mar = 5.0 #temperature margin
 
-        outputs['penalty'] = max(0, deltatBat_c)+max(0, deltatProp_c)+max(0, deltatMain_c)+max(0, deltatBat_h)+max(0, deltatProp_h)+max(0, deltatMain_h)+max(0, deltatTether_h)
+        outputs['penalty'] = const*(max(0, deltatBat_c)+max(0, deltatProp_c)+ \
+            max(0, deltatMain_c)+max(0, deltatBat_h)+max(0, deltatProp_h)+ \
+            max(0, deltatMain_h)+max(0, deltatTether_h))/mar
 
 prob = Problem()
 model = prob.model
@@ -418,9 +422,10 @@ prob.driver.options['disp'] = True
 prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
 # find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, 'GlProp':8, 'GlTether':8,
-    'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, 'ci10':6, 'ci11':6, 'ci12':6}
-prob.driver.options['max_gen'] = 10
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, \
+    'GlProp':8, 'GlTether':8, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
+    'ci10':6, 'ci11':6, 'ci12':6}
+prob.driver.options['max_gen'] = 60
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
@@ -461,7 +466,7 @@ prob.model.add_constraint('tTether_h', lower=-40.0, upper = 50.0) """
 #Run optimization
 tStart = time.time()
 prob.setup(check=True)
-#prob.run_driver()
+prob.run_driver()
 
 #Record final temperatures
 tBat_c2 =  prob['tBat_c']
