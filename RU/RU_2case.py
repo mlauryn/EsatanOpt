@@ -1,5 +1,6 @@
 #Python script for optimization of MAT remote unit thermal model @hot and cold analysis cases 
-import os, time
+import os, time, math
+import numpy as np
 from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimizeDriver, SimpleGADriver, ExecComp, ExplicitComponent
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
@@ -346,12 +347,12 @@ class penaltyFunction(ExplicitComponent):
         tMain_h = inputs['tMain_h']
         tMain_c = inputs['tMain_c']
         tTether_h = inputs['tTether_h']
-        tBat_min = 10.0 
-        tProp_min = 0.0 
-        tMain_min = -30.0 
-        tBat_max = 35.0 
-        tProp_max = 70.0 
-        tMain_max = 75.0
+        tBat_min = 5.0 
+        tProp_min = -5.0 
+        tMain_min = -35.0 
+        tBat_max = 40.0 
+        tProp_max = 75.0 
+        tMain_max = 80.0
         tTether_max = 75.0
         deltatBat_c = tBat_min - tBat_c 
         deltatProp_c = tProp_min - tProp_c 
@@ -360,12 +361,17 @@ class penaltyFunction(ExplicitComponent):
         deltatProp_h = tProp_h - tProp_max 
         deltatMain_h = tMain_h - tMain_max 
         deltatTether_h = tTether_h - tTether_max
-        const = 2.7 #violation constant
         mar = 5.0 #temperature margin
 
-        outputs['penalty'] = const*(max(0, deltatBat_c)+max(0, deltatProp_c)+ \
-            max(0, deltatMain_c)+max(0, deltatBat_h)+max(0, deltatProp_h)+ \
-            max(0, deltatMain_h)+max(0, deltatTether_h))/mar
+        delta = np.array([max(0, deltatBat_c), max(0, deltatProp_c), \
+            max(0, deltatMain_c), max(0, deltatBat_h), max(0, deltatProp_h), \
+            max(0, deltatMain_h), max(0, deltatTether_h)]) #temperature violations
+        
+        weights = np.array([0.2, 0.15, 0.1, 0.2, 0.15, 0.1, 0.1])
+        norm_con = delta/mar*weights #normalized contraints
+        con = np.power(norm_con, 2.72) 
+
+        outputs['penalty'] = np.prod(con)
 
 prob = Problem()
 model = prob.model
@@ -422,10 +428,10 @@ prob.driver.options['disp'] = True
 prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
 # find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, \
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 6, 'alp': 6, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, \
     'GlProp':8, 'GlTether':8, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
     'ci10':6, 'ci11':6, 'ci12':6}
-prob.driver.options['max_gen'] = 60
+prob.driver.options['max_gen'] = 2
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
@@ -480,4 +486,5 @@ print("Temperatures before optimization:, tBat_c1={}, tProp_c1={}, tMain_c1={}, 
 print("Temperatures after optimization:,  tBat_c2={}, tProp_c2={}, tMain_c2={}, tBat_h2={}, tProp_h2={}, tMain_h2={}".format(tBat_c2, tProp_c2, tMain_c2, tBat_h2, tProp_h2, tMain_h2))
 print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat1={}, GlBat2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat1'], prob['GlBat2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
 prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
+print("Objective value:", prob['obj_p'])
 print("Optimization run time in minutes:", (time.time()-tStart)/60)

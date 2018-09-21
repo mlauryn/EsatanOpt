@@ -1,0 +1,52 @@
+Settings:
+prob.driver = SimpleGADriver()
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 5, 'alp': 5, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, 'GlProp':8, 'GlTether':8,
+    'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, 'ci10':6, 'ci11':6, 'ci12':6}
+
+Run1: max gen = 10
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[12.45], tProp_c2=[31.75], tMain_c2=[12.31], tBat_h2=[43.14], tProp_h2=[50.08], tMain_h2=[43.14]
+Final design variables: batH = [0.6984127], propH = [0.98412698], eps=[0.12064516], alp=[0.48], GlBat1=[11.96129032], GlBat2=[8.65806452], GlMain=[0.95312941], GlProp=[0.04305882], GlTether=[0.05087059], ci1=[0.05701587], ci2=[0.07633333], ci3=[0.04347619], ci4=[0.01342857], ci5=[0.01657143], ci6=[0.0485873], ci7=[0.05795238], ci8=[0.03734921], ci9=[0.06866667], ci10=[0.008], ci11=[0.02171429], ci12=[0.04128571]
+Optimization run time in minutes: 21.87424560387929
+
+Run2: max gen = 20
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[12.25], tProp_c2=[7.51], tMain_c2=[12.05], tBat_h2=[36.84], tProp_h2=[37.26], tMain_h2=[36.84]
+Final design variables: batH = [1.], propH = [0.84126984], eps=[0.14580645], alp=[0.46387097], GlBat1=[11.13548387], GlBat2=[19.39354839], GlMain=[0.42192941], GlProp=[0.89844706], GlTether=[0.38677647], ci1=[0.02236508], ci2=[0.03580952], ci3=[0.015], ci4=[0.02342857], ci5=[0.00828571], ci6=[0.0607619], ci7=[0.07012698], ci8=[0.06731746], ci9=[0.0752381], ci10=[0.02171429], ci11=[0.01257143], ci12=[0.02595238]
+Optimization run time in minutes: 23.226342368125916
+
+Run3: max gen = 30
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[10.56], tProp_c2=[4.91], tMain_c2=[8.21], tBat_h2=[34.99], tProp_h2=[35.53], tMain_h2=[34.99]
+Final design variables: batH = [0.9047619], propH = [0.79365079], eps=[0.14580645], alp=[0.46387097], GlBat1=[0.4], GlBat2=[16.09032258], GlMain=[0.45317647], GlProp=[0.58597647], GlTether=[0.02352941], ci1=[0.04390476], ci2=[0.01828571], ci3=[0.03252381], ci4=[0.01028571], ci5=[0.01257143], ci6=[0.02330159], ci7=[0.01861905], ci8=[0.06825397], ci9=[0.05333333], ci10=[0.01285714], ci11=[0.01971429], ci12=[0.01938095]
+Optimization run time in minutes: 63.048219931125644
+
+Run4: max gen = 40
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[10.02], tProp_c2=[6.3], tMain_c2=[9.58], tBat_h2=[33.29], tProp_h2=[34.13], tMain_h2=[33.29]
+Final design variables: batH = [0.95238095], propH = [0.65079365], eps=[0.14580645], alp=[0.48], GlBat1=[2.87741935], GlBat2=[22.69677419], GlMain=[0.52348235], GlProp=[0.52738824], GlTether=[0.004], ci1=[0.03453968], ci2=[0.08071429], ci3=[0.015], ci4=[0.01257143], ci5=[0.024], ci6=[0.0485873], ci7=[0.07012698], ci8=[0.02142857], ci9=[0.05880952], ci10=[0.02371429], ci11=[0.01971429], ci12=[0.05771429]
+Optimization run time in minutes: 83.61416323979695
+
+Run5: max gen = 50
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[10.7], tProp_c2=[0.15], tMain_c2=[10.53], tBat_h2=[34.39], tProp_h2=[34.62], tMain_h2=[34.39]
+Final design variables: batH = [0.82539683], propH = [0.57142857], eps=[0.14580645], alp=[0.48], GlBat1=[10.30967742], GlBat2=[2.0516129], GlMain=[0.14070588], GlProp=[0.29694118], GlTether=[0.004], ci1=[0.02236508], ci2=[0.06647619], ci3=[0.0237619], ci4=[0.026], ci5=[0.02171429], ci6=[0.06544444], ci7=[0.05233333], ci8=[0.04203175], ci9=[0.06209524], ci10=[0.01314286], ci11=[0.02], ci12=[0.07742857]
+Optimization run time in minutes: 104.03958723942439
+
+Run6: max gen = 60
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[10.83], tProp_c2=[4.49], tMain_c2=[10.6], tBat_h2=[33.74], tProp_h2=[69.97], tMain_h2=[33.74]
+Final design variables: batH = [0.84126984], propH = [0.15873016], eps=[0.17096774], alp=[0.48], GlBat1=[6.18064516], GlBat2=[13.61290323], GlMain=[0.05087059], GlProp=[0.004], GlTether=[0.58597647], ci1=[0.05046032], ci2=[0.03471429], ci3=[0.07852381], ci4=[0.02542857], ci5=[0.02342857], ci6=[0.05233333], ci7=[0.03734921], ci8=[0.03922222], ci9=[0.05333333], ci10=[0.02171429], ci11=[0.01514286], ci12=[0.07304762]
+Optimization run time in minutes: 129.18864117463428
+
+Run7, max gen = 100
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[11.02], tProp_c2=[0.2], tMain_c2=[10.88], tBat_h2=[34.51], tProp_h2=[41.17], tMain_h2=[34.51]
+Final design variables: batH = [0.92063492], propH = [0.25396825], eps=[0.14580645], alp=[0.48], GlBat1=[21.04516129], GlBat2=[24.3483871], GlMain=[0.12508235], GlProp=[0.04305882], GlTether=[0.004], ci1=[0.04203175], ci2=[0.05661905], ci3=[0.05114286], ci4=[0.02228571], ci5=[0.008], ci6=[0.04390476], ci7=[0.03453968], ci8=[0.04765079], ci9=[0.0697619], ci10=[0.01485714], ci11=[0.01028571], ci12=[0.0467619]
+Optimization run time in minutes: 212.4373337229093
+
+Run8, max gen = 150
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[20.8], tProp_c2=[0.6], tMain_c2=[20.7], tBat_h2=[34.98], tProp_h2=[44.85], tMain_h2=[34.98]
+Final design variables: batH = [0.50793651], propH = [0.50793651], eps=[0.19612903], alp=[0.46387097], GlBat1=[12.78709677], GlBat2=[2.87741935], GlMain=[0.01571765], GlProp=[0.01181176], GlTether=[0.28912941], ci1=[0.05046032], ci2=[0.02814286], ci3=[0.07304762], ci4=[0.02142857], ci5=[0.014], ci6=[0.02142857], ci7=[0.06731746], ci8=[0.06169841], ci9=[0.01938095], ci10=[0.01514286], ci11=[0.02114286], ci12=[0.0237619]
+Optimization run time in minutes: 340.2088662544886
