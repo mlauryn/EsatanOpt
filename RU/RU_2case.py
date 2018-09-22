@@ -46,8 +46,7 @@ class RU_cold(ExternalCode):
         self.add_input('propH', val=0.1)
         self.add_input('eps', val=0.4)
         self.add_input('alp', val=0.4)
-        self.add_input('GlBat1', val=0.4)
-        self.add_input('GlBat2', val=0.4)
+        self.add_input('GlBat', val=0.4)
         self.add_input('GlMain', val=0.4)
         self.add_input('GlProp', val=0.4)
         self.add_input('GlTether', val=0.4)
@@ -86,8 +85,8 @@ class RU_cold(ExternalCode):
     def compute(self, inputs, outputs):
         alp = inputs['alp']
         eps = inputs['eps']
-        GL11_200 = inputs['GlBat1']
-        GL21_200 = inputs['GlBat2']
+        GL11_200 = inputs['GlBat']
+        GL21_200 = inputs['GlBat']
         GL107_200 = inputs['GlMain']
         GL111_300 = inputs['GlProp']
         GL103_400 = inputs['GlTether']
@@ -191,8 +190,7 @@ class RU_hot(ExternalCode):
     def setup(self):
         self.add_input('eps', val=0.4)
         self.add_input('alp', val=0.4)
-        self.add_input('GlBat1', val=0.4)
-        self.add_input('GlBat2', val=0.4)
+        self.add_input('GlBat', val=0.4)
         self.add_input('GlMain', val=0.4)
         self.add_input('GlProp', val=0.4)
         self.add_input('GlTether', val=0.4)
@@ -231,8 +229,8 @@ class RU_hot(ExternalCode):
     def compute(self, inputs, outputs):
         alp = inputs['alp']
         eps = inputs['eps']
-        GL11_200 = inputs['GlBat1']
-        GL21_200 = inputs['GlBat2']
+        GL11_200 = inputs['GlBat']
+        GL21_200 = inputs['GlBat']
         GL107_200 = inputs['GlMain']
         GL111_300 = inputs['GlProp']
         GL103_400 = inputs['GlTether']
@@ -368,10 +366,10 @@ class penaltyFunction(ExplicitComponent):
             max(0, deltatMain_h), max(0, deltatTether_h)]) #temperature violations
         
         weights = np.array([0.2, 0.15, 0.1, 0.2, 0.15, 0.1, 0.1])
-        norm_con = delta/mar*weights #normalized contraints
-        con = np.power(norm_con, 2.72) 
+        norm_con = delta / mar * weights #normalized contraints
+        con = np.power(norm_con, 2) 
 
-        outputs['penalty'] = np.prod(con)
+        outputs['penalty'] = np.sum(con)
 
 prob = Problem()
 model = prob.model
@@ -382,8 +380,7 @@ indeps.add_output('batH', val=0.2)
 indeps.add_output('propH', val=0.2)
 indeps.add_output('eps', val=0.2)
 indeps.add_output('alp', val=0.19)
-indeps.add_output('GlBat1', val=0.4)
-indeps.add_output('GlBat2', val=0.4)
+indeps.add_output('GlBat', val=0.4)
 indeps.add_output('GlMain', val=0.04)
 indeps.add_output('GlProp', val=0.04)
 indeps.add_output('GlTether', val=0.04)
@@ -428,23 +425,22 @@ prob.driver.options['disp'] = True
 prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
 # find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 6, 'alp': 6, 'GlBat1': 5, 'GlBat2':5, 'GlMain':8, \
-    'GlProp':8, 'GlTether':8, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
-    'ci10':6, 'ci11':6, 'ci12':6}
-prob.driver.options['max_gen'] = 2
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 8, 'alp': 8, 'GlBat': 5, 'GlMain':8, \
+    'GlProp':8, 'GlTether':6} #, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
+    #'ci10':6, 'ci11':6, 'ci12':6}
+prob.driver.options['max_gen'] = 30
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
 prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
 prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
 prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
-prob.model.add_design_var('alp', lower = 0.23, upper=0.48)
-prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
-prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
+prob.model.add_design_var('alp', lower = 0.23, upper=0.9)
+prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
-prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
+""" prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci2', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci3', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci4', lower = 0.008, upper=0.026)
@@ -455,7 +451,7 @@ prob.model.add_design_var('ci8', lower = 0.013, upper=0.072)
 prob.model.add_design_var('ci9', lower = 0.015, upper=0.084)
 prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci12', lower = 0.015, upper=0.084)
+prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
 
 
 prob.model.add_objective('obj_p')
@@ -484,7 +480,7 @@ tMain_h2 =  prob['tMain_h']
 
 print("Temperatures before optimization:, tBat_c1={}, tProp_c1={}, tMain_c1={}, tBat_h1={}, tProp_h1={}, tMain_h1={}".format(tBat_c1, tProp_c1, tMain_c1, tBat_h1, tProp_h1, tMain_h1)) 
 print("Temperatures after optimization:,  tBat_c2={}, tProp_c2={}, tMain_c2={}, tBat_h2={}, tProp_h2={}, tMain_h2={}".format(tBat_c2, tProp_c2, tMain_c2, tBat_h2, tProp_h2, tMain_h2))
-print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat1={}, GlBat2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat1'], prob['GlBat2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
+print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
 prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
 print("Objective value:", prob['obj_p'])
 print("Optimization run time in minutes:", (time.time()-tStart)/60)
