@@ -91,7 +91,33 @@ Objective value: [0.71915749]
 Optimization run time in minutes: 153.13356860081356
 
 Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[2.25], tProp_c2=[-8.41], tMain_c2=[0.69], tBat_h2=[46.71], tProp_h2=[46.19], tMain_h2=[46.71]
+Final design variables: batH = [0.6031746], propH = [0.], eps=[0.10666667], alp=[0.48], GlBat=[0.4], GlMain=[0.14461176], GlProp=[0.78127059], GlTether=[0.004], ci1=[0.02704762], ci2=[0.02814286], ci3=[0.01609524], ci4=[0.02457143], ci5=[0.016], ci6=[0.01487302], ci7=[0.04577778], ci8=[0.04390476], ci9=[0.02157143], ci10=[0.00857143], ci11=[0.00942857], ci12=[0.07852381]
+Objective value: [0.69777845]
+Optimization run time in minutes: 158.9730882167816
+
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
 Temperatures after optimization:,  tBat_c2=[4.84], tProp_c2=[-6.07], tMain_c2=[4.69], tBat_h2=[42.3], tProp_h2=[41.81], tMain_h2=[42.3]
 Final design variables: batH = [0.76190476], propH = [0.], eps=[0.11904762], alp=[0.48], GlBat=[11.96129032], GlMain=[0.15632941], GlProp=[0.87501176], GlTether=[0.004], ci1=[0.04203175], ci2=[0.01719048], ci3=[0.015], ci4=[0.01428571], ci5=[0.02257143], ci6=[0.01393651], ci7=[0.02798413], ci8=[0.02985714], ci9=[0.02595238], ci10=[0.01257143], ci11=[0.02171429], ci12=[0.04128571]
 Objective value: [0.77144013]
 Optimization run time in minutes: 204.83421139319736
+
+////////////////////////////////////
+New bounds for eps and alp
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[4.15], tProp_c2=[-2.24], tMain_c2=[4.05], tBat_h2=[40.36], tProp_h2=[44.1], tMain_h2=[40.36]
+Final design variables: batH = [0.50793651], propH = [0.], eps=[0.12705882], alp=[0.85796078], GlBat=[11.96129032], GlMain=[0.17976471], GlProp=[0.07430588], GlTether=[0.004], ci1=[0.4], ci2=[0.4], ci3=[0.4], ci4=[0.4], ci5=[0.4], ci6=[0.4], ci7=[0.4], ci8=[0.4], ci9=[0.4], ci10=[0.4], ci11=[0.4], ci12=[0.4]
+Objective value: [0.50929987]
+Optimization run time in minutes: 80.5178980867068
+
+\\\\\\\\\\\\\\\\\
+different alp,eps
+/////////////////
+
+Temperatures before optimization:, tBat_c1=[-75.82], tProp_c1=[-81.33], tMain_c1=[-76.34], tBat_h1=[27.77], tProp_h1=[30.82], tMain_h1=[27.77]
+Temperatures after optimization:,  tBat_c2=[2.7], tProp_c2=[0.99], tMain_c2=[2.58], tBat_h2=[47.92], tProp_h2=[48.34], tMain_h2=[47.92]
+Final design variables: batH = [0.61904762], propH = [0.03174603], eps1=[0.02], alp1=[0.4483871], eps2=[0.10612903], GlBat=[12.78709677], GlMain=[0.96838095], GlProp=[0.9367619], GlTether=[0.01980952], ci1=[0.4], ci2=[0.4], ci3=[0.4], ci4=[0.4], ci5=[0.4], ci6=[0.4], ci7=[0.4], ci8=[0.4], ci9=[0.4], ci10=[0.4], ci11=[0.4], ci12=[0.4]
+Objective value: [0.75961989]
+Optimization run time in minutes: 57.10375516414642
