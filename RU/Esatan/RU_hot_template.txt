@@ -150,7 +150,19 @@ $MODEL RU_hot
     D503 = 'Tether', T = 0.0,
      A = 0.006082, ALP = 0.390000, EPS = 0.870000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
-    D600 = 'SolarPanel', T = 0.0,
+    D600 = 'FoldedSolarPanelSunlitSide', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.07, EPS = 0.8,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D601 = 'FoldedSolarPanelShadedSide', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D700 = 'DeployedSolarPanelSunlitSide', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
      A = 0.014605, ALP = 0.61, EPS = 0.890000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
@@ -467,8 +479,10 @@ $MODEL RU_hot
     GR(502, 99999) = 8.95283E-006;
     GR(503, 99998) = 7.25764E-007;
     GR(503, 99999) = 7.83790E-005;
-    GV(600, 99999) = 1.0; #solar panel sun facing side
-    GR(600, 102) = 0.0; #assuming inward facing solar panel side is well insulated with MLI
+    GV(700, 99999) = 1.0; #solar panel sun facing side
+    GV(701, 99999) = 1.0; #solar panel shaded side
+    GR(601, 102) = 0.0; #assuming inward facing solar panel side is well insulated with MLI
+    GV(600, 99999) = 1; #folded solar panel sunlit side
 # ESATAN-TMS 2017 sp2, run date 10:15 Fri 8 Jun 2018
 # Model name: RU_hot        Generated conductors
     GL(11,200) = 1.00000; # from conductor Battery1_adhesive
@@ -487,7 +501,7 @@ $MODEL RU_hot
     GL(101,105) = 1.0; # from conductive interface ci_10
     GL(105,111) = 1.0; # from conductive interface ci_11
     GL(105,107) = 1.0; # from conductive interface ci_12
-    GL(102,600) = 0.05; #estimate of hinge/wiring conductance
+    GL(102,601) = 0.05; #estimate of hinge/wiring conductance to folded panel
     GL(1,2) = 0.400000; # from conductor Motor_to_ReelBody
     GL(1,502) = 0.100000; # from conductor Motor_to_tether
     GL(2,400) = 6.40000; # from conductor Reel_to_PCB
@@ -519,6 +533,9 @@ $MODEL RU_hot
     GL(500,501) = k_Tether * 0.678; # from primitive TetherPack
     GL(500,502) = k_Tether * 0.219; # from primitive TetherPack
     GL(500,503) = k_Tether * 0.219; # from primitive TetherPack
+    GL(600,601) = 292; #calculated by Esatan
+    GL(700,701) = 292; #calculated by Esatan
+    GL(102,700) = 0.05; #estimate of hinge/wiring conductance from deployed panel
 #
   $CONSTANTS
     $REAL
@@ -552,8 +569,11 @@ C
 C Boundary Condition Total Area Heat Load - HeatDissipation_MainPCB
       QI200 = 0.2
 C
-C Boundary Condition Total Area Heat Load - Absorbed SolarFlux to SolarPanel(minus system power consumption)
-      QI600 = 16.0
+C Boundary Condition Total Area Heat Load - Remaining Electrical power disipated in deployed solar panel
+      QI700 = 2.0
+C
+C Boundary Condition Heat Load Per Unit Area - SolarFlux
+      QI600 = 1360*A:600*ALP:600
 C
   $EXECUTION
 C
