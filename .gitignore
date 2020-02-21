@@ -15,3 +15,5 @@
 *.par
 *.dat
 *html
+*.sql
+*.json
