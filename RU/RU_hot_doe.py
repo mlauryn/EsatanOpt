@@ -165,8 +165,6 @@ model = prob.model
 
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
-""" indeps.add_output('batH', val=0.2)
-indeps.add_output('propH', val=0.2) """
 indeps.add_output('eps', val=0.2)
 indeps.add_output('alp', val=0.4)
 """ indeps.add_output('GlBat1', val=0.4)
@@ -191,9 +189,7 @@ model.add_subsystem('esatan', RU_hot(), promotes=['*'])
 
 model.add_design_var('eps', lower = 0.02, upper=0.8)
 model.add_design_var('alp', lower = 0.23, upper=0.48)
-""" prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
+""" prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
@@ -211,6 +207,7 @@ prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
 model.add_objective('tBat')
+model.add_objective('tProp')
 
 prob.driver = om.DOEDriver(om.UniformGenerator(num_samples=10))
 prob.driver.add_recorder(om.SqliteRecorder("cases.sql"))
@@ -225,8 +222,8 @@ cases = cr.list_cases('driver')
 values = []
 for case in cases:
     outputs = cr.get_case(case).outputs
-    values.append((outputs['eps'], outputs['alp'], outputs['tBat']))
+    values.append((outputs['eps'], outputs['alp'], outputs['tBat'], outputs['tProp']))
 
-data = np.reshape(values, (len(cases), 3))
+data = np.reshape(values, (len(cases), 4))
 print(data)
 np.savetxt('TrainingData_2.csv', data, delimiter=',')

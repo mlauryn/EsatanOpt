@@ -27,8 +27,8 @@ file.close()
 
 class RU_cold(ExternalCode):
     def setup(self):
-        """ self.add_input('batH', val=0.1)
-        self.add_input('propH', val=0.1) """
+        self.add_input('batH', val=0.1)
+        self.add_input('propH', val=0.1)
         self.add_input('eps', val=0.02)
         self.add_input('alp', val=0.19)
         """  self.add_input('GlBat1', val=0.4)
@@ -87,9 +87,9 @@ class RU_cold(ExternalCode):
         GL103_105 = inputs['ci9']
         GL101_105 = inputs['ci10']
         GL105_111 = inputs['ci11']
-        GL105_107 = inputs['ci12']
+        GL105_107 = inputs['ci12'] """
         qi300 = inputs['propH']
-        qi10 = inputs['batH'] """
+        qi10 = inputs['batH']
 
         alp = '{0},'.format(float(alp)) 
         eps = '{0},'.format(float(eps)) 
@@ -109,10 +109,10 @@ class RU_cold(ExternalCode):
         GL103_105 = '{0};'.format(float(GL103_105))
         GL101_105 = '{0};'.format(float(GL101_105))
         GL105_111 = '{0};'.format(float(GL105_111))
-        GL105_107 = '{0};'.format(float(GL105_107)) 
+        GL105_107 = '{0};'.format(float(GL105_107))  """ 
         qi300 = '{0}'.format(float(qi300)) 
         qi10 = '{0}'.format(float(qi10))
-        qi20 = qi10  """
+        qi20 = qi10
 
         # generate the input file for RU_cold thermal analysis
         generator = InputFileGenerator()
@@ -148,11 +148,11 @@ class RU_cold(ExternalCode):
         generator.transfer_var(GL101_105, 14, 3)
         generator.transfer_var(GL105_111, 15, 3)
         generator.transfer_var(GL105_107, 16, 3)
-        generator.transfer_var(GL103_400, 44, 3)
+        generator.transfer_var(GL103_400, 44, 3) """
         generator.mark_anchor("$INITIAL")
         generator.transfer_var(qi300, 7, 3)
         generator.transfer_var(qi10, 10, 3)
-        generator.transfer_var(qi20, 13, 3) """
+        generator.transfer_var(qi20, 13, 3)
         generator.generate()
 
         # the parent compute function actually runs the external code
@@ -177,8 +177,8 @@ model = prob.model
 
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
-""" indeps.add_output('batH', val=0.2)
-indeps.add_output('propH', val=0.2) """
+indeps.add_output('batH', val=0.2)
+indeps.add_output('propH', val=0.2)
 indeps.add_output('eps', val=0.2)
 indeps.add_output('alp', val=0.4)
 """ indeps.add_output('GlBat1', val=0.4)
@@ -203,9 +203,9 @@ model.add_subsystem('esatan', RU_cold(), promotes=['*'])
 
 model.add_design_var('eps', lower = 0.02, upper=0.8)
 model.add_design_var('alp', lower = 0.23, upper=0.48)
-""" prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
+prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
 prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
+""" prob.model.add_design_var('GlBat1', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlBat2', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
@@ -223,8 +223,9 @@ prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
 prob.model.add_design_var('ci12', lower = 0.015, upper=0.084) """
 model.add_objective('tBat')
+model.add_objective('tProp')
 
-prob.driver = om.DOEDriver(om.UniformGenerator(num_samples=10))
+prob.driver = om.DOEDriver(om.UniformGenerator(num_samples=20))
 prob.driver.add_recorder(om.SqliteRecorder("cases.sql"))
 
 prob.setup(check=True)
@@ -237,8 +238,8 @@ cases = cr.list_cases('driver')
 values = []
 for case in cases:
     outputs = cr.get_case(case).outputs
-    values.append((outputs['eps'], outputs['alp'], outputs['tBat']))
+    values.append((outputs['eps'], outputs['alp'], outputs['batH'], outputs['propH'], outputs['tBat'], outputs['tProp']))
 
-data = np.reshape(values, (len(cases), 3))
+data = np.reshape(values, (len(cases), 6))
 print(data)
-np.savetxt('TrainingData.csv', data, delimiter=',')
+np.savetxt('TrainingData_1.csv', data, delimiter=',')
