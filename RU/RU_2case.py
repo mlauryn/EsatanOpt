@@ -389,7 +389,7 @@ model = prob.model
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
 indeps.add_output('batH', val=0.5)
-indeps.add_output('propH', val=0.5)
+indeps.add_output('propH', val=0.0)
 indeps.add_output('eps1', val=0.02)
 indeps.add_output('alp1', val=0.5)
 indeps.add_output('eps2', val=0.10612)
@@ -439,19 +439,19 @@ prob.driver.options['disp'] = True
 prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
 # find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps1': 5, 'alp1': 5, 'eps2': 5, 'GlBat': 5, 'GlMain':6, \
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps1': 5, 'alp1': 5, 'eps2': 5, 'GlMain':6, \
     'GlProp':6, 'GlTether':6} #, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
     #'ci10':6, 'ci11':6, 'ci12':6}
-prob.driver.options['max_gen'] = 60
+prob.driver.options['max_gen'] = 70
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
-prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('eps1', lower = 0.02, upper=0.8)
+prob.model.add_design_var('batH', lower = 0.0, upper=0.5)
+prob.model.add_design_var('propH', lower = 0.0, upper=0.5)
+prob.model.add_design_var('eps1', lower = 0.03, upper=0.8)
 prob.model.add_design_var('alp1', lower = 0.1, upper=0.5)
 prob.model.add_design_var('eps2', lower = 0.02, upper=0.91)
-prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
+#prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
@@ -495,7 +495,7 @@ tMain_h2 =  prob['tMain_h']
 
 print("Temperatures before optimization:, tBat_c1={}, tProp_c1={}, tMain_c1={}, tBat_h1={}, tProp_h1={}, tMain_h1={}".format(tBat_c1, tProp_c1, tMain_c1, tBat_h1, tProp_h1, tMain_h1)) 
 print("Temperatures after optimization:,  tBat_c2={}, tProp_c2={}, tMain_c2={}, tBat_h2={}, tProp_h2={}, tMain_h2={}".format(tBat_c2, tProp_c2, tMain_c2, tBat_h2, tProp_h2, tMain_h2))
-print("Final design variables: batH = {}, propH = {}, eps1={}, alp1={}, eps2={}, GlBat={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps1'], prob['alp1'], prob['eps2'], prob['GlBat'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
+print("Final design variables: batH = {}, propH = {}, eps1={}, alp1={}, eps2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps1'], prob['alp1'], prob['eps2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
 prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
 print("Objective value:", prob['obj_p'])
 print("Optimization run time in minutes:", (time.time()-tStart)/60)

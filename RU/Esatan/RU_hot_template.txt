@@ -156,11 +156,11 @@ $MODEL RU_hot
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D601 = 'FoldedSolarPanelShadedSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     A = 0.014605, ALP = 0.91, EPS = 0.890000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D700 = 'DeployedSolarPanelSunlitSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     A = 0.014605, ALP = 0.91, EPS = 0.890000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
@@ -483,6 +483,7 @@ $MODEL RU_hot
     GV(701, 99999) = 1.0; #solar panel shaded side
     GR(601, 102) = 0.0; #assuming inward facing solar panel side is well insulated with MLI
     GV(600, 99999) = 1; #folded solar panel sunlit side
+    GR(108, 701) = 0.000220019; #REF from body to solar array, calculated by Esatan
 # ESATAN-TMS 2017 sp2, run date 10:15 Fri 8 Jun 2018
 # Model name: RU_hot        Generated conductors
     GL(11,200) = 1.00000; # from conductor Battery1_adhesive
@@ -569,10 +570,10 @@ C
 C Boundary Condition Total Area Heat Load - HeatDissipation_MainPCB
       QI200 = 0.2
 C
-C Boundary Condition Total Area Heat Load - Remaining Electrical power disipated in deployed solar panel
-      QI700 = 2.0
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+      QI700 = 1360*A:700*ALP:700 - 2.0
 C
-C Boundary Condition Heat Load Per Unit Area - SolarFlux
+C Boundary Condition Heat Load Per Unit Area - Absorbed SolarFlux at the reflector surface
       QI600 = 1360*A:600*ALP:600
 C
   $EXECUTION
