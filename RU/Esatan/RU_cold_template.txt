@@ -150,6 +150,30 @@ $MODEL RU_cold
     D503 = 'Tether', T = 0.0,
      A = 0.006082, ALP = 0.390000, EPS = 0.870000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D600 = 'ZplusDeployPanelSunlit', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D601 = 'ZplusDeployPanelShaded', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D700 = 'XminusDeployPanelSunlit', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D701 = 'XminusDeployPanelShaded', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D800 = 'ZminusDeployPanelSunlit', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
+    D801 = 'ZminusDeployPanelShaded', T = 0.0,
+     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     X99998 = 'INACTIVE_NODE', T = 0.0,
      A = 0.0, ALP = 0.0, EPS = 0.0;
     B99999 = 'ENVIRONMENT', T = -270.000000,
@@ -463,6 +487,15 @@ $MODEL RU_cold
     GR(502, 99999) = 8.95283E-006;
     GR(503, 99998) = 7.25764E-007;
     GR(503, 99999) = 7.83790E-005;
+    GV(600, 99999) = 1.0; #solar panel sun facing side
+    GV(601, 99999) = 0.81750; #solar panel shaded side
+    GV(700, 99999) = 1.0; #solar panel sun facing side
+    GV(701, 99999) = 0.8330; #solar panel shaded side
+    GV(800, 99999) = 1.0; #solar panel sun facing side
+    GV(801, 99999) = 0.81840; #solar panel shaded side
+    GV(601,100) = 0.241714;
+    GV(701,108) = 0.248227;
+    GV(801,110) = 0.244333;
 # ESATAN-TMS 2017 sp2, run date 10:15 Fri 8 Jun 2018
 # Model name: RU_cold        Generated conductors
     GL(11,200) = 1.00000; # from conductor Battery1_adhesive
@@ -512,6 +545,12 @@ $MODEL RU_cold
     GL(500,501) = k_Tether * 0.678; # from primitive TetherPack
     GL(500,502) = k_Tether * 0.219; # from primitive TetherPack
     GL(500,503) = k_Tether * 0.219; # from primitive TetherPack
+    GL(600,601) = 292; #calculated by Esatan
+    GL(700,701) = 292; #calculated by Esatan
+    GL(800,801) = 292; #calculated by Esatan
+    GL(102,600) = 0.05; #estimate of hinge/wiring conductance from deployed panel
+    GL(102,700) = 0.05; #estimate of hinge/wiring conductance from deployed panel
+    GL(102,800) = 0.05; #estimate of hinge/wiring conductance from deployed panel
 #
   $CONSTANTS
     $REAL
@@ -541,6 +580,15 @@ C Boundary Condition Total Volume Heat Load - BatteryHeater2
 C
 C Boundary Condition Heat Load Per Unit Area - SolarFlux
       QI102 = 150*A:102*ALP:102
+C
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+      QI600 = 150*A:600*ALP:600
+C
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+      QI700 = 150*A:700*ALP:700
+C
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+      QI800 = 150*A:800*ALP:800
 C
   $EXECUTION
 C

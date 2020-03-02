@@ -44,8 +44,10 @@ class RU_cold(ExternalCode):
     def setup(self):
         self.add_input('batH', val=0.1)
         self.add_input('propH', val=0.1)
-        self.add_input('eps', val=0.4)
-        self.add_input('alp', val=0.4)
+        self.add_input('eps1', val=0.4)
+        self.add_input('alp1', val=0.4)
+        self.add_input('eps2', val=0.4)
+        self.add_input('alp2', val=0.4)
         self.add_input('GlBat', val=0.4)
         self.add_input('GlMain', val=0.4)
         self.add_input('GlProp', val=0.4)
@@ -83,8 +85,10 @@ class RU_cold(ExternalCode):
         self.declare_partials(of='*', wrt='*', method='fd')
 
     def compute(self, inputs, outputs):
-        alp = inputs['alp']
-        eps = inputs['eps']
+        alp1 = inputs['alp1']
+        eps1 = inputs['eps1']
+        alp2 = inputs['alp2']
+        eps2 = inputs['eps2']
         GL11_200 = inputs['GlBat']
         GL21_200 = inputs['GlBat']
         GL107_200 = inputs['GlMain']
@@ -105,8 +109,10 @@ class RU_cold(ExternalCode):
         qi300 = inputs['propH']
         qi10 = inputs['batH']
 
-        alp = '{0},'.format(float(alp)) 
-        eps = '{0},'.format(float(eps)) 
+        alp1 = '{0},'.format(float(alp1)) 
+        eps1 = '{0},'.format(float(eps1)) 
+        alp2 = '{0},'.format(float(alp2)) 
+        eps2 = '{0},'.format(float(eps2)) 
         GL11_200 = '{0};'.format(float(GL11_200))
         GL21_200 = '{0};'.format(float(GL21_200))
         GL107_200 = '{0};'.format(float(GL107_200))
@@ -133,18 +139,18 @@ class RU_cold(ExternalCode):
         generator.set_template_file('RU_cold_template.txt')
         generator.set_generated_file('RU_cold.d')
         generator.mark_anchor("$NODES")
-        generator.transfer_var(alp, 53, 6)
-        generator.transfer_var(eps, 53, 9)
-        generator.transfer_var(alp, 61, 6)
-        generator.transfer_var(eps, 61, 9)
-        generator.transfer_var(alp, 69, 6)
-        generator.transfer_var(eps, 69, 9)
-        generator.transfer_var(alp, 77, 6)
-        generator.transfer_var(eps, 77, 9)
-        generator.transfer_var(alp, 85, 6)
-        generator.transfer_var(eps, 85, 9)
-        generator.transfer_var(alp, 93, 6)
-        generator.transfer_var(eps, 93, 9)
+        generator.transfer_var(alp2, 53, 6)
+        generator.transfer_var(eps2, 53, 9)
+        generator.transfer_var(alp1, 61, 6)
+        generator.transfer_var(eps1, 61, 9)
+        generator.transfer_var(alp2, 69, 6)
+        generator.transfer_var(eps2, 69, 9)
+        generator.transfer_var(alp2, 77, 6)
+        generator.transfer_var(eps2, 77, 9)
+        generator.transfer_var(alp2, 85, 6)
+        generator.transfer_var(eps2, 85, 9)
+        generator.transfer_var(alp2, 93, 6)
+        generator.transfer_var(eps2, 93, 9)
         generator.mark_anchor("Generated conductors")
         generator.transfer_var(GL11_200, 1, 3)  
         generator.transfer_var(GL21_200, 2, 3)
@@ -188,8 +194,10 @@ class RU_cold(ExternalCode):
 
 class RU_hot(ExternalCode):
     def setup(self):
-        self.add_input('eps', val=0.4)
-        self.add_input('alp', val=0.4)
+        self.add_input('eps1', val=0.4)
+        self.add_input('alp1', val=0.4)
+        self.add_input('eps2', val=0.4)
+        self.add_input('alp2', val=0.4)
         self.add_input('GlBat', val=0.4)
         self.add_input('GlMain', val=0.4)
         self.add_input('GlProp', val=0.4)
@@ -227,8 +235,10 @@ class RU_hot(ExternalCode):
         self.declare_partials(of='*', wrt='*', method='fd')
 
     def compute(self, inputs, outputs):
-        alp = inputs['alp']
-        eps = inputs['eps']
+        alp1 = inputs['alp1']
+        eps1 = inputs['eps1']
+        alp2 = inputs['alp2']
+        eps2 = inputs['eps2']
         GL11_200 = inputs['GlBat']
         GL21_200 = inputs['GlBat']
         GL107_200 = inputs['GlMain']
@@ -247,8 +257,10 @@ class RU_hot(ExternalCode):
         GL105_111 = inputs['ci11']
         GL105_107 = inputs['ci12']
 
-        alp = '{0},'.format(float(alp)) 
-        eps = '{0},'.format(float(eps)) 
+        alp1 = '{0},'.format(float(alp1)) 
+        eps1 = '{0},'.format(float(eps1)) 
+        alp2 = '{0},'.format(float(alp2)) 
+        eps2 = '{0},'.format(float(eps2)) 
         GL11_200 = '{0};'.format(float(GL11_200))
         GL21_200 = '{0};'.format(float(GL21_200))
         GL107_200 = '{0};'.format(float(GL107_200))
@@ -272,18 +284,18 @@ class RU_hot(ExternalCode):
         generator.set_template_file('RU_hot_template.txt')
         generator.set_generated_file('RU_hot.d')
         generator.mark_anchor("$NODES")
-        generator.transfer_var(alp, 53, 6)
-        generator.transfer_var(eps, 53, 9)
-        generator.transfer_var(alp, 61, 6)
-        generator.transfer_var(eps, 61, 9)
-        generator.transfer_var(alp, 69, 6)
-        generator.transfer_var(eps, 69, 9)
-        generator.transfer_var(alp, 77, 6)
-        generator.transfer_var(eps, 77, 9)
-        generator.transfer_var(alp, 85, 6)
-        generator.transfer_var(eps, 85, 9)
-        generator.transfer_var(alp, 93, 6)
-        generator.transfer_var(eps, 93, 9)
+        generator.transfer_var(alp2, 53, 6)
+        generator.transfer_var(eps2, 53, 9)
+        generator.transfer_var(alp1, 61, 6)
+        generator.transfer_var(eps1, 61, 9)
+        generator.transfer_var(alp2, 69, 6)
+        generator.transfer_var(eps2, 69, 9)
+        generator.transfer_var(alp2, 77, 6)
+        generator.transfer_var(eps2, 77, 9)
+        generator.transfer_var(alp2, 85, 6)
+        generator.transfer_var(eps2, 85, 9)
+        generator.transfer_var(alp2, 93, 6)
+        generator.transfer_var(eps2, 93, 9)
         generator.mark_anchor("Generated conductors")
         generator.transfer_var(GL11_200, 1, 3)  
         generator.transfer_var(GL21_200, 2, 3)
@@ -376,14 +388,16 @@ model = prob.model
 
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', IndepVarComp(), promotes=['*'])
-indeps.add_output('batH', val=0.2)
-indeps.add_output('propH', val=0.2)
-indeps.add_output('eps', val=0.2)
-indeps.add_output('alp', val=0.19)
+indeps.add_output('batH', val=0.5)
+indeps.add_output('propH', val=0.0)
+indeps.add_output('eps1', val=0.02)
+indeps.add_output('alp1', val=0.5)
+indeps.add_output('eps2', val=0.10612)
+indeps.add_output('alp2', val=0.19)
 indeps.add_output('GlBat', val=0.4)
-indeps.add_output('GlMain', val=0.04)
-indeps.add_output('GlProp', val=0.04)
-indeps.add_output('GlTether', val=0.04)
+indeps.add_output('GlMain', val=0.336)
+indeps.add_output('GlProp', val=0.067)
+indeps.add_output('GlTether', val=0.004)
 indeps.add_output('ci1', val=0.4)
 indeps.add_output('ci2', val=0.4)
 indeps.add_output('ci3', val=0.4)
@@ -425,18 +439,19 @@ prob.driver.options['disp'] = True
 prob.driver.opt_settings = {'eps': 1.0e-6, 'ftol':1e-04,} """
 # find optimal solution with simple GA driver
 prob.driver = SimpleGADriver()
-prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps': 8, 'alp': 8, 'GlBat': 5, 'GlMain':8, \
-    'GlProp':8, 'GlTether':6} #, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
+prob.driver.options['bits'] = {'batH':6, 'propH':6, 'eps1': 5, 'alp1': 5, 'eps2': 5, 'GlMain':6, \
+    'GlProp':6, 'GlTether':6} #, 'ci1':6, 'ci2':6, 'ci3':6, 'ci4':6, 'ci5':6, 'ci6':6, 'ci7':6, 'ci8':6, 'ci9':6, \
     #'ci10':6, 'ci11':6, 'ci12':6}
-prob.driver.options['max_gen'] = 30
+prob.driver.options['max_gen'] = 70
 #prob.driver.options['run_parallel'] = 'true'
 prob.driver.options['debug_print'] = ['desvars']
 
-prob.model.add_design_var('batH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('propH', lower = 0.0, upper=1.0)
-prob.model.add_design_var('eps', lower = 0.02, upper=0.8)
-prob.model.add_design_var('alp', lower = 0.23, upper=0.9)
-prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
+prob.model.add_design_var('batH', lower = 0.0, upper=0.5)
+prob.model.add_design_var('propH', lower = 0.0, upper=0.5)
+prob.model.add_design_var('eps1', lower = 0.03, upper=0.8)
+prob.model.add_design_var('alp1', lower = 0.1, upper=0.5)
+prob.model.add_design_var('eps2', lower = 0.02, upper=0.91)
+#prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
 prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
 prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
@@ -480,7 +495,7 @@ tMain_h2 =  prob['tMain_h']
 
 print("Temperatures before optimization:, tBat_c1={}, tProp_c1={}, tMain_c1={}, tBat_h1={}, tProp_h1={}, tMain_h1={}".format(tBat_c1, tProp_c1, tMain_c1, tBat_h1, tProp_h1, tMain_h1)) 
 print("Temperatures after optimization:,  tBat_c2={}, tProp_c2={}, tMain_c2={}, tBat_h2={}, tProp_h2={}, tMain_h2={}".format(tBat_c2, tProp_c2, tMain_c2, tBat_h2, tProp_h2, tMain_h2))
-print("Final design variables: batH = {}, propH = {}, eps={}, alp={}, GlBat={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps'], prob['alp'], prob['GlBat'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
+print("Final design variables: batH = {}, propH = {}, eps1={}, alp1={}, eps2={}, GlMain={}, GlProp={}, GlTether={}, ci1={}, ci2={}, ci3={}, ci4={}, ci5={}, ci6={}, ci7={}, ci8={}, ci9={}, ci10={}, ci11={}, ci12={}".format (prob['batH'], prob['propH'], prob['eps1'], prob['alp1'], prob['eps2'], prob['GlMain'], prob['GlProp'], prob['GlTether'],
 prob['ci1'], prob['ci2'], prob['ci3'], prob['ci4'], prob['ci5'], prob['ci6'], prob['ci7'], prob['ci8'], prob['ci9'], prob['ci10'], prob['ci11'], prob['ci12']))
 print("Objective value:", prob['obj_p'])
 print("Optimization run time in minutes:", (time.time()-tStart)/60)
