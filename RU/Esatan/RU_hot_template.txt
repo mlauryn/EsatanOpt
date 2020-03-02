@@ -25,7 +25,13 @@ $MODEL RU_hot
       k_Tether = 130.000;  Cp_Tether = 920.000;  Dens_Tether = 832.300;  
       #
       # Material properties from bulk 'Ti_6Al4V' 
-      Cp_Ti_6Al4V = 526.300;  Dens_Ti_6Al4V = 4430.00;  
+      Cp_Ti_6Al4V = 526.300;  Dens_Ti_6Al4V = 4430.00;
+      # Deployable Panel length
+      length = 0.1;
+      # Efficiency of solar cells
+      eff = 0.28;
+      # Unused power
+      P_un = 1.0; 
 #
   $NODES
     D1 = 'Motor', T = 0.0,
@@ -150,21 +156,21 @@ $MODEL RU_hot
     D503 = 'Tether', T = 0.0,
      A = 0.006082, ALP = 0.390000, EPS = 0.870000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
-    D600 = 'FoldedSolarPanelSunlitSide', T = 0.0,
+    D600 = 'BodySolarPanelSunlitSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.07, EPS = 0.8,
+     A = 0.014605, ALP = 0.91, EPS = 0.89,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
-    D601 = 'FoldedSolarPanelShadedSide', T = 0.0,
+    D601 = 'BodySolarPanelShadedSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
      A = 0.014605, ALP = 0.91, EPS = 0.890000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D700 = 'DeployedSolarPanelSunlitSide', T = 0.0,
-     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.91, EPS = 0.890000,
+     C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.127 * length, ALP = 0.91, EPS = 0.890000,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
-     C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.61, EPS = 0.890000,
+     C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = 0.127 * length, ALP = 0.14, EPS = 0.035, #covered with Kapton VDA MLI
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     X99998 = 'INACTIVE_NODE', T = 0.0,
      A = 0.0, ALP = 0.0, EPS = 0.0;
@@ -397,7 +403,7 @@ $MODEL RU_hot
     GR(101, 503) = 7.42875E-006;
     GR(101, 99998) = 5.98745E-006;
     GR(101, 99999) = 3.77434E-005;
-    GV(102, 99999) = 0.0; #this side is shaded by folded solar panel
+    GV(102, 99999) = 0.0; #this side is shaded by body solar panel
     GR(103, 105) = 5.31847E-007;
     GR(103, 107) = 1.20360E-007;
     GR(103, 109) = 8.06257E-007;
@@ -480,10 +486,10 @@ $MODEL RU_hot
     GR(503, 99998) = 7.25764E-007;
     GR(503, 99999) = 7.83790E-005;
     GV(700, 99999) = 1.0; #solar panel sun facing side
-    GV(701, 99999) = 1.0; #solar panel shaded side
+    GV(701, 99999) = 0.8330; #solar panel shaded side
     GR(601, 102) = 0.0; #assuming inward facing solar panel side is well insulated with MLI
     GV(600, 99999) = 1; #folded solar panel sunlit side
-    GR(108, 701) = 0.000220019; #REF from body to solar array, calculated by Esatan
+    GV(701,108) = 0.248227;
 # ESATAN-TMS 2017 sp2, run date 10:15 Fri 8 Jun 2018
 # Model name: RU_hot        Generated conductors
     GL(11,200) = 1.00000; # from conductor Battery1_adhesive
@@ -502,7 +508,7 @@ $MODEL RU_hot
     GL(101,105) = 1.0; # from conductive interface ci_10
     GL(105,111) = 1.0; # from conductive interface ci_11
     GL(105,107) = 1.0; # from conductive interface ci_12
-    GL(102,601) = 0.05; #estimate of hinge/wiring conductance to folded panel
+    GL(102,601) = 0.05; #estimate of conductance to body panel
     GL(1,2) = 0.400000; # from conductor Motor_to_ReelBody
     GL(1,502) = 0.100000; # from conductor Motor_to_tether
     GL(2,400) = 6.40000; # from conductor Reel_to_PCB
@@ -536,7 +542,7 @@ $MODEL RU_hot
     GL(500,503) = k_Tether * 0.219; # from primitive TetherPack
     GL(600,601) = 292; #calculated by Esatan
     GL(700,701) = 292; #calculated by Esatan
-    GL(102,700) = 0.05; #estimate of hinge/wiring conductance from deployed panel
+    GL(102,700) = 0.02; #estimate of hinge/wiring conductance from deployed panel
 #
   $CONSTANTS
     $REAL
@@ -553,10 +559,10 @@ C
       CALL VFAC
 C
 C Boundary Condition Total Area Heat Load - HeatDissipation_TetherPCB
-      QI400 = 0.1
+#      QI400 = 0.1
 C
 C Boundary Condition Total Area Heat Load - HeatDissipation_TilePCB
-      QI300 = 0.3
+      QI300 = 0.2
 C
 C Boundary Condition Total Volume Heat Load - BatteryHeater1
 #      QI10 = 0.140000
@@ -565,16 +571,16 @@ C Boundary Condition Total Volume Heat Load - BatteryHeater2
 #      QI20 = 0.140000
 C
 C Boundary Condition Total Volume Heat Load - Motor heat dissipation during deployment (0.6A, 5V, 50% efficiency)
-      QI1 = 1.5
+#      QI1 = 1.5
 C
 C Boundary Condition Total Area Heat Load - HeatDissipation_MainPCB
-      QI200 = 0.2
+      QI200 = 0.3
 C
-C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
-      QI700 = 1360*A:700*ALP:700 - 2.0
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel + Unused power
+      QI700 = 1360*A:700*(ALP:700 - eff) + P_un
 C
 C Boundary Condition Heat Load Per Unit Area - Absorbed SolarFlux at the reflector surface
-      QI600 = 1360*A:600*ALP:600
+      QI600 = 1360*A:600*(ALP:600 - eff)
 C
   $EXECUTION
 C
