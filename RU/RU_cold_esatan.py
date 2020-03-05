@@ -1,5 +1,5 @@
 #External code to run Remote Unit cold case in Esatan
-import os, time
+import os
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 import openmdao.api as om
 
@@ -25,6 +25,7 @@ file.close()
 
 class RU_cold(om.ExternalCode):
     def setup(self):
+        self.add_input('eff', val=0.1)
         self.add_input('length', val=0.1)
         self.add_input('P_ht', val=0.4)
         self.add_input('r_bat', val=0.5)
@@ -69,6 +70,7 @@ class RU_cold(om.ExternalCode):
         #self.declare_partials(of='*', wrt='*', method='fd')
 
     def compute(self, inputs, outputs):
+        eff = inputs['eff']
         length = inputs['length']
         alp = inputs['alp']
         eps = inputs['eps']
@@ -91,6 +93,7 @@ class RU_cold(om.ExternalCode):
         P_ht = inputs['P_ht']
         r_bat = inputs['r_bat']
 
+        eff = '{0};'.format(float(eff))
         length = '{0};'.format(float(length))
         P_ht = '{0};'.format(float(P_ht)) 
         r_bat = '{0};'.format(float(r_bat))
@@ -120,6 +123,7 @@ class RU_cold(om.ExternalCode):
         generator.set_generated_file('RU_cold.d')
         generator.mark_anchor("$LOCALS")
         generator.transfer_var(length, 21, 3)
+        generator.transfer_var(eff, 23, 3)
         generator.transfer_var(P_ht, 25, 3)
         generator.transfer_var(r_bat, 27, 3)
         generator.mark_anchor("$NODES")
@@ -182,6 +186,7 @@ if __name__ == "__main__":
 
     # create and connect inputs and outputs
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
+    indeps.add_output('eff', val=0.25)
     indeps.add_output('length', val=0.1)
     indeps.add_output('P_ht', val=0.5)
     indeps.add_output('r_bat', val=0.5)

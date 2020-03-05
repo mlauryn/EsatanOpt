@@ -172,7 +172,7 @@ $MODEL RU_cold
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
      C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.127 * length, ALP = 0.14, EPS = 0.035, #covered with Kapton VDA MLI
+     A = 0.127 * length, ALP = 0.91, EPS = 0.89, #covered with solar cells
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     X99998 = 'INACTIVE_NODE', T = 0.0,
      A = 0.0, ALP = 0.0, EPS = 0.0;
@@ -405,7 +405,7 @@ $MODEL RU_cold
     GR(101, 503) = 7.42875E-006;
     GR(101, 99998) = 5.98745E-006;
     GR(101, 99999) = 3.77434E-005;
-    GV(102, 99999) = 1.0;
+    GV(102, 99999) = 0.0; #this side is shaded by body solar panel
     GR(103, 105) = 5.31847E-007;
     GR(103, 107) = 1.20360E-007;
     GR(103, 109) = 8.06257E-007;
@@ -575,10 +575,10 @@ C
 C Boundary Condition Heat Load Per Unit Area - SolarFlux
       QI102 = 150*A:102*ALP:102
 C
-C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the body solar panel - Electrical power
       QI600 = 150*A:600*(ALP:600 - eff)
 C
-C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel - Electrical power
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the deployed solar panel - Electrical power
       QI700 = 150*A:700*(ALP:700 - eff)
 C
   $EXECUTION

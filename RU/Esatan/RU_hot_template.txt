@@ -170,7 +170,7 @@ $MODEL RU_hot
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
      C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.127 * length, ALP = 0.14, EPS = 0.035, #covered with Kapton VDA MLI
+     A = 0.127 * length, ALP = 0.91, EPS = 0.89, #covered with solar cells
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     X99998 = 'INACTIVE_NODE', T = 0.0,
      A = 0.0, ALP = 0.0, EPS = 0.0;
@@ -576,10 +576,10 @@ C
 C Boundary Condition Total Area Heat Load - HeatDissipation_MainPCB
       QI200 = 0.3
 C
-C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the solar panel + Unused power
+C Boundary Condition Total Area Heat Load - Absorbed SolarFlux at the deployed solar panel + Unused power
       QI700 = 1360*A:700*(ALP:700 - eff) + P_un
 C
-C Boundary Condition Heat Load Per Unit Area - Absorbed SolarFlux at the reflector surface
+C Boundary Condition Heat Load Per Unit Area - Absorbed SolarFlux at the body solar panel
       QI600 = 1360*A:600*(ALP:600 - eff)
 C
   $EXECUTION

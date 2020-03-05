@@ -6,30 +6,21 @@ import openmdao.api as om
 
 
 problem = {
-    'num_vars': 18,
-    'names': ['eps', 'alp', 'GlBat', 'GlMain', 'GlProp', 'GlTether', 
-             'ci1', 'ci2', 'ci3', 'ci4', 'ci5','ci6','ci7','ci8','ci9','ci10','ci11','ci12',],
-    'bounds': [[0.02, 0.8],
-               [0.23, 0.9],
-               [0.4, 26],
+    'num_vars': 9,
+    'names': ['length', 'eff', 'P_un', 'eps', 'alp', 'GlMain', 'GlProp', 'GlTether', 
+             'GlPanel'],
+    'bounds': [[0.0, 0.254],
+               [0.25, 0.32],
+               [0.0, 1.0],
+               [0.02, 0.8],
+               [0.23, 0.48],
                [0.004, 1],
                [0.004, 1],
                [0.004, 1],
-               [0.013, 0.072],
-               [0.015, 0.084],
-               [0.015, 0.084],
-               [0.008, 0.026],
-               [0.008, 0.026],
-               [0.013, 0.072],
-               [0.013, 0.072],
-               [0.013, 0.072],
-               [0.015, 0.084],
-               [0.008, 0.026],
-               [0.008, 0.026],
-               [0.015, 0.084]]
+               [0.004, 1]]
 }
 X = morris.sample(problem, 1)
-np.savetxt('morris_sample.csv', X, delimiter=',', header = 'eps, alp, GlBat, GlMain, GlProp, GlTether, ci1, ci2, ci3, ci4, ci5, ci6, ci7, ci8, ci9, ci10, ci11, ci12',
+np.savetxt('morris_sample.csv', X, delimiter=',', header = 'length, eff, P_un, eps, alp, GlMain, GlProp, GlTether, GlPanel',
 comments = '')
 
 # this file contains design variable inputs in CSV format
@@ -41,45 +32,28 @@ model = prob.model
 
 # create and connect inputs and outputs
 indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
+indeps.add_output('length', val=0.2)
+indeps.add_output('eff', val=0.2)
+indeps.add_output('P_un', val=0.2)
 indeps.add_output('eps', val=0.2)
 indeps.add_output('alp', val=0.4)
-indeps.add_output('GlBat', val=0.4)
 indeps.add_output('GlMain', val=0.04)
 indeps.add_output('GlProp', val=0.04)
 indeps.add_output('GlTether', val=0.04)
-indeps.add_output('ci1', val=0.4)
-indeps.add_output('ci2', val=0.4)
-indeps.add_output('ci3', val=0.4)
-indeps.add_output('ci4', val=0.4)
-indeps.add_output('ci5', val=0.4)
-indeps.add_output('ci6', val=0.4)
-indeps.add_output('ci7', val=0.4)
-indeps.add_output('ci8', val=0.4)
-indeps.add_output('ci9', val=0.4)
-indeps.add_output('ci10', val=0.4)
-indeps.add_output('ci11', val=0.4)
-indeps.add_output('ci12', val=0.4) 
+indeps.add_output('GlPanel', val=0.04)
+
 
 model.add_subsystem('esatan', RU_hot_esatan.RU_hot(), promotes=['*'])
 
+model.add_design_var('length', lower = 0.0, upper=0.254)
+model.add_design_var('eff', lower = 0.25, upper=0.32)
+model.add_design_var('P_un', lower = 0.0, upper=1.0)
 model.add_design_var('eps', lower = 0.02, upper=0.8)
 model.add_design_var('alp', lower = 0.23, upper=0.48)
-prob.model.add_design_var('GlBat', lower = 0.4, upper=26.0)
-prob.model.add_design_var('GlMain', lower = 0.004, upper=1.0)
-prob.model.add_design_var('GlProp', lower = 0.004, upper=1.0)
-prob.model.add_design_var('GlTether', lower = 0.004, upper=1.0)
-prob.model.add_design_var('ci1', lower = 0.013, upper=0.072)
-prob.model.add_design_var('ci2', lower = 0.015, upper=0.084)
-prob.model.add_design_var('ci3', lower = 0.015, upper=0.084)
-prob.model.add_design_var('ci4', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci5', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci6', lower = 0.013, upper=0.072)
-prob.model.add_design_var('ci7', lower = 0.013, upper=0.072)
-prob.model.add_design_var('ci8', lower = 0.013, upper=0.072)
-prob.model.add_design_var('ci9', lower = 0.015, upper=0.084)
-prob.model.add_design_var('ci10', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci11', lower = 0.008, upper=0.026)
-prob.model.add_design_var('ci12', lower = 0.015, upper=0.084)
+model.add_design_var('GlMain', lower = 0.004, upper=1.0)
+model.add_design_var('GlProp', lower = 0.004, upper=1.0)
+model.add_design_var('GlTether', lower = 0.004, upper=1.0)
+model.add_design_var('GlPanel', lower = 0.004, upper=1.0)
 model.add_objective('tBat')
 model.add_objective('tProp')
 

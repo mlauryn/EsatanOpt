@@ -1,5 +1,5 @@
 #External code to run Remote Unit hot case in Esatan
-import os, time
+import os
 import openmdao.api as om
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
@@ -26,6 +26,7 @@ file.close()
 class RU_hot(om.ExternalCode):
     def setup(self):
         self.add_input('length', val=0.1)
+        self.add_input('eff', val=0.1)
         self.add_input('P_un', val=0.4)
         self.add_input('eps', val=0.4)
         self.add_input('alp', val=0.4)
@@ -69,6 +70,7 @@ class RU_hot(om.ExternalCode):
 
     def compute(self, inputs, outputs):
         length = inputs['length']
+        eff = inputs['eff']
         alp = inputs['alp']
         eps = inputs['eps']
         GL107_200 = inputs['GlMain']
@@ -90,6 +92,7 @@ class RU_hot(om.ExternalCode):
         P_un = inputs['P_un']
 
         length = '{0};'.format(float(length))
+        eff = '{0};'.format(float(eff))
         P_un = '{0};'.format(float(P_un))
         alp = '{0},'.format(float(alp)) 
         eps = '{0},'.format(float(eps)) 
@@ -116,6 +119,7 @@ class RU_hot(om.ExternalCode):
         generator.set_generated_file('RU_hot.d')
         generator.mark_anchor("$LOCALS")
         generator.transfer_var(length, 21, 3)
+        generator.transfer_var(eff, 23, 3)
         generator.transfer_var(P_un, 25, 3)
         generator.mark_anchor("$NODES")
         generator.transfer_var(alp, 53, 6)
@@ -176,6 +180,7 @@ if __name__ == "__main__":
     # create and connect inputs and outputs
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
     indeps.add_output('length', val=0.2)
+    indeps.add_output('eff', val=0.30)
     indeps.add_output('P_un', val=1.0)
     indeps.add_output('eps', val=0.1)
     indeps.add_output('alp', val=0.4)
@@ -183,7 +188,7 @@ if __name__ == "__main__":
     indeps.add_output('GlProp', val=0.004)
     indeps.add_output('GlTether', val=0.004)
     indeps.add_output('GlPanel', val=0.004)
-    indeps.add_output('ci1', val=1.0)
+    """ indeps.add_output('ci1', val=1.0)
     indeps.add_output('ci2', val=1.0)
     indeps.add_output('ci3', val=1.0)
     indeps.add_output('ci4', val=1.0)
@@ -194,7 +199,7 @@ if __name__ == "__main__":
     indeps.add_output('ci9', val=1.0)
     indeps.add_output('ci10', val=1.0)
     indeps.add_output('ci11', val=1.0)
-    indeps.add_output('ci12', val=1.0) 
+    indeps.add_output('ci12', val=1.0)  """
 
 
     model.add_subsystem('RU_hot', RU_hot(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_h'), 
