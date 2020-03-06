@@ -1,0 +1,3 @@
+RU_cold_doe:
+	n=300 t=18 min
+	n=400 t=25 min

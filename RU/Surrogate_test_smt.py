@@ -6,8 +6,8 @@ from smt.utils import compute_rms_error
 
 ndim = 9
 
-train = np.loadtxt('RUc_TrainingData_n=100.csv', delimiter=',')
-test = np.loadtxt('RUc_TrainingData_n=200.csv', delimiter=',')
+train = np.loadtxt('RUc_TrainingData_n=300.csv', delimiter=',')
+test = np.loadtxt('RUc_TrainingData_n=400.csv', delimiter=',')
 xtest, ytest = test[:,:9], test[:,9]
 xt, yt = train[:,:9], train[:,9:]
 

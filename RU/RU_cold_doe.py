@@ -39,7 +39,7 @@ model.add_objective('tProp')
 model.add_objective('tBPanel')
 model.add_objective('tDPanel')
 
-prob.driver = om.DOEDriver(om.LatinHypercubeGenerator(samples=200))
+prob.driver = om.DOEDriver(om.LatinHypercubeGenerator(samples=40, criterion='maximin'))
 prob.driver.add_recorder(om.SqliteRecorder("cases.sql"))
 
 prob.setup(check=True)
@@ -58,4 +58,4 @@ for case in cases:
 
 data = np.reshape(values, (len(cases), 13))
 #print(data)
-np.savetxt('RUc_TrainingData_n=200.csv', data, delimiter=',')
+np.savetxt('RUc_TrainingData[m]_n=40.csv', data, delimiter=',')
