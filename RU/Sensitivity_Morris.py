@@ -19,7 +19,7 @@ problem = {
                [0.004, 1],
                [0.004, 1]]
 }
-X = morris.sample(problem, 1)
+X = morris.sample(problem, 5)
 np.savetxt('morris_sample.csv', X, delimiter=',', header = 'length, eff, P_un, eps, alp, GlMain, GlProp, GlTether, GlPanel',
 comments = '')
 
@@ -76,8 +76,11 @@ for case in cases:
 
 data = np.reshape(values, (len(cases), 2))
 
-Y = data[:, 0]
+Y1 = data[:, 0]
+Y2 = data[:, 1]
 
 from SALib.analyze import morris
-Si = morris.analyze(problem, X, Y, conf_level=0.95,
+Si = morris.analyze(problem, X, Y1, conf_level=0.95,
+                     print_to_console=True, num_levels=4)
+Si = morris.analyze(problem, X, Y2, conf_level=0.95,
                      print_to_console=True, num_levels=4)

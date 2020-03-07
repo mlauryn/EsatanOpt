@@ -1,0 +1,23 @@
+RU_cold_v3: Sensitivity of tBat on variables
+Parameter                         Mu_Star         Mu    Mu_Star_Conf      Sigma
+length                             26.655      4.827          21.925     40.881
+eff                                 4.617     -4.617           1.836      2.438
+P_un                                2.991      2.991           2.129      2.707
+eps                                93.414    -93.414          28.160     36.111
+alp                                 0.000      0.000           0.000      0.000
+GlMain                             13.224    -13.224          21.591     27.608
+GlProp                              0.051      0.051           0.042      0.054
+GlTether                            0.513     -0.513           0.358      0.457
+GlPanel                            66.570     66.570          37.306     47.996
+
+RU_cold_v3: Sensitivity of tProp on variables
+Parameter                         Mu_Star         Mu    Mu_Star_Conf      Sigma
+length                             14.790     -5.670           8.316     18.645
+eff                                 4.533     -4.533           1.627      2.145
+P_un                                4.929      4.929           2.639      3.328
+eps                                99.462    -99.462          21.682     27.339
+alp                                 0.000      0.000           0.000      0.000
+GlMain                              0.030      0.018           0.040      0.058
+GlProp                             17.172    -17.172          18.122     22.776
+GlTether                            0.660     -0.042           0.493      0.976
+GlPanel                            63.513     63.513          24.517     31.826

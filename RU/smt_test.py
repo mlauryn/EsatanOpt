@@ -1,21 +1,21 @@
-#Python script for optimization of MAT remote unit thermal model @cold analysis case using surrogate model
+#Python script for validating surrogate model
 import numpy as np
 import matplotlib.pyplot as plt
 from smt.surrogate_models import LS, QP, KPLS, KRG, KPLSK, GEKPLS
 from smt.utils import compute_rms_error 
 
-ndim = 9
+ndim = 8
 
-train = np.loadtxt('RUc_TrainingData_n=300.csv', delimiter=',')
-test = np.loadtxt('RUc_TrainingData_n=400.csv', delimiter=',')
-xtest, ytest = test[:,:9], test[:,9]
-xt, yt = train[:,:9], train[:,9:]
+train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=100.csv', delimiter=',')
+test = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=300.csv', delimiter=',')
+xtest, ytest = test[:,:ndim], test[:,ndim]
+xt, yt = train[:,:ndim], train[:,ndim:]
 
 # The variable 'theta0' is a list of length ndim.
 theta = [2.01391340e-01, 1.00896469e-02, 4.45720318e-03, 1.17642950e-02,
  4.82131544e-03, 4.61226497e-01, 1.86280940e-04, 3.03366523e-04,
  4.76241459e-03]
-t = KRG(theta0=theta,print_prediction = False)
+t = KRG(theta0=[1e-2]*ndim,print_prediction = False)
 t.set_training_values(xt,yt[:,0])
 
 t.train()
@@ -25,7 +25,7 @@ y = t.predict_values(xtest)
 print('Kriging,  err: '+ str(compute_rms_error(t,xtest,ytest)))
 
 fig = plt.figure()
-plt.plot(ytest, ytest, '-', label='$y_{true}$')
+plt.plot(ytest, ytest, 'b.', label='$y_{true}$')
 plt.plot(ytest, y, 'r.', label='$\hat{y}$')
        
 plt.xlabel('$y_{true}$')

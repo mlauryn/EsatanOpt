@@ -3,7 +3,7 @@ import os
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 import openmdao.api as om
 
-#generate RU_cold batch mode run files
+""" #generate RU_cold batch mode run files
 #note: location of RU_cold command line files should be added to your system path variable  
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 os.chdir('.\\esatan')
@@ -21,7 +21,7 @@ file.close()
 
 file = open("RU_cold.bat", "w")
 file.write('''esrde<RU_cold.ere''')
-file.close()
+file.close() """
 
 class RU_cold(om.ExternalCode):
     def setup(self):
@@ -31,10 +31,10 @@ class RU_cold(om.ExternalCode):
         self.add_input('r_bat', val=0.5)
         self.add_input('eps', val=0.02)
         self.add_input('alp', val=0.19)
-        self.add_input('GlMain', val=0.4)
-        self.add_input('GlProp', val=0.4)
+        self.add_input('R_b', val=0.4)
+        self.add_input('R_p', val=0.4)
         self.add_input('GlTether', val=0.4)
-        self.add_input('GlPanel', val=0.4)
+        self.add_input('R_s', val=0.4)
         self.add_input('ci1', val=1.0)
         self.add_input('ci2', val=1.0)
         self.add_input('ci3', val=1.0)
@@ -74,10 +74,10 @@ class RU_cold(om.ExternalCode):
         length = inputs['length']
         alp = inputs['alp']
         eps = inputs['eps']
-        GL107_200 = inputs['GlMain']
-        GL111_300 = inputs['GlProp']
+        GL107_200 = 1/inputs['R_b']
+        GL111_300 = 1/inputs['R_p']
         GL103_400 = inputs['GlTether']
-        GL102_601 = inputs['GlPanel']
+        GL102_601 = 1/inputs['R_s']
         GL107_111 = inputs['ci1']
         GL107_109 = inputs['ci2']
         GL103_109 = inputs['ci3']
@@ -192,10 +192,10 @@ if __name__ == "__main__":
     indeps.add_output('r_bat', val=0.8)
     indeps.add_output('eps', val=0.1)
     indeps.add_output('alp', val=0.4)
-    indeps.add_output('GlMain', val=0.004)
-    indeps.add_output('GlProp', val=0.004)
+    indeps.add_output('R_b', val=250.0)
+    indeps.add_output('R_p', val=250.0)
     indeps.add_output('GlTether', val=0.004)
-    indeps.add_output('GlPanel', val=0.04)
+    indeps.add_output('R_s', val=250.0)
     indeps.add_output('ci1', val=1.0)
     indeps.add_output('ci2', val=1.0)
     indeps.add_output('ci3', val=1.0)

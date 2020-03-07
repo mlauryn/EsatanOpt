@@ -4,7 +4,7 @@ from openmdao.api import Problem, Group, IndepVarComp, ExternalCode, ScipyOptimi
 import numpy as np
 import openmdao.api as om 
 
-train = np.loadtxt('./TrainingData/RUc_TrainingData_n=400.csv', delimiter=',')
+train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=300.csv', delimiter=',')
 
 # train the surrogate
 ru_mm = om.MetaModelUnStructuredComp(default_surrogate=om.KrigingSurrogate())
@@ -13,12 +13,11 @@ ru_mm.add_input('length', training_data=train[:,1])
 ru_mm.add_input('eff', training_data=train[:,2])
 ru_mm.add_input('P_ht', training_data=train[:,3])
 ru_mm.add_input('r_bat', training_data=train[:,4])
-ru_mm.add_input('GlMain', training_data=train[:,5])
-ru_mm.add_input('GlProp', training_data=train[:,6])
-#ru_mm.add_input('GlTether', training_data=train[:,7])
-ru_mm.add_input('GlPanel', training_data=train[:,8])
+ru_mm.add_input('R_m', training_data=train[:,5])
+ru_mm.add_input('R_p', training_data=train[:,6])
+ru_mm.add_input('R_s', training_data=train[:,7])
 
-ru_mm.add_output('tBat', training_data=train[:,9])
+ru_mm.add_output('tBat', training_data=train[:,8])
 
 prob = Problem()
 model = prob.model
@@ -30,9 +29,9 @@ indeps.add_output('length', val=0.2)
 indeps.add_output('eff', val=0.25)
 indeps.add_output('P_ht', val=0.2)
 indeps.add_output('r_bat', val=0.5)
-indeps.add_output('GlMain', val=0.004)
-indeps.add_output('GlProp', val=0.004)
-indeps.add_output('GlPanel', val=0.004) 
+indeps.add_output('R_m', val=0.004)
+indeps.add_output('R_p', val=0.004)
+indeps.add_output('R_s', val=0.004) 
 
 model.add_subsystem('mm', ru_mm, promotes=['*'])
 model.add_subsystem('obj', ExecComp('T = 0 - tBat'), promotes=['*'])
@@ -46,10 +45,9 @@ model.add_design_var('eff', lower = 0.25, upper=0.32)
 model.add_design_var('eps', lower = 0.02, upper=0.8)
 model.add_design_var('P_ht', lower = 0.0, upper=1.0)
 model.add_design_var('r_bat', lower = 0.0, upper=1.0)
-model.add_design_var('GlMain', lower = 0.004, upper=1.0)
-model.add_design_var('GlProp', lower = 0.004, upper=1.0)
-#model.add_design_var('GlTether', lower = 0.004, upper=1.0)
-model.add_design_var('GlPanel', lower = 0.004, upper=1.0)
+model.add_design_var('R_m', lower = 1., upper=250.)
+model.add_design_var('R_p', lower = 1., upper=250.)
+model.add_design_var('R_s', lower = 1., upper=250.)
 
 #objective function is to minimize battery temp
 model.add_objective('T')

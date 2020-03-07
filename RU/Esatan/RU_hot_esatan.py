@@ -3,7 +3,7 @@ import os
 import openmdao.api as om
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 
-#generate RU_cold batch mode run files
+""" #generate RU_cold batch mode run files
 #note: location of RU_cold command line files should be added to your system path variable  
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 os.chdir('.\\esatan')
@@ -17,7 +17,7 @@ RUN_ANALYSIS(
     analysis_case = optimization,
     file = "RU_hot.d");'
 END_MODEL'''.format(path=os.getcwd()))
-file.close()
+file.close() """
 
 file = open("RU_hot.bat", "w")
 file.write('''esrde<RU_hot.ere''')
