@@ -1,4 +1,4 @@
-#External code to run Remote Unit cold case in Esatan
+#External code to run Remote Unit thermal model in Esatan
 import os
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 import openmdao.api as om
@@ -23,12 +23,13 @@ file = open("RU_cold.bat", "w")
 file.write('''esrde<RU_cold.ere''')
 file.close() """
 
-class RU_cold(om.ExternalCode):
+class RU_esatan(om.ExternalCode):
     def setup(self):
         self.add_input('eff', val=0.1)
         self.add_input('length', val=0.1)
-        self.add_input('P_ht', val=0.4)
         self.add_input('r_bat', val=0.5)
+        self.add_input('ht_gain', val=0.5)
+        self.add_input('q_s', val=0.5)
         self.add_input('eps', val=0.02)
         self.add_input('alp', val=0.19)
         self.add_input('R_b', val=0.4)
@@ -54,8 +55,8 @@ class RU_cold(om.ExternalCode):
         self.add_output('tBPanel', val=0.0)
         self.add_output('tDPanel', val=0.0)
 
-        self.input_file = 'RU_cold.d'
-        self.output_file = 'RU_cold.out'
+        self.input_file = 'RU_tm.d'
+        self.output_file = 'RU_tm.out'
 
         # providing these is optional;' the component will verify that any input
         # files exist before execution and that the output files exist after.
@@ -65,7 +66,7 @@ class RU_cold(om.ExternalCode):
         self.options['timeout'] = 10.0
         self.options['fail_hard'] = False
         self.options['command'] = [
-            'RU_cold.bat']
+            'RU_tm.bat']
         # this external code does not provide derivatives, use finite difference
         #self.declare_partials(of='*', wrt='*', method='fd')
 
@@ -90,13 +91,15 @@ class RU_cold(om.ExternalCode):
         GL101_105 = inputs['ci10']
         GL105_111 = inputs['ci11']
         GL105_107 = inputs['ci12']
-        P_ht = inputs['P_ht']
         r_bat = inputs['r_bat']
+        ht_gain = inputs['ht_gain']
+        q_s = inputs['q_s']
 
         eff = '{0};'.format(float(eff))
         length = '{0};'.format(float(length))
-        P_ht = '{0};'.format(float(P_ht)) 
+        ht_gain = '{0};'.format(float(ht_gain)) 
         r_bat = '{0};'.format(float(r_bat))
+        q_s = '{0};'.format(float(q_s))
         alp = '{0},'.format(float(alp)) 
         eps = '{0},'.format(float(eps)) 
         GL107_200 = '{0};'.format(float(GL107_200))
@@ -117,15 +120,16 @@ class RU_cold(om.ExternalCode):
         GL105_107 = '{0};'.format(float(GL105_107))  
 
 
-        # generate the input file for RU_cold thermal analysis
+        # generate the input file for RU_tm thermal analysis
         generator = InputFileGenerator()
-        generator.set_template_file('RU_cold_template.txt')
-        generator.set_generated_file('RU_cold.d')
+        generator.set_template_file('RU_template.txt')
+        generator.set_generated_file('RU_tm.d')
         generator.mark_anchor("$LOCALS")
         generator.transfer_var(length, 21, 3)
         generator.transfer_var(eff, 23, 3)
-        generator.transfer_var(P_ht, 25, 3)
-        generator.transfer_var(r_bat, 27, 3)
+        generator.transfer_var(r_bat, 25, 3)
+        generator.transfer_var(ht_gain, 27, 3)
+        generator.transfer_var(q_s, 29, 3)
         generator.mark_anchor("$NODES")
         generator.transfer_var(alp, 53, 6)
         generator.transfer_var(eps, 53, 9)
@@ -159,12 +163,12 @@ class RU_cold(om.ExternalCode):
         generator.generate()
 
         # the parent compute function actually runs the external code
-        super(RU_cold, self).compute(inputs, outputs)
+        super(RU_esatan, self).compute(inputs, outputs)
 
         # parse the output file from the external code and set the value of T_max
         parser = FileParser()
-        parser.set_file('RU_cold.out')
-        parser.mark_anchor("+RU_COLD")
+        parser.set_file('RU_TM.out')
+        parser.mark_anchor("+RU_TM")
         tBat = parser.transfer_var(7, 3)
         tMain = parser.transfer_var(34, 3)
         tProp = parser.transfer_var(35, 3)
@@ -188,14 +192,15 @@ if __name__ == "__main__":
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
     indeps.add_output('eff', val=0.25)
     indeps.add_output('length', val=0.1)
-    indeps.add_output('P_ht', val=0.5)
+    indeps.add_output('ht_gain', val=1.)
     indeps.add_output('r_bat', val=0.8)
+    indeps.add_output('q_s', val=150.)
     indeps.add_output('eps', val=0.1)
     indeps.add_output('alp', val=0.4)
-    indeps.add_output('R_b', val=250.0)
-    indeps.add_output('R_p', val=250.0)
+    indeps.add_output('R_b', val=200.0)
+    indeps.add_output('R_p', val=200.0)
     indeps.add_output('GlTether', val=0.004)
-    indeps.add_output('R_s', val=250.0)
+    indeps.add_output('R_s', val=10.0)
     indeps.add_output('ci1', val=1.0)
     indeps.add_output('ci2', val=1.0)
     indeps.add_output('ci3', val=1.0)
@@ -210,16 +215,15 @@ if __name__ == "__main__":
     indeps.add_output('ci12', val=1.0) 
 
 
-    model.add_subsystem('RU_cold', RU_cold(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_c'), 
-                        ('tMain','tMain_c'), ('tProp','tProp_c'), ('tBPanel', 'tBPanel_c'), ('tDPanel', 'tDPanel_c')])
+    model.add_subsystem('RU_tm', RU_esatan(), promotes_inputs=['*'], promotes_outputs=['*'])
 
     #run the ExternalCode Component once and print outputs
     prob.setup(check=True)
     prob.run_model()
 
-    tBat =  prob['tBat_c']
-    tProp =  prob['tProp_c']
-    tMain =  prob['tMain_c']
-    tBPanel = prob['tBPanel_c']
-    tDPanel = prob['tDPanel_c']
+    tBat =  prob['tBat']
+    tProp =  prob['tProp']
+    tMain =  prob['tMain']
+    tBPanel = prob['tBPanel']
+    tDPanel = prob['tDPanel']
     print("Temperatures:, tBat={}, tProp={}, tMain={}, tBPanel={}, tDPanel={}".format(tBat, tProp, tMain, tBPanel, tDPanel))

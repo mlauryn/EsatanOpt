@@ -18,3 +18,4 @@
 *.sql
 *.json
 *.pyc
+*.o
