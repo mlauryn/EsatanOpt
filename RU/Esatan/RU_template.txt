@@ -556,8 +556,8 @@ $MODEL RU_tm
     conv_loss = 0.05;  # Converter losses  
     #P_in = (q_s * A:600 + q_s * A:700) * eff * (1-conv_loss); #input power after mppt converter
     #P_ht = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain; #power for heaters
-    #P_un = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain * (1/ht_gain - 1);
-    #P_dis = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain * (1/ht_gain - 1) + (q_s * A:600 + q_s * A:700) * eff * conv_loss; 
+    #P_un = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain);
+    #P_dis = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain) + (q_s * A:600 + q_s * A:700) * eff * conv_loss; 
 #
   $ARRAYS
 #
@@ -589,7 +589,7 @@ C Boundary Condition Total Area Heat Load - Absorbed and dissipated SolarFlux at
       QI600 = q_s * A:600 * (ALP:600 - eff)
 C
 C Boundary Condition Total Area Heat Load - Absorbed and dissipated SolarFlux at the deployed solar panel
-      QI700 = q_s * A:700 * (ALP:700 - eff) + ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain * (1/ht_gain - 1) + (q_s * A:600 + q_s * A:700) * eff * conv_loss
+      QI700 = q_s * A:700 * (ALP:700 - eff) + ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain) + (q_s * A:600 + q_s * A:700) * eff * conv_loss
 C
   $EXECUTION
 C

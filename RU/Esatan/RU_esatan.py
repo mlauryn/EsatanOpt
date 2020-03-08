@@ -23,16 +23,16 @@ file = open("RU_cold.bat", "w")
 file.write('''esrde<RU_cold.ere''')
 file.close() """
 
-class RU_esatan(om.ExternalCode):
+class RU_esatan(om.ExternalCodeComp):
     def setup(self):
         self.add_input('eff', val=0.1)
         self.add_input('length', val=0.1)
         self.add_input('r_bat', val=0.5)
         self.add_input('ht_gain', val=0.5)
-        self.add_input('q_s', val=0.5)
+        self.add_input('q_s', val=150.)
         self.add_input('eps', val=0.02)
         self.add_input('alp', val=0.19)
-        self.add_input('R_b', val=0.4)
+        self.add_input('R_m', val=0.4)
         self.add_input('R_p', val=0.4)
         self.add_input('GlTether', val=0.4)
         self.add_input('R_s', val=0.4)
@@ -75,7 +75,7 @@ class RU_esatan(om.ExternalCode):
         length = inputs['length']
         alp = inputs['alp']
         eps = inputs['eps']
-        GL107_200 = 1/inputs['R_b']
+        GL107_200 = 1/inputs['R_m']
         GL111_300 = 1/inputs['R_p']
         GL103_400 = inputs['GlTether']
         GL102_601 = 1/inputs['R_s']
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     indeps.add_output('q_s', val=150.)
     indeps.add_output('eps', val=0.1)
     indeps.add_output('alp', val=0.4)
-    indeps.add_output('R_b', val=250.0)
+    indeps.add_output('R_m', val=250.0)
     indeps.add_output('R_p', val=250.0)
     indeps.add_output('GlTether', val=0.004)
     indeps.add_output('R_s', val=250.)
