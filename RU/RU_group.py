@@ -31,18 +31,7 @@ class RemoteUnit(om.Group):
         sm.set_training_values(xt, yt)
         sm.train()
 
-        param = om.IndepVarComp()
-        param.add_output('length', val=0.1)
-        #param.add_output('eff', val=0.25)
-        param.add_output('eps', val=0.1)
-        param.add_output('R_m', val=250)
-        param.add_output('R_p', val=250)
-        param.add_output('R_s', val=250)
-        if case == 'cold':
-            param.add_output('r_bat', val=0.8)
-        self.add_subsystem('param', param, promotes=['*'])
-
-        cycle = self.add_subsystem('cycle', om.Group(), promotes=['*'])
+        cycle = self.add_subsystem('cycle', om.Group(), promotes_inputs=['*'], promotes_outputs=['tBat', 'tProp', 'tBPanel', 'tDPanel'])
         cycle.add_subsystem('sc', SolarCell(), promotes_inputs=['tBPanel', 'tDPanel'], promotes_outputs=['eff'])
         cycle.add_subsystem('tm', ThermoSurrogate(sm=sm, case=case), promotes=['*'])
         # Nonlinear Block Gauss Seidel is a gradient free solver
@@ -53,6 +42,18 @@ if __name__ == '__main__':
     
     case = 'hot'
     model = RemoteUnit(case)
+
+    param = om.IndepVarComp()
+    param.add_output('length', val=0.1)
+    #param.add_output('eff', val=0.25)
+    param.add_output('eps', val=0.1)
+    param.add_output('R_m', val=250)
+    param.add_output('R_p', val=250)
+    param.add_output('R_s', val=250)
+    if case == 'cold':
+        param.add_output('r_bat', val=0.8)
+    model.add_subsystem('param', param, promotes=['*'])
+
     prob = om.Problem(model)
     prob.setup(check=True)
     prob.run_model()

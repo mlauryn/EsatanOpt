@@ -28,12 +28,14 @@ class ThermoSurrogate(om.ExplicitComponent):
         sm = self.options['sm']
         x = np.column_stack([inputs[i] for i in inputs])        
         y = sm.predict_values(x) 
+
         for i,invar in enumerate(outputs):
-            outputs[invar] = y[0,i]              
+            outputs[invar] = y[0,i]    
+          
     def compute_partials(self, inputs, partials):   
+        sm = self.options['sm']
         x = np.column_stack([inputs[i] for i in inputs])
-        for i in inputs:
-            dy_dx[i,:] = sm.predict_derivatives(x,i)
+        outputs = ['tBat', 'tProp', 'tBPanel', 'tDPanel']
         for i,invar in enumerate(inputs):
             dy_dx = sm.predict_derivatives(x,i)
             for num,y in enumerate(outputs):

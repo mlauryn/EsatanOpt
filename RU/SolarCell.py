@@ -22,6 +22,15 @@ class SolarCell(om.ExplicitComponent):
         outputs['eff'] = eff0 * (1 + deff_dT * delta_T)
 
     def compute_partials(self, inputs, partials):
+        
+        eff0 = .318 #efficiency at ref temp
+        Vmp = 3025. # Vmp in mV at ref temp
+        Imp = 433.5 # Imp in mA at ref temp
+        #cell temperature gradients
+        dVmp_dT = -8.6
+        dImp_dT = 0.03
+        deff_dT = (dVmp_dT*Imp + dImp_dT*Vmp)/(Vmp*Imp)
+        
         partials['eff', 'tBPanel'] = eff0 * deff_dT * 0.5
         partials['eff', 'tDPanel'] = eff0 * deff_dT * 0.5
 
