@@ -190,7 +190,7 @@ if __name__ == "__main__":
 
     # create and connect inputs and outputs
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('eff', val=0.25)
+    indeps.add_output('eff', val=0.413)
     indeps.add_output('length', val=0.1)
     indeps.add_output('ht_gain', val=1.)
     indeps.add_output('r_bat', val=0.8)

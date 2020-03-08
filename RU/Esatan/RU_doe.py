@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from smt.sampling_methods import LHS
 
 case = 'hot' # hot or cold
-num = 2 # num of samples
+num = 100 # num of samples
 
 if case == 'hot':
     xlimits = np.array([[0.0, 0.254], [0.25, 0.35], [0.02, 0.8], [1, 250], [1, 250], [1, 250]])

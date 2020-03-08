@@ -10,6 +10,7 @@ class ThermoSurrogate(om.ExplicitComponent):
         self.options.declare('sm', types=smt.surrogate_models.krg.KRG)
         self.options.declare('case', values=['hot', 'cold'])
     def setup(self):        
+        case = self.options['case']
         self.add_input('eps', val=0.02)
         self.add_input('length', val=0.1)
         self.add_input('eff', val=0.1)
@@ -45,10 +46,10 @@ if __name__ == "__main__":
 
     case = 'cold' # hot or cold
     
-    if case == 'cold'
+    if case == 'cold':
         ndim = 7
-        train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=200.csv', delimiter=',')
-        test = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=100.csv', delimiter=',')
+        train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=100.csv', delimiter=',')
+        test = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=50.csv', delimiter=',')
         xtest, ytest = test[:,:ndim], test[:,ndim]
         xt, yt = train[:,:ndim], train[:,ndim:]
     elif case == 'hot':
@@ -83,7 +84,9 @@ if __name__ == "__main__":
 
     model.add_subsystem('mm', ThermoSurrogate(sm=sm, case=case), promotes=['*'])
 
-    from Esatan.RU_esatan import RU_esatan 
+    from Esatan.RU_esatan import RU_esatan
+    import os
+    os.chdir('.\esatan') 
     model.add_subsystem('tm', RU_esatan(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_real')])
 
 
