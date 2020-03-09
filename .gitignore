@@ -1,7 +1,5 @@
 *.log
 *.era
-*.ere
-*.bat
 *.exe
 *.gbl
 *.f

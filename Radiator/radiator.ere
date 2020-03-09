@@ -1,0 +1,9 @@
+BEGIN_MODEL radiator
+ANALYSIS_CASE radiator_sizing;
+DEFINE_ANALYSIS_CASE (
+    analysis_case = radiator_sizing,
+	working_directory = "C:\Users\44369\EsatanOpt\Radiator");
+RUN_ANALYSIS(
+    analysis_case = radiator_sizing,
+    file = "radiator.d");
+END_MODEL

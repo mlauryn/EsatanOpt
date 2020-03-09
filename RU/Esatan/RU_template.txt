@@ -35,7 +35,22 @@ $MODEL RU_tm
       # Heater gain - percentage of unused power for heaters
       ht_gain = 1.0;
       # direct solar SolarFlux on solar arrays
-      q_s = 1365.0;       
+      q_s = 1365.0;
+      A_body = 0.115 * 0.127; # body solar panel area
+      A_depl = 0.127 * length; # deployable solar panel area
+      ff = 0.5; # solar cell fill factor
+      eps_c = 0.89; # sc emissivity
+      alp_c = 0.91; # sc absorbptivity
+      conv_loss = 0.05;  # Converter losses
+      P_main = 0.3; #avionics power consumption
+      P_prop = 0.2; #propulsion power consumption        
+      P_out_1 = A_body * eff * ff * q_s; #output power from body solar cells
+      P_out_2 = A_depl * eff * ff * q_s; #output power from deployable solar cells
+      P_out = P_out_1 + P_out_2; #total output power from solar cells
+      P_in = P_out * (1-conv_loss); #input power after mppt converter
+      P_ht = (P_in - P_main - P_prop) * ht_gain; #power for heaters
+      P_un = (P_in - P_main - P_prop) *  (1-ht_gain); #unused power
+      P_dis = P_un + P_out * conv_loss; #dissipated power         
 #
   $NODES
     D1 = 'Motor', T = 0.0,
@@ -162,19 +177,19 @@ $MODEL RU_tm
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D600 = 'BodySolarPanelSunlitSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.91, EPS = 0.89,
+     A = A_body, ALP = alp_c, EPS = eps_c,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D601 = 'BodySolarPanelShadedSide', T = 0.0,
      C = 0.000015 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.014605, ALP = 0.91, EPS = 0.890000,
+     A = 0.014605, ALP = alp_c, EPS = eps_c,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D700 = 'DeployedSolarPanelSunlitSide', T = 0.0,
-     C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.127 * length, ALP = 0.91, EPS = 0.890000,
+     C = A_depl * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = A_depl, ALP = alp_c, EPS = eps_c,
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     D701 = 'DeployedSolarPanelShadedSide', T = 0.0,
-     C = 0.127 * length * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
-     A = 0.127 * length, ALP = 0.91, EPS = 0.89, #covered with solar cells
+     C = A_depl * 0.0005 * Cp_PCB_L6 * Dens_PCB_L6,
+     A = A_depl, ALP = alp_c, EPS = eps_c, #covered with solar cells
      FX = 0.0380000, FY = 0.0600000, FZ = 0.0600000;
     X99998 = 'INACTIVE_NODE', T = 0.0,
      A = 0.0, ALP = 0.0, EPS = 0.0;
@@ -548,16 +563,7 @@ $MODEL RU_tm
     GL(700,701) = 292; #calculated by Esatan
     GL(102,700) = 0.02; #estimate of hinge/wiring conductance from deployed panel
 #
-  $CONSTANTS
-    $REAL
-    #P_out = (q_s * A:600 + q_s * A:700) * eff;
-    P_main = 0.3; #avionics power consumption
-    P_prop = 0.2; #propulsion power consumption
-    conv_loss = 0.05;  # Converter losses  
-    #P_in = (q_s * A:600 + q_s * A:700) * eff * (1-conv_loss); #input power after mppt converter
-    #P_ht = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain; #power for heaters
-    #P_un = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain);
-    #P_dis = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain) + (q_s * A:600 + q_s * A:700) * eff * conv_loss; 
+  $CONSTANTS 
 #
   $ARRAYS
 #
@@ -571,25 +577,36 @@ C
       CALL VFAC
 C
 C Boundary Condition Total Area Heat Load - Heater_TetherPCB
-#      QI400 = 0.0100000
+#     QI400 = 0.0100000
 C
 C Boundary Condition Total Area Heat Load - HeatDissipation_MainPCB
       QI200 = P_main
 C
 C Boundary Condition Total Area Heat Load - Heater_TilePCB
-      QI300 = P_prop + ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain * (1-r_bat)
+      IF(P_in .LT. 0.51D0)THEN
+      QI300 = 0
+      ELSE
+      QI300 = P_prop + P_ht * (1-r_bat)
+      END IF
 C
 C Boundary Condition Total Volume Heat Load - BatteryHeater1
-      QI10 = ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) * ht_gain * r_bat/2
+      IF(P_in .LE. 0.51D0)THEN
+      QI10 = 0
+      ELSE
+      QI10 = P_ht * r_bat/2
+      END IF
 C
 C Boundary Condition Total Volume Heat Load - BatteryHeater2
       QI20 = QI10
 C
 C Boundary Condition Total Area Heat Load - Absorbed and dissipated SolarFlux at the body solar panel
-      QI600 = q_s * A:600 * (ALP:600 - eff)
+      QI600 = q_s * A_body * (ALP:600) - P_out_1
 C
 C Boundary Condition Total Area Heat Load - Absorbed and dissipated SolarFlux at the deployed solar panel
-      QI700 = q_s * A:700 * (ALP:700 - eff) + ((q_s * A:600 + q_s * A:700) * eff * (1-conv_loss) - P_main - P_prop) *  (1-ht_gain) + (q_s * A:600 + q_s * A:700) * eff * conv_loss
+      QI700 = q_s * A:700 * (ALP:700) - P_out_2
+C
+C Boundary Condition Total Area Heat Load - Dissipated Unused and lost power (conducted to structure) 
+      QI102 = P_dis
 C
   $EXECUTION
 C
@@ -607,7 +624,7 @@ C
 C
   $OUTPUTS
 #      FORMAT = 'F10.7'
-      CALL PRNDTB(' ', 'L, T', CURRENT)
+      CALL PRNDTB(' ', 'L, T, QI', CURRENT)
 #      CALL PRNDBL(' ', 'GL, GR', CURRENT)
 
 

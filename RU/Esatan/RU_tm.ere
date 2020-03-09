@@ -1,0 +1,9 @@
+BEGIN_MODEL RU_tm
+ANALYSIS_CASE optimization;
+DEFINE_ANALYSIS_CASE (
+    analysis_case = optimization,
+    working_directory = "C:\Users\44369\EsatanOpt\RU\Esatan");
+RUN_ANALYSIS(
+    analysis_case = optimization,
+    file = "RU_tm.d");
+END_MODEL
