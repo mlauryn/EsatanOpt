@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 from smt.sampling_methods import LHS
 
 case = 'hot' # hot or cold
-num = 100 # num of samples
+num = 200 # num of samples
 
 if case == 'hot':
-    xlimits = np.array([[0.0, 0.254], [0.25, 0.35], [0.02, 0.8], [1, 250], [1, 250], [1, 250]])
+    xlimits = np.array([[0.0, 0.254], [0.20, 0.40], [0.02, 0.8], [1, 250], [1, 250], [1, 250]])
 elif case == 'cold':
-    xlimits = np.array([[0.0, 0.254], [0.25, 0.35], [0.02, 0.8], [0.0, 1.0], [1, 250], [1, 250], [1, 250]])
+    xlimits = np.array([[0.0, 0.254], [0.20, 0.40], [0.02, 0.8], [0.0, 1.0], [1, 250], [1, 250], [1, 250]])
 
 sampling = LHS(xlimits=xlimits, criterion='ese')
 

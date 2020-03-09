@@ -4,10 +4,12 @@ import matplotlib.pyplot as plt
 from smt.surrogate_models import LS, QP, KPLS, KRG, KPLSK, GEKPLS
 from smt.utils import compute_rms_error 
 
-ndim = 7
+ndim = 6
 
-train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=50.csv', delimiter=',')
-test = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=50.csv', delimiter=',')
+train1 = np.loadtxt('./TrainingData/RUh_TrainingData[ese]_n=200.csv', delimiter=',')
+train2 = np.loadtxt('./TrainingData/RUh_TrainingData[ese]_n=100.csv', delimiter=',')
+train = x = np.append(train1, train2 , axis=0)
+test = np.loadtxt('./TrainingData/RUh_TrainingData[ese]_n=50.csv', delimiter=',')
 xtest, ytest = test[:,:ndim], test[:,ndim]
 xt, yt = train[:,:ndim], train[:,ndim:]
 
