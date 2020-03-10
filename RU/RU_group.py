@@ -19,11 +19,11 @@ class RemoteUnit(om.Group):
 
         if case == 'cold':
             ndim = 7
-            train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=100.csv', delimiter=',')
+            train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=200.csv', delimiter=',')
             xt, yt = train[:,:ndim], train[:,ndim:]
         elif case == 'hot':
             ndim = 6
-            train = np.loadtxt('./TrainingData/RUh_TrainingData[ese]_n=100.csv', delimiter=',')
+            train = np.loadtxt('./TrainingData/RUh_TrainingData[ese]_n=200.csv', delimiter=',')
             xt, yt = train[:,:ndim], train[:,ndim:]
 
         #train surrogate and pass to model
