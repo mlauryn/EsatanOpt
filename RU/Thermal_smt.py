@@ -50,7 +50,7 @@ if __name__ == "__main__":
     
     if case == 'cold':
         ndim = 7
-        train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=100.csv', delimiter=',')
+        train = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=200.csv', delimiter=',')
         test = np.loadtxt('./TrainingData/RUc_TrainingData[ese]_n=50.csv', delimiter=',')
         xtest, ytest = test[:,:ndim], test[:,ndim]
         xt, yt = train[:,:ndim], train[:,ndim:]

@@ -25,10 +25,10 @@ edges = np.transpose(xlimits)
 x = np.append(x, edges , axis=0) """
 
 if case == 'hot':
-    input_file = '../Samples/RUh_LHsample[ese]_n={0}.csv'.format(num)
+    input_file = './Samples/RUh_LHsample[ese]_n={0}.csv'.format(num)
     np.savetxt(input_file, x, delimiter=',', header = 'length, eff, eps, R_m, R_p, R_s', comments = '')
 elif case == 'cold':
-    input_file = '../Samples/RUc_LHsample[ese]_n={0}.csv'.format(num)
+    input_file = './Samples/RUc_LHsample[ese]_n={0}.csv'.format(num)
     np.savetxt(input_file, x, delimiter=',', header = 'length, eff, eps, r_bat, R_m, R_p, R_s', comments = '')
 
 """ plt.plot(x[:, 2], x[:, 6], "o")
@@ -93,7 +93,7 @@ if case == 'cold':
         outputs['tBat'], outputs['tProp'], outputs['tBPanel'], outputs['tDPanel']))
     
     data = np.reshape(values, (len(cases), len(xlimits)+4))
-    output_file = '../TrainingData/RUc_TrainingData[ese]_n={0}.csv'.format(num)
+    output_file = './TrainingData/RUc_TrainingData[ese]_n={0}.csv'.format(num)
     np.savetxt(output_file, data, delimiter=',')
 else:
     for nt in cases:
@@ -103,7 +103,7 @@ else:
         outputs['tBat'], outputs['tProp'], outputs['tBPanel'], outputs['tDPanel']))
     
     data = np.reshape(values, (len(cases), len(xlimits)+4))
-    output_file = '../TrainingData/RUh_TrainingData[ese]_n={0}.csv'.format(num)
+    output_file = './TrainingData/RUh_TrainingData[ese]_n={0}.csv'.format(num)
     np.savetxt(output_file, data, delimiter=',')
 
 

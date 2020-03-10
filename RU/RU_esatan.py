@@ -55,18 +55,17 @@ class RU_esatan(om.ExternalCodeComp):
         self.add_output('tBPanel', val=0.0)
         self.add_output('tDPanel', val=0.0)
 
-        self.input_file = 'RU_tm.d'
-        self.output_file = 'RU_tm.out'
+        self.input_file = './esatan/RU_tm.d'
+        self.output_file = './esatan/RU_tm.out'
 
         # providing these is optional;' the component will verify that any input
         # files exist before execution and that the output files exist after.
         self.options['external_input_files'] = [self.input_file,]
         self.options['external_output_files'] = [self.output_file,]
-        #self.options['poll_delay'] = 10.0
+        self.options['poll_delay'] = 2.0
         self.options['timeout'] = 10.0
         self.options['fail_hard'] = False
-        self.options['command'] = [
-            'RU_tm.bat']
+        self.options['command'] = ['RU_tm.bat']
         # this external code does not provide derivatives, use finite difference
         #self.declare_partials(of='*', wrt='*', method='fd')
 
@@ -122,8 +121,8 @@ class RU_esatan(om.ExternalCodeComp):
 
         # generate the input file for RU_tm thermal analysis
         generator = InputFileGenerator()
-        generator.set_template_file('RU_template.txt')
-        generator.set_generated_file('RU_tm.d')
+        generator.set_template_file('./esatan/RU_template.txt')
+        generator.set_generated_file('./esatan/RU_tm.d')
         generator.mark_anchor("$LOCALS")
         generator.transfer_var(length, 21, 3)
         generator.transfer_var(eff, 23, 3)
@@ -167,7 +166,7 @@ class RU_esatan(om.ExternalCodeComp):
 
         # parse the output file from the external code and set the value of T_max
         parser = FileParser()
-        parser.set_file('RU_TM.out')
+        parser.set_file('./esatan/RU_TM.out')
         parser.mark_anchor("+RU_TM")
         tBat = parser.transfer_var(7, 3)
         tMain = parser.transfer_var(34, 3)
