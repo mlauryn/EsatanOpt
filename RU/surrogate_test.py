@@ -33,7 +33,7 @@ plt.xlabel('$y_{true}$')
 plt.ylabel('$\hat{y}$')
         
 plt.legend(loc='upper left')
-plt.title('Kriging model: validation of the prediction model')
+plt.title('Kriging model: validation of the prediction model, n = 300')
 plt.show()
 
 # Value of theta
