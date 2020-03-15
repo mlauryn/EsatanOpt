@@ -1,8 +1,60 @@
+import openmdao.api as om
 import numpy as np
-from scipy.optimize import fsolve
 
-n = 13 #number of nodes
+class Thermal_ss(om.ImplicitComponent):
+    """Computes steady state node temperature residual across a model based on conductor definition and boundary conditions."""
+    def initialize(self):
+        self.options.declare('n', default=1, types=int, desc='number of nodes')
+    def setup(self):
+        n = self.options['n']
+        self.add_output('T', val=np.zeros(n), units='K')
+        self.add_input('GL', val=np.zeros((n,n)), units='W/K')
+        self.add_input('GR', val=np.zeros(n))
+        self.add_input('QS', val=np.zeros(n), units='W')
+        self.add_input('QI', val=np.zeros(n), units='W')
+        self.declare_partials(of='*', wrt='*')
+    def apply_nonlinear(self, inputs, outputs, residuals):
+        GL = inputs['GL']
+        GR = inputs['GR']
+        QS = inputs['QS']
+        QI = inputs['QI']
+        T = outputs['T']
 
+        residuals['T'] = GL.dot(T)-GR*(T**4)+QS+QI
+    def linearize(self, 
+    inputs, outputs, partials):
+        n = self.options['n']
+        GL = inputs['GL']
+        GR = inputs['GR']
+        QS = inputs['QS']
+        QI = inputs['QI']
+        T = outputs['T']
+
+        partials['T', 'GL'] = np.einsum('ij, k', np.eye(n, n), T)
+        partials['T', 'GR'] = -np.diag(T**4)
+        partials['T', 'QS'] = np.eye(n, n)
+        partials['T', 'QI'] = np.eye(n, n)
+        partials['T', 'T'] = GL - (4 * np.diag((GR * (T ** 3))))
+
+
+p = om.Problem()
+model = p.model
+
+n = 13
+
+indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
+indeps.add_output('GL', val=np.zeros((n,n)), units='W/K')
+indeps.add_output('GR', val=np.zeros(n))
+indeps.add_output('QS', val=np.zeros(n), units='W')
+indeps.add_output('QI', val=np.zeros(n), units='W')
+model.add_subsystem('tm', Thermal_ss(n=n), promotes=['*'])
+
+model.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
+model.nonlinear_solver.options['iprint'] = 2
+model.nonlinear_solver.options['maxiter'] = 20
+model.linear_solver = om.DirectSolver()
+
+p.setup(check=True)
 
 # Material properties from bulk 'Al_7075T6' 
 k_Al_7075T6 = 130.000;  Cp_Al_7075T6 = 960.000;  Dens_Al_7075T6 = 2810.00;  
@@ -92,19 +144,12 @@ QI[13] = 0.200000
 QI[10] = 0.300000
 QI = QI[1:]
 
-def heat_steady(T, GL, GR, QS, QI):
-    return(GL.dot(T)-GR*(T**4)+QS+QI)
+p['GL'] = GL
+p['GR'] = GR
+p['QS'] = QS
+p['QI'] = QI
 
-T0 = -np.ones(n)*50 + 273
-T = fsolve(heat_steady, T0, args=(GL, GR, QS, QI))
-print(T-273.15)
-
-p.driver = om.ScipyOptimizeDriver()
-p.driver.options['optimizer'] = 'SLSQP'
-p.driver.options['tol'] = 1e-9
-
-model.add_design_var('R_bat', lower=np.array([-10.0, 0.0]), upper=np.array([10.0, 10.0]))
-model.add_design_var('x', lower=0.0, upper=10.0)
-model.add_objective('obj')
-model.add_constraint('con1', upper=0.0)
-model.add_constraint('con2', upper=0.0)
+#gues values
+p['T'] = -np.ones(n)*50 + 273
+p.run_model()
+print(p['T']-273.15)

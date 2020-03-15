@@ -1,4 +1,4 @@
-#Python script for MAT remote unit thermal model design of experiments
+#Python script for MAT remote unit esatan thermal model design of experiments
 
 import openmdao.api as om
 import numpy as np
@@ -9,15 +9,14 @@ from smt.sampling_methods import LHS
 case = 'hot' # hot or cold
 num = 200 # num of samples
 
+#define bounds on model inputs
 if case == 'hot':
     xlimits = np.array([[0.0, 0.254], [0.20, 0.40], [0.02, 0.8], [1, 250], [1, 250], [1, 250]])
 elif case == 'cold':
     xlimits = np.array([[0.0, 0.254], [0.20, 0.40], [0.02, 0.8], [0.0, 1.0], [1, 250], [1, 250], [1, 250]])
 
+#create sample with smt
 sampling = LHS(xlimits=xlimits, criterion='ese')
-
-
-
 x = sampling(num)
 
 """ #also add variable limit values
