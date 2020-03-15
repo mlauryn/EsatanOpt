@@ -2,7 +2,7 @@
 
 import openmdao.api as om
 import numpy as np
-from RU_esatan import RU_esatan
+from RUextCodeComp import RUextCodeComp
 import matplotlib.pyplot as plt
 from smt.sampling_methods import LHS
 
@@ -55,7 +55,7 @@ else:
     indeps.add_output('ht_gain', val=0.)
     indeps.add_output('q_s', val=1365.)
 
-model.add_subsystem('ru_tm', RU_esatan(), promotes=['*'])
+model.add_subsystem('ru_tm', RUextCodeComp(), promotes=['*'])
 
 model.add_design_var('length', lower = 0.0, upper=0.254)
 model.add_design_var('eff', lower = 0.25, upper=0.325)

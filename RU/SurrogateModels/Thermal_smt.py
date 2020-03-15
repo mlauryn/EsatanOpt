@@ -86,10 +86,10 @@ if __name__ == "__main__":
 
     model.add_subsystem('mm', ThermoSurrogate(sm=sm, case=case), promotes=['*'])
 
-    from Esatan.RU_esatan import RU_esatan
+    from Esatan.RUextCodeComp import RUextCodeComp
     import os
     os.chdir('.\esatan') 
-    model.add_subsystem('tm', RU_esatan(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_real')])
+    model.add_subsystem('tm', RUextCodeComp(), promotes_inputs=['*'], promotes_outputs=[('tBat','tBat_real')])
 
 
     prob.setup(check=True)

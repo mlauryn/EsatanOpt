@@ -1,4 +1,4 @@
-#External code to run Remote Unit thermal model in Esatan
+#External code component to run Remote Unit thermal model in Esatan
 import os
 from openmdao.utils.file_wrap import InputFileGenerator, FileParser
 import openmdao.api as om
@@ -23,7 +23,7 @@ file = open("RU_cold.bat", "w")
 file.write('''esrde<RU_cold.ere''')
 file.close() """
 
-class RU_esatan(om.ExternalCodeComp):
+class RUextCodeComp(om.ExternalCodeComp):
     def setup(self):
         self.add_input('eff', val=0.1)
         self.add_input('length', val=0.1)
@@ -162,7 +162,7 @@ class RU_esatan(om.ExternalCodeComp):
         generator.generate()
 
         # the parent compute function actually runs the external code
-        super(RU_esatan, self).compute(inputs, outputs)
+        super(RUextCodeComp, self).compute(inputs, outputs)
 
         # parse the output file from the external code and set the value of T_max
         parser = FileParser()
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     indeps.add_output('ci12', val=1.0) 
 
 
-    model.add_subsystem('RU_tm', RU_esatan(), promotes_inputs=['*'], promotes_outputs=['*'])
+    model.add_subsystem('RU_tm', RUextCodeComp(), promotes_inputs=['*'], promotes_outputs=['*'])
 
     #run the ExternalCode Component once and print outputs
     prob.setup(check=True)

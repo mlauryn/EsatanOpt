@@ -1,4 +1,4 @@
-#Python script for optimization of MAT remote unit thermal model @hot and cold analysis cases 
+#Python script for genetic optimization of MAT remote unit thermal model as external code 
 import time, math
 import numpy as np
 import openmdao.api as om

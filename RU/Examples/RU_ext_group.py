@@ -1,16 +1,17 @@
+""" Code for running coupled thermal analysis with external code  """
 import openmdao.api as om
 from SolarCell import SolarCell
-from RU_esatan import RU_esatan
+from RUextCodeComp import RUextCodeComp
 import numpy as np
 
 
-class RemoteUnit(om.Group):
+class RemoteUnitExt(om.Group):
 
     def setup(self):
         
         cycle = self.add_subsystem('cycle', om.Group(), promotes_inputs=['length', 'eps', 'r_bat', 'R_m', 'R_p', 'R_s' ], promotes_outputs=['*'])
         cycle.add_subsystem('sc', SolarCell(), promotes=['*'])
-        cycle.add_subsystem('tm', RU_esatan(), promotes=['*'])
+        cycle.add_subsystem('tm', RUextCodeComp(), promotes=['*'])
         # Nonlinear Block Gauss Seidel is a gradient free solver
         cycle.nonlinear_solver = om.NonlinearBlockGS()
 
