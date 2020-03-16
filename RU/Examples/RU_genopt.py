@@ -2,7 +2,7 @@
 import time, math
 import numpy as np
 import openmdao.api as om
-from RU_group import RemoteUnit as mda
+from RU_ext_group import RemoteUnitExt as mda
 import pickle
 from pprint import pprint 
 

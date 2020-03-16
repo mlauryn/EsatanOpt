@@ -1,4 +1,4 @@
-#Computes the dependancy of remote unit solar cell efficiency with temperature.
+#Simple component that computes the dependancy of remote unit solar cell efficiency with temperature.
 
 import openmdao.api as om 
 
