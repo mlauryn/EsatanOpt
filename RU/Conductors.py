@@ -1,5 +1,5 @@
 """
-Parses the Esatan conductor report file (produced by REPORT_CONDUCTORS procedure) to prepare conductor data for openmdao 
+Parses the Esatan conductor report file (produced by REPORT_CONDUCTORS procedure) to prepare user-defined conductor data for openmdao 
 """
 import re
 import pandas as pd
@@ -28,14 +28,14 @@ def _parse_line(line):
     # if there are no matches
     return None, None
 
-def parse_file(filepath):
+def parse_cond(filepath):
     """
-    Parse text at given filepath
+    Parse Esatan conductor report file at given filepath
 
     Parameters
     ----------
     filepath : str
-        Filepath for file_object to be parsed
+        Filepath for report file to be parsed
 
     Returns
     -------
@@ -95,17 +95,22 @@ def parse_file(filepath):
                 break
 
 
-        # create a pandas DataFrame from the list of dicts
+        """ # create a pandas DataFrame from the list of dicts
         data = pd.DataFrame(data)
         # set the index
         data.set_index(['cond_name'], inplace=True)
         # consolidate df to remove nans
         data = data.groupby(level=data.index.names).first()
         # upgrade Score from float to integer
-        #data = data.apply(pd.to_numeric, errors='ignore')
+        #data = data.apply(pd.to_numeric, errors='ignore') """
     return data
 
 if __name__ == '__main__':
     filepath = 'conductors.txt'
-    data = parse_file(filepath)
-    print(data)
+    data = parse_cond(filepath)
+    nodes = {}
+    shape_factors = {}
+    for entry in data:
+        nodes.update( {entry['cond_name'] : tuple(map(int, entry['nodes'].split(',')))} )
+        shape_factors.update( {entry['cond_name'] : entry['SF'] } ) 
+    print(nodes, shape_factors)
