@@ -87,4 +87,4 @@ if __name__ == '__main__':
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
     GL_init, GR_init, QI_init, QS_init = inits(n, env, inact, nodes, conductors)
-    print(QS_init)
+    print(GL_init)

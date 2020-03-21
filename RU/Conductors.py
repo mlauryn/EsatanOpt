@@ -77,8 +77,14 @@ def parse_cond(filepath):
                 #extract shape factor    
                 SF = other[0].split(':')[1].strip()
                 
-                # extract conductivity
-                k = other[1].split(':')[1].strip()
+                if SF == '0.000000':
+
+                    SF = '1.0' # override by user
+
+                    k = other[2].split(':')[1].strip() # conductivity equals user overriden value
+
+                else:
+                    k = other[1].split(':')[1].strip() # else use normal conductivity
                 
                 # create a dictionary containing this row of data
                 row = {
@@ -110,7 +116,9 @@ if __name__ == '__main__':
     data = parse_cond(filepath)
     nodes = {}
     shape_factors = {}
+    values = {}
     for entry in data:
         nodes.update( {entry['cond_name'] : tuple(map(int, entry['nodes'].split(',')))} )
-        shape_factors.update( {entry['cond_name'] : entry['SF'] } ) 
-    print(nodes, shape_factors)
+        shape_factors.update( {entry['cond_name'] : float(entry['SF']) } )
+        values.update( {entry['cond_name'] : float(entry['conductivity']) } ) 
+    print(nodes, shape_factors, values)
