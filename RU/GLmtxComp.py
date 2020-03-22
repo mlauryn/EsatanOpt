@@ -10,36 +10,36 @@ import numpy as np
 class GLmtxComp(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n', types=int, desc='number of diffusion nodes in thermal model')
-        self.options.declare('GL_init', desc='initial conductor matrix from thermal model as n x n array')
-        self.options.declare('nodes', types=dict, desc='dictionary of input conductor names and indices (var,j) defining 2 nodes that it connects')
+        self.options.declare('GL_init', desc='initial conductor matrix from thermal model as n+1 x n+1 array')
+        self.options.declare('nodes', types=dict, desc='dictionary of node pair indice tuples (i,j) defining 2 nodes that each conductor connects')
         self.options.declare('SF', types=dict, desc='dictionary of shape factors for for each input conductor')
         # note: number of indices must be equal to number of conductor input variables with base 1
     
     def setup(self):    
-        n = self.options['n']
+        n = self.options['n'] + 1
         nodes = self.options['nodes']
         SF = self.options['SF']
         self.add_output('GL', shape=(n,n))
         for var in nodes:
             self.add_input(var) # adds input variable with the same name as user conductor name
-            idx = nodes[var] # takes the indices of the input conductor
+            idx = nodes[var] # reads node pair indices of the input conductor
             self.declare_partials('GL', var, 
-            rows=[(idx[0]-1)*n+idx[0]-1, (idx[0]-1)*n+idx[1]-1, (idx[1]-1)*n+idx[0]-1, (idx[1]-1)*n+idx[1]-1],
+            rows=[(idx[0])*n+idx[0], (idx[0])*n+idx[1], (idx[1])*n+idx[0], (idx[1])*n+idx[1]],
             cols=[0,0,0,0],
             val=np.multiply([-1.,1.,1.,-1.], SF[var]))
         #self.declare_partials(of='GL', wrt='*', method='fd')
         # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
     
     def compute(self, inputs, outputs):
-        n = self.options['n']
+        n = self.options['n'] + 1
         GL = np.copy(self.options['GL_init'])
         SF = self.options['SF']
         nodes = self.options['nodes'] 
         for var in inputs:
             idx = nodes[var]
             GL[idx] = SF[var]*inputs[var] # updates GL values based on input
-
-        GL = GL[1:,1:] # remove header row and column, as esatan base node numbering starts from 1
+        
+        #GL = GL[1:,1:] # remove header row and column, as esatan base node numbering starts from 1
 
         #make GL matrix symetrical
         i_lower = np.tril_indices(n, -1)
@@ -50,6 +50,8 @@ class GLmtxComp(om.ExplicitComponent):
 
         di = np.diag_indices(n)
         GL[di] = diag
+
+        GL[0,0] = 1.0 # deep space node temperature = 0 K
         
         outputs['GL'] = GL
 
@@ -57,7 +59,8 @@ class GLmtxComp(om.ExplicitComponent):
         pass
 
 if __name__ == "__main__":
-    from Conductors import _parse_line, parse_cond
+    # script for testing partial derivs
+    from Conductors import parse_cond
     from inits import inits
     n = 13
     nodes = 'Nodal_data.csv'
@@ -70,15 +73,15 @@ if __name__ == "__main__":
     shape_factors = {}
     values = {}
     for entry in data:
-        nodes.update( {entry['cond_name'] : tuple(map(int, entry['nodes'].split(',')))} )
-        shape_factors.update( {entry['cond_name'] : float(entry['SF']) } )
-        values.update( {entry['cond_name'] : float(entry['conductivity']) } )  
+        nodes.update( {entry['cond_name'] : entry['nodes']} )
+        shape_factors.update( {entry['cond_name'] : entry['SF'] } )
+        values.update( {entry['cond_name'] : entry['conductivity'] } )  
     #print(shape_factors, nodes)
 
     model = om.Group()
     comp = om.IndepVarComp()
     for var in nodes:
-        comp.add_output(var, val=1.0 ) # adds output variable with the same name as user conductor name
+        comp.add_output(var, val=values[var] ) # adds output variable with the same name as user conductor name
     
     
     model.add_subsystem('input', comp, promotes=['*'])
@@ -89,9 +92,9 @@ if __name__ == "__main__":
     
     problem = om.Problem(model=model)
     problem.setup(check=True)
-    problem['Spacer1'] = 1.0
+    
     problem.run_model()
     
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
 
-    #print(problem['example.GL'])
+    print(problem['example.GL'])

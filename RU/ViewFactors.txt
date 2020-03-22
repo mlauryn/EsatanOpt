@@ -1,0 +1,104 @@
+***************************************************************
+Model = Ru_v4_cond
+Report produced by REPORT_VF procedure at 18:24 Sun 22 Mar 2020
+VF name = Cold.IR_VF
+VF calculated on 18:32 Thu 12 Mar 2020, wavelength is INFRA_RED
+Geometry is Not in Cavity
+***************************************************************
+
+---------------------------------------------------------------------------
+Emitting Face = 1, Thermal Node = 1
+Area = 0.0074, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 0.990200, VF to inactive faces = 0.009800
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 4, Thermal Node = 2
+Area = 0.0070, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 0.989550, VF to inactive faces = 0.010450
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 5, Thermal Node = 3
+Area = 0.0070, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 7, Thermal Node = 4
+Area = 0.0060, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 9, Thermal Node = 5
+Area = 0.0065, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 0.025200, VF to inactive faces = 0.974800
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 11, Thermal Node = 6
+Area = 0.0066, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 0.951400, VF to inactive faces = 0.048600
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 13, Thermal Node = 7
+Area = 0.0065, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 15, Thermal Node = 8
+Area = 0.0066, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 0.783750, VF to inactive faces = 0.216250
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 17, Thermal Node = 9
+Area = 0.0060, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 20000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+Summary Statistics for Report VF
+==========================================
+
+Maximum Line Sum Error          =  0.000   at  : Face 1 Node 1
+RMS Line Sum Error              =  0.000
+Maximum Factor to Inactive Face =  0.975   at  : Face 9 Node 5
+
+LineSumError CRIT Face [Submodel: Node]
+
+! No results were found matching the defined cutoff criteria !
+
+Error Range      No of Faces
+----------------------------
+0 < - < 0.02     9          
+0.02 < - < 0.05  0          
+0.05 < - < 0.1   0          
+0.1 < - < 0.15   0          
+> 0.15           0          
+                 --         
+Total Faces      9          
+
+VF to Inactive Faces Face [Submodel: Node]
+      0.97480        9    [          5]   
+      0.21625        15   [          8]   

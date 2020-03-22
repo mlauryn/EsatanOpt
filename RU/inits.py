@@ -12,11 +12,11 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
     Parameters
     ----------
     n   :   int
-        number of nodes in the model
+        number of nodes in the model (excluding deep space)
     env :   str
-        environment (deep space) node number
+        environment (deep space) node number in Esatan model
     inact :   str
-        inactive node number
+        inactive node number in Esatan model
     nodes : str
         Filepath for the Esatan nodal output csv file (must include at least QI, QS entities)
     conductors  : str
@@ -24,9 +24,9 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
 
     Returns
     -------
-    GL_init : n x n numpy array
+    GL_init : n+1 x n+1 numpy array
         Linear conductor matrix (symmetric)
-    GR_init : n x n numpy array
+    GR_init : n+1 x n+1 numpy array
         Radiative exchange factor (REF) matrix (non-symmetric)
     QI_init :   n x 1 numpy array
         Internal heat source vector
@@ -36,10 +36,11 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
     """
 
     # prepare linear conductors
+    
     df = pd.read_csv(conductors, header=1)
 
     GLs = df.filter(regex ='GL')
-    GLs.columns = GLs.columns.str.extract(r'(\d+;\d+)', expand=False)
+    GLs.columns = GLs.columns.str.extract(r'(\d+;\d+)', expand=False) # leave only indices in the column names
 
     GL_init = np.zeros((n+1,n+1))
 
@@ -52,13 +53,11 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
     # prepare radiative conductors
 
     GRs = df.filter(regex ='GR')
-    GRs.columns = GRs.columns.str.extract(r'(\d+;\d+)', expand=False)
+    GRs.columns = GRs.columns.str.extract(r'(\d+;\d+)', expand=False) # leave only indices in the column names
 
-    #replace default esatan env node number to 0
-    GRs.columns = GRs.columns.str.replace(env, '0')
+    GRs.columns = GRs.columns.str.replace(env, '0') #replace default esatan env node number to 0
 
-    # drop inactive nodes
-    GRs = GRs.drop(GRs.filter(regex=inact).columns, axis=1)
+    GRs = GRs.drop(GRs.filter(regex=inact).columns, axis=1) # drop inactive nodes
 
     GR_init = np.zeros((n+1,n+1))
 
@@ -75,11 +74,13 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
     # prepare initial boundary conditions 
     df = pd.read_csv(nodes, header=1)
 
-    QI = df.filter(regex = 'QI(?!{})(?!{})'.format(env, inact))
+    QI = df.filter(regex = 'QI(?!{})(?!{})'.format(env, inact)) # get rid of environment and inactive nodes
     QI_init = QI.to_numpy()[0]
+    QI_init = np.insert(QI_init, 0, 0) # insert zero for deep space node 
 
     QS = df.filter(regex = 'QS(?!{})(?!{})(?!I)'.format(env, inact))
     QS_init = QS.to_numpy()[0]
+    QS_init = np.insert(QS_init, 0, 0)
     
     return GL_init, GR_init, QI_init, QS_init
 

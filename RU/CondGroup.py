@@ -32,22 +32,22 @@ class CondGroup(om.Group):
         self.add_subsystem('param', param, promotes=['*'])
         self.add_subsystem('GLmtx', GLmtxComp(n=n, GL_init=GL_init, nodes=nodes, SF=SF), promotes=['*'])
         self.add_subsystem('temp', TempComp(n=n), promotes_inputs=['*'])
-        self.add_subsystem('obj', om.ExecComp('obj = 0 - T[12]', T=np.ones(n), obj=1.0), promotes=['*'])
+        self.add_subsystem('obj', om.ExecComp('obj = 0 - T[13]', T=np.ones(n+1), obj=1.0), promotes=['*'])
 
-        self.temp.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
-        self.temp.nonlinear_solver.options['iprint'] = 2
-        self.temp.nonlinear_solver.options['maxiter'] = 50
-        #self.temp.nonlinear_solver.options['debug_print'] = True
-        """ self.temp.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
-        self.temp.nonlinear_solver.linesearch.options['maxiter'] = 10
-        self.temp.nonlinear_solver.linesearch.options['iprint'] = 2 """
-        self.temp.linear_solver = om.DirectSolver()
+        self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
+        """ self.nonlinear_solver.options['iprint'] = 2
+        self.nonlinear_solver.options['maxiter'] = 50 """
+        #self.nonlinear_solver.options['debug_print'] = True
+        """ self.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
+        self.nonlinear_solver.linesearch.options['maxiter'] = 10
+        self.nonlinear_solver.linesearch.options['iprint'] = 2 """
+        self.linear_solver = om.DirectSolver()
 
 
     
 if __name__ == "__main__":
     # test script for trivial optimization to maximize battery temperature
-    from Conductors import _parse_line, parse_cond
+    from Conductors import parse_cond
     from inits import inits
 
     # define boundary conditions
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     GL_init, GR_init, QI_init, QS_init = inits(n, nodes, conductors)
     
-    GR_init = GR_init[1:,0]
+    GR_init = GR_init[:,0]
 
     filepath = 'conductors.txt'
     data = parse_cond(filepath)
@@ -65,9 +65,9 @@ if __name__ == "__main__":
     shape_factors = {}
     values = {}
     for entry in data:
-        nodes.update( {entry['cond_name'] : tuple(map(int, entry['nodes'].split(',')))} )
-        shape_factors.update( {entry['cond_name'] : float(entry['SF']) } )
-        values.update( {entry['cond_name'] : float(entry['conductivity']) } ) 
+        nodes.update( {entry['cond_name'] : entry['nodes']} )
+        shape_factors.update( {entry['cond_name'] : entry['SF'] } )
+        values.update( {entry['cond_name'] : entry['conductivity'] } ) 
 
     model = CondGroup(n=n, nodes=nodes, SF=shape_factors, GL_init=GL_init, GR_init=GR_init, QI_init=QI_init, QS_init=QS_init)
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     #print(totals)
     #prob.check_totals(compact_print=True)
 
-    prob.run_driver()
+    #prob.run_driver()
 
     #prob.model.list_inputs(print_arrays=True, includes=['*GL*'])
 
