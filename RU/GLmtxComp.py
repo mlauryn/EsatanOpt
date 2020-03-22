@@ -23,16 +23,16 @@ class GLmtxComp(om.ExplicitComponent):
         for var in nodes:
             self.add_input(var) # adds input variable with the same name as user conductor name
             idx = nodes[var] # takes the indices of the input conductor
-            """ self.declare_partials('GL', var, 
+            self.declare_partials('GL', var, 
             rows=[(idx[0]-1)*n+idx[0]-1, (idx[0]-1)*n+idx[1]-1, (idx[1]-1)*n+idx[0]-1, (idx[1]-1)*n+idx[1]-1],
             cols=[0,0,0,0],
-            val=np.multiply([-1.,1.,1.,-1.], SF[var])) """
+            val=np.multiply([-1.,1.,1.,-1.], SF[var]))
         #self.declare_partials(of='GL', wrt='*', method='fd')
         # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
     
     def compute(self, inputs, outputs):
         n = self.options['n']
-        GL = self.options['GL_init']
+        GL = np.copy(self.options['GL_init'])
         SF = self.options['SF']
         nodes = self.options['nodes'] 
         for var in inputs:
@@ -46,25 +46,23 @@ class GLmtxComp(om.ExplicitComponent):
         GL[i_lower] = GL.T[i_lower]
 
         #define diagonal elements as negative of all node conductor couplings (sinks)
-        diag = -np.sum(GL, 1)
+        diag = np.negative(np.sum(GL, 1))
 
         di = np.diag_indices(n)
         GL[di] = diag
         
         outputs['GL'] = GL
 
-    """ def compute_partials(self, inputs, partials):
-        pass """
+    def compute_partials(self, inputs, partials):
+        pass
 
 if __name__ == "__main__":
     from Conductors import _parse_line, parse_cond
     from inits import inits
     n = 13
-    env = '99999'
-    inact = '99998'
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    GL_init, GR_init, QI_init, QS_init = inits(n, env, inact, nodes, conductors)
+    GL_init, GR_init, QI_init, QS_init = inits(n, nodes, conductors)
 
     filepath = 'conductors.txt'
     data = parse_cond(filepath)
@@ -75,11 +73,12 @@ if __name__ == "__main__":
         nodes.update( {entry['cond_name'] : tuple(map(int, entry['nodes'].split(',')))} )
         shape_factors.update( {entry['cond_name'] : float(entry['SF']) } )
         values.update( {entry['cond_name'] : float(entry['conductivity']) } )  
-    
+    #print(shape_factors, nodes)
+
     model = om.Group()
     comp = om.IndepVarComp()
     for var in nodes:
-        comp.add_output(var, val=values[var] ) # adds output variable with the same name as user conductor name
+        comp.add_output(var, val=1.0 ) # adds output variable with the same name as user conductor name
     
     
     model.add_subsystem('input', comp, promotes=['*'])
@@ -87,35 +86,12 @@ if __name__ == "__main__":
 
     """ model.connect('input.Spacer1', 'example.Spacer1')
     model.connect('input.Spacer2', 'example.Spacer2') """
-    GL_init = GL_init[1:,1:]
-
-    #make GL_init matrix symetrical
-    i_lower = np.tril_indices(n, -1)
-    GL_init[i_lower] = GL_init.T[i_lower]
-
-    #define diagonal elements as negative of all node conductor couplings (sinks)
-    diag = -np.sum(GL_init, 1)
-
-    di = np.diag_indices(n)
-    GL_init[di] = diag
-
+    
     problem = om.Problem(model=model)
     problem.setup(check=True)
+    problem['Spacer1'] = 1.0
     problem.run_model()
     
-    """ data = problem.check_partials()
+    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
 
-    x1_error = data['example']['GL', 'Spacer1']['abs error']
-
-    print(x1_error.forward)
-    print(x1_error.reverse)
-
-    x2_error = data['example']['GL', 'Spacer2']['abs error']
-
-    print(x2_error.forward)
-    print(x2_error.reverse) """
-
-
-    totals = problem.compute_totals(['GL'], ['Spacer2', 'Spacer1'])
-    #print(np.reshape(totals['example.GL', 'input.Spacer2'], (n,n)))
-    print(problem['example.GL'])
+    #print(problem['example.GL'])

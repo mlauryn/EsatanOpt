@@ -5,7 +5,7 @@ import re
 import pandas as pd
 import numpy as np
 
-def inits(n, env, inact, nodes, conductors):
+def inits(n, nodes, conductors, env='99999', inact='99998'):
     """
     Parse Esatan conductor report file at given filepath
 
@@ -67,6 +67,10 @@ def inits(n, env, inact, nodes, conductors):
         j = int(Name.split(';')[1])
         idx = (i,j)
         GR_init[idx] = Data.values
+    
+    #esatan does not include stefan-boltzman const
+    sigma = 5.670374e-8
+    GR_init = GR_init*sigma 
 
     # prepare initial boundary conditions 
     df = pd.read_csv(nodes, header=1)
@@ -82,9 +86,7 @@ def inits(n, env, inact, nodes, conductors):
 
 if __name__ == '__main__':
     n = 13
-    env = '99999'
-    inact = '99998'
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    GL_init, GR_init, QI_init, QS_init = inits(n, env, inact, nodes, conductors)
-    print(GL_init)
+    GL_init, GR_init, QI_init, QS_init = inits(n, nodes, conductors)
+    print(GR_init)

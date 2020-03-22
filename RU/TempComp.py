@@ -35,6 +35,11 @@ class TempComp(om.ImplicitComponent):
         partials['T', 'QS'] = np.eye(n, n)
         partials['T', 'QI'] = np.eye(n, n)
         partials['T', 'T'] = GL - (4 * np.diag((GR * (T ** 3))))
+    
+    def guess_nonlinear(self, inputs, outputs, residuals):
+        n = self.options['n']
+        #gues values
+        outputs['T'] = -np.ones(n)*50 + 273
 
 if __name__ == "__main__":
     from inits import inits
@@ -43,15 +48,9 @@ if __name__ == "__main__":
 
     n = 13 #number of nodes in thermal model
 
-    env = '99999'
-    inact = '99998'
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    GL, GR, QI, QS = inits(n, env, inact, nodes, conductors)
-
-    #esatan does not include stefan-boltzman const
-    sigma = 5.670374e-8
-    GR = GR[1:,0]*sigma
+    GL, GR, QI, QS = inits(n, nodes, conductors)
 
     #remove header row and column, as esatan base starts from 1
     GL = GL[1:,1:]
@@ -86,7 +85,6 @@ if __name__ == "__main__":
     p['QS'] = QS
     p['QI'] = QI
 
-    #gues values
-    p['T'] = -np.ones(n)*50 + 273
+    
     p.run_model()
     print(p['T']-273.15)
