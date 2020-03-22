@@ -14,7 +14,7 @@ def parse_vf(filepath):
     Parameters
     ----------
     filepath : str
-        Filepath for view factorreport file to be parsed
+        Filepath for view factor report file to be parsed
 
     Returns
     -------

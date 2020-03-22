@@ -13,7 +13,6 @@ class GLmtxComp(om.ExplicitComponent):
         self.options.declare('GL_init', desc='initial conductor matrix from thermal model as n+1 x n+1 array')
         self.options.declare('nodes', types=dict, desc='dictionary of node pair indice tuples (i,j) defining 2 nodes that each conductor connects')
         self.options.declare('SF', types=dict, desc='dictionary of shape factors for for each input conductor')
-        # note: number of indices must be equal to number of conductor input variables with base 1
     
     def setup(self):    
         n = self.options['n'] + 1
@@ -27,7 +26,6 @@ class GLmtxComp(om.ExplicitComponent):
             rows=[(idx[0])*n+idx[0], (idx[0])*n+idx[1], (idx[1])*n+idx[0], (idx[1])*n+idx[1]],
             cols=[0,0,0,0],
             val=np.multiply([-1.,1.,1.,-1.], SF[var]))
-        #self.declare_partials(of='GL', wrt='*', method='fd')
         # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
     
     def compute(self, inputs, outputs):
@@ -38,8 +36,6 @@ class GLmtxComp(om.ExplicitComponent):
         for var in inputs:
             idx = nodes[var]
             GL[idx] = SF[var]*inputs[var] # updates GL values based on input
-        
-        #GL = GL[1:,1:] # remove header row and column, as esatan base node numbering starts from 1
 
         #make GL matrix symetrical
         i_lower = np.tril_indices(n, -1)
@@ -51,7 +47,7 @@ class GLmtxComp(om.ExplicitComponent):
         di = np.diag_indices(n)
         GL[di] = diag
 
-        GL[0,0] = 1.0 # deep space node temperature = 0 K
+        GL[0,0] = 1.0 # deep space node temperature = 0 K (this coef is needed to avoid singularity in heat equations)
         
         outputs['GL'] = GL
 
