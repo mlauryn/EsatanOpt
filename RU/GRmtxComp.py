@@ -24,7 +24,8 @@ class GRmtxComp(om.ExplicitComponent):
         for i,node in enumerate(nodes):
             name = 'eps:{}'.format(node)
             self.add_input(name) # adds input variable as 'emissivity:node no.'
-            self.declare_partials('GR', name, rows=[node*n], cols=[0], val=[area[i] * VF[i] * sigma])
+            deriv = area[i] * VF[i] * sigma
+            self.declare_partials('GR', name, rows=[node, node * n + node], cols=[0, 0], val=[deriv, -1 * deriv ])
         
         # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
     
@@ -36,8 +37,15 @@ class GRmtxComp(om.ExplicitComponent):
         nodes = self.options['nodes']
         sigma = 5.670374e-8
 
-        for i, invar in enumerate(inputs):
-            GR[nodes[i],0] = area[i] * VF[i] * inputs[invar] * sigma # updates GR values based on input parameters
+        for i, eps in enumerate(inputs):
+            GR[0, nodes[i]] = area[i] * VF[i] * inputs[eps] * sigma # updates REFs to deep space based on input emissivity, view factor and area
+        
+        #need to update diagonals
+        
+        di = np.diag_indices(n)
+        GR[di] = np.zeros(n)
+        diag = np.negative(np.sum(GR, 0))
+        GR[di] = diag
         
         outputs['GR'] = GR
 
@@ -49,9 +57,9 @@ if __name__ == "__main__":
     from ViewFactors import parse_vf
     from inits import inits
     
-    n = 13
-    
-    GR_init = np.zeros((n+1,n+1))
+    nodals = 'Nodal_data.csv'
+    conductors = 'Cond_data.csv'
+    n, GL_init, GR_init, QI_init, QS_init = inits(nodals, conductors)
 
     view_factors = 'viewfactors.txt'
     data = parse_vf(view_factors)
@@ -81,5 +89,8 @@ if __name__ == "__main__":
     problem.run_model()
     
     check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+    
 
-    #print(problem['example.GR'])
+    print((problem['example.GR'][0,1:12] - GR_init[0,1:12])/GR_init[0,1:12])
+    #print(problem['example.GR'] == GR_init)
+    #problem.model.list_inputs(print_arrays=True)

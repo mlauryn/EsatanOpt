@@ -37,14 +37,15 @@ class GLmtxComp(om.ExplicitComponent):
             idx = nodes[var]
             GL[idx] = SF[var]*inputs[var] # updates GL values based on input
 
-        #make GL matrix symetrical
+        # mirror values from upper triangle to lower triangle
         i_lower = np.tril_indices(n, -1)
         GL[i_lower] = GL.T[i_lower]
 
         #define diagonal elements as negative of all node conductor couplings (sinks)
-        diag = np.negative(np.sum(GL, 1))
-
+        
         di = np.diag_indices(n)
+        GL[di] = np.zeros(n) # delete old result
+        diag = np.negative(np.sum(GL, 1))
         GL[di] = diag
 
         GL[0,0] = 1.0 # deep space node temperature = 0 K (this coef is needed to avoid singularity in heat equations)
@@ -58,10 +59,10 @@ if __name__ == "__main__":
     # script for testing partial derivs
     from Conductors import parse_cond
     from inits import inits
-    n = 13
+    
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    GL_init, GR_init, QI_init, QS_init = inits(n, nodes, conductors)
+    n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
 
     filepath = 'conductors.txt'
     data = parse_cond(filepath)
@@ -93,4 +94,6 @@ if __name__ == "__main__":
     
     #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
 
-    print(problem['example.GL'])
+    #print(problem['example.GL'])
+
+    print(problem['example.GL'] - GL_init)

@@ -1,5 +1,9 @@
 """
-Parses the Esatan conductor report file (produced by REPORT_CONDUCTORS procedure) to prepare user-defined conductor data for openmdao 
+This script parses the Esatan view factor report file (produced by REPORT_VF procedure) to collect data required to calculate radiative exchange factors to deep space.
+Note:
+only surfaces exposed to deep space are collected (if VF to environment = 0, the node is droped), thus unwanted surfaces have to be either conductive or inactive
+For proper results each emitting face must have unique node number (different nodes for surface 1 and 2 if both sides are emitting)
+"Report against thermal nodes" option in the report menu has to bee unticked
 """
 import re
 import pandas as pd
@@ -66,14 +70,17 @@ def parse_vf(filepath):
                             
             #extract view factor    
             if key == 'view factor':
-                vf = match.group('vf')
+                vf = float(match.group('vf'))
+
+                if vf == 0.0:
+                    continue # filter out internal surfacess
             
                 # create a dictionary containing this row of data
                 row = {
                     'node number': int(node),
                     'area': float(area),
                     'emissivity': float(eps),
-                    'vf': float(vf)
+                    'vf': vf
                 }
                 
                 # append the dictionary to the data list

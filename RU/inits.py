@@ -5,14 +5,13 @@ import re
 import pandas as pd
 import numpy as np
 
-def inits(n, nodes, conductors, env='99999', inact='99998'):
+def inits(nodes, conductors, env='99999', inact='99998'):
     """
     Parse Esatan conductor report file at given filepath
 
     Parameters
     ----------
-    n   :   int
-        number of nodes in the model (excluding deep space)
+    
     env :   str
         environment (deep space) node number in Esatan model
     inact :   str
@@ -32,8 +31,24 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
         Internal heat source vector
     QS_init :   n x 1 numpy array
         Solar flux heat source vector
+    n   :   int
+        number of thermal nodes in the model excluding deep space and inactive nodes
 
     """
+
+    # prepare initial boundary conditions 
+    df = pd.read_csv(nodes, header=1)
+
+    QI = df.filter(regex = 'QI(?!{})(?!{})'.format(env, inact)) # get rid of environment and inactive nodes
+    QI_init = QI.to_numpy()[0]
+
+    n =  QI_init.shape[0] # number of thermal nodes in the model
+
+    QI_init = np.insert(QI_init, 0, 0) # insert zero for deep space node
+
+    QS = df.filter(regex = 'QS(?!{})(?!{})(?!I)'.format(env, inact))
+    QS_init = QS.to_numpy()[0]
+    QS_init = np.insert(QS_init, 0, 0)
 
     # prepare linear conductors
     
@@ -49,13 +64,20 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
         j = int(Name.split(';')[1])
         idx = (i,j)
         GL_init[idx] = Data.values
+    
+    #define GL diagonal elements as negative sum of respective row (all node conductor couplings)
+    diag = np.negative(np.sum(GL_init, 1))
+    di = np.diag_indices(n+1)
+    GL_init[di] = diag
+
+    GL_init[0,0] = 1.0 # deep space node temperature = 0 K (this coef is needed to avoid singularity in heat equations)
 
     # prepare radiative conductors
 
     GRs = df.filter(regex ='GR')
     GRs.columns = GRs.columns.str.extract(r'(\d+;\d+)', expand=False) # leave only indices in the column names
 
-    GRs.columns = GRs.columns.str.replace(env, '0') #replace default esatan env node number to 0
+    GRs.columns = GRs.columns.str.replace(env, '0') #replace default esatan deep space node number to 0
 
     GRs = GRs.drop(GRs.filter(regex=inact).columns, axis=1) # drop inactive nodes
 
@@ -67,27 +89,24 @@ def inits(n, nodes, conductors, env='99999', inact='99998'):
         idx = (i,j)
         GR_init[idx] = Data.values
     
-    #esatan does not include stefan-boltzman const
+    #esatan does not include stefan-boltzman const in GR output
     sigma = 5.670374e-8
     GR_init = GR_init*sigma 
 
-    # prepare initial boundary conditions 
-    df = pd.read_csv(nodes, header=1)
+    GR_init[0,:] = 0. # REFs from deep space = 0
+    GR_init = GR_init.T # needs to be transposed to result in proper equilibrium equations
 
-    QI = df.filter(regex = 'QI(?!{})(?!{})'.format(env, inact)) # get rid of environment and inactive nodes
-    QI_init = QI.to_numpy()[0]
-    QI_init = np.insert(QI_init, 0, 0) # insert zero for deep space node 
-
-    QS = df.filter(regex = 'QS(?!{})(?!{})(?!I)'.format(env, inact))
-    QS_init = QS.to_numpy()[0]
-    QS_init = np.insert(QS_init, 0, 0)
+    # REF entries on the main diagonal must be formed by the negative sum of the respective column 
+    diag = np.negative(np.sum(GR_init, 0))
+    di = np.diag_indices(n+1) 
+    GR_init[di] = diag
     
-    return GL_init, GR_init, QI_init, QS_init
+    return n, GL_init, GR_init, QI_init, QS_init
 
 
 if __name__ == '__main__':
     n = 13
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    GL_init, GR_init, QI_init, QS_init = inits(n, nodes, conductors)
-    print(GR_init)
+    n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
+    print(n)
