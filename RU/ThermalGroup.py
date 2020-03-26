@@ -22,6 +22,7 @@ class ThermalGroup(om.Group):
     def setup(self):
         
         n = self.n
+        area = self.area
         
         params = om.IndepVarComp()
 
@@ -113,7 +114,7 @@ if __name__ == "__main__":
     #print(prob['temp.T']-273.15)
     
 
-    prob.set_solver_print(level=1)
+    #prob.set_solver_print(level=1)
 
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
@@ -129,5 +130,5 @@ if __name__ == "__main__":
 
     #prob.model.list_inputs(print_arrays=True, includes=['*GL*'])
 
-    print(prob['temp.T']-273.15)
+    #print(prob['temp.T']-273.15)
 
