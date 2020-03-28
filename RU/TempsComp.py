@@ -1,7 +1,7 @@
 import openmdao.api as om
 import numpy as np
 
-class TempComp(om.ImplicitComponent):
+class TempsComp(om.ImplicitComponent):
     """Computes steady state node temperatures over multiple points."""
     def initialize(self):
         self.options.declare('n', default=1, types=int, desc='number of diffusion nodes')
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     indeps.add_output('QS', val=np.repeat(QS_init, npts, axis=1), units='W')
     indeps.add_output('QI', val=np.repeat(QI_init, npts, axis=1), units='W')
 
-    model.add_subsystem('tmm', TempComp(n=n, npts=npts), promotes=['*'])
+    model.add_subsystem('tmm', TempsComp(n=n, npts=npts), promotes=['*'])
 
     model.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
     model.nonlinear_solver.options['iprint'] = 2

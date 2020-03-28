@@ -1,0 +1,247 @@
+import openmdao.api as om
+import numpy as np
+
+from TempsComp import TempsComp
+
+class SolarCell(om.ExplicitComponent):
+    def initialize(self):
+        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('npts', default=1, types=int, desc='number of points')  
+    def setup(self):
+        nodes = self.options['nodes']
+        n = len(nodes)
+        m = self.options['npts']
+
+        idx_list = [[(i,j) for j in range(m)] for i in nodes]
+
+        self.add_input('T', val=np.ones((n,m))*28., src_indices=idx_list, units='degC')
+        self.add_output('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        self.declare_partials('*', '*')
+    def compute(self, inputs, outputs):
+        """solar cell data from:https://www.e3s-conferences.org/articles/e3sconf/pdf/2017/04/e3sconf_espc2017_03011.pdf"""
+        T0 = 28. #reference temperature
+        eff0 = .285 #efficiency at ref temp
+        T1 = -150.
+        eff1 = 0.335
+
+        delta_T = inputs['T'] - T0
+
+        slope = (eff1 - eff0) / (T1 - T0)
+        
+        outputs['eta'] = eff0 + slope * delta_T
+
+    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
+        
+        T0 = 28.
+        eff0 = .285
+        T1 = -150.
+        eff1 = 0.335
+        slope = (eff1 - eff0) / (T1 - T0)
+        
+        deff_dT = d_outputs['eta']
+
+        if mode == 'fwd':
+            
+            deff_dT += slope * d_inputs['T']
+        else:
+
+            d_inputs['T'] = slope * deff_dT
+
+class ElectricPower(om.ExplicitComponent):
+    def initialize(self):
+        self.options.declare('n_in', types=int, desc='number of input nodes')
+        self.options.declare('npts', default=1, types=int, desc='number of points')
+        self.options.declare('ar', default=.90, lower=.0, upper=1., desc='solar cell to node surface area ratio')
+        self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
+
+    def setup(self):
+        n = self.options['n_in']
+        m = self.options['npts']
+    
+        self.add_input('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed power over time', units='W')
+        self.add_output('P_el', shape=(n,m), desc='Electrical power output over time', units='W')
+        #self.declare_partials('*', '*')
+
+    def compute(self, inputs, outputs):
+        ar = self.options['ar']
+        m = self.options['npts']
+        n = self.options['n_in']
+        eta_con = self.options['eta_con']
+    
+        eta = inputs['eta'] * eta_con * ar
+        QS = inputs['QS_c']
+
+        outputs['P_el'] = np.multiply(QS, eta)
+
+        """ def compute_partials(self, input, partials):
+        rows = self.options['n_in']
+        cols = self.options['npts']
+        partials['P_el', 'QS_c'] = np.einsum('ik, jl', np.eye(cols, cols), np.eye(rows, rows))
+        partials['P_el', 'eta'] = np.einsum('ik, jl', np.eye(cols, cols), np.eye(rows, rows)) """
+
+    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
+        """
+        Matrix-vector product with the Jacobian.
+        """
+        eta_con = self.options['eta_con']
+        ar = self.options['ar']
+        eta = inputs['eta'] * eta_con * ar
+
+        dP_el = d_outputs['P_el']
+
+        if mode == 'fwd':
+            if 'QS_c' in d_inputs:
+                
+                dP_el += d_inputs['QS_c'] * eta
+
+            if 'eta' in d_inputs:
+                
+                dP_el += d_inputs['eta'] * inputs['QS_c'] * eta_con * ar
+        else:
+            
+            if 'QS_c' in d_inputs:
+                d_inputs['QS_c'] += dP_el * eta
+
+            if 'eta' in d_inputs:
+                d_inputs['eta'] += inputs['QS_c'] * eta_con * ar * dP_el
+
+class QSmtxComp(om.ExplicitComponent):
+    def initialize(self):
+        self.options.declare('nn', types=int, desc='number of diffusion nodes in thermal model')
+        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('npts', default=1, types=int, desc='number of points')
+        
+    def setup(self):
+        nn = self.options['nn'] + 1
+        n_in = len(self.options['nodes'])
+        m = self.options['npts']
+        self.add_input('P_el', shape=(n_in,m), desc='solar cell electric power over time', units='W')
+        self.add_input('QS_c', shape=(n_in,m), desc='solar cell absorbed heat over time', units='W')
+        self.add_input('QS_r', shape=(n_in,m), desc='radiator absorbed heat over time', units='W')
+        self.add_output('QS', val=np.zeros((nn,m)), desc='solar absorbed heat over time', units='W')
+    
+    def compute(self, inputs, outputs):
+        nn = self.options['nn'] + 1
+        m = self.options['npts']
+        QS = np.zeros((nn,m))
+        P_el = inputs['P_el']
+        QS_c = inputs['QS_c']
+        QS_r = inputs['QS_r']
+        for i,node in enumerate(self.options['nodes']):
+            QS[node,:] = QS_c[i,:] + QS_r[i,:] - P_el[i,:] # energy balance
+        outputs['QS'] = QS
+    
+    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
+
+        m = self.options['npts']
+        nodes = self.options['nodes']
+                
+        P_el = inputs['P_el']
+        QS_c = inputs['QS_c']
+        QS_r = inputs['QS_r']
+
+        dQS = d_outputs['QS']
+
+        if mode == 'fwd':
+            
+            if 'P_el' in d_inputs:
+                for i,node in enumerate(nodes):
+                    dQS[node,:] -= d_inputs['P_el'][i,:]
+
+            if 'QS_c' in d_inputs:
+                for i,node in enumerate(nodes):
+                    dQS[node,:] += d_inputs['QS_c'][i,:]
+            
+            if 'QS_r' in d_inputs:
+                for i,node in enumerate(nodes):
+                    dQS[node,:] += d_inputs['QS_r'][i,:]
+        else:
+
+            if 'P_el' in d_inputs:
+                for i,node in enumerate(nodes):
+                    d_inputs['P_el'][i,:] -= dQS[node,:]
+
+            if 'QS_c' in d_inputs:
+                for i,node in enumerate(nodes):
+                    d_inputs['QS_c'][i,:] += dQS[node,:]
+            
+            if 'QS_r' in d_inputs:
+                for i,node in enumerate(nodes):
+                    d_inputs['QS_r'][i,:] += dQS[node,:]
+
+class Thermal_Cycle(om.Group):
+    def __init__(self, nn, npts, nodes):
+            super(Thermal_Cycle, self).__init__()
+
+            self.nn = nn
+            self.npts = npts
+            self.nodes = nodes
+
+    def setup(self):
+        
+        npts = self.npts
+        nodes = self.nodes
+        n_in = len(nodes)
+
+        self.add_subsystem('sc', SolarCell(nodes=nodes, npts=npts), promotes=['*'])
+        self.add_subsystem('el', ElectricPower(n_in=n_in, npts=npts), promotes=['*'])
+        self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=npts), promotes=['*'])
+        self.add_subsystem('temps', TempsComp(n=self.nn, npts=self.npts), promotes=['*'])
+        self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
+        self.nonlinear_solver.options['iprint'] = 2
+        self.nonlinear_solver.options['maxiter'] = 15
+        self.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
+        self.nonlinear_solver.linesearch.options['maxiter'] = 10
+        self.nonlinear_solver.linesearch.options['iprint'] = 2
+        self.linear_solver = om.DirectSolver()
+        self.linear_solver.options['assemble_jac'] = False
+
+if __name__ == "__main__":
+
+    from ViewFactors import parse_vf
+    from inits import inits
+    
+    npts = 2
+    nodals = 'Nodal_data.csv'
+    conductors = 'Cond_data.csv'
+    nn, GL_init, GR_init, QI_init, QS_init = inits(nodals, conductors)
+
+    QI_init = QI_init[np.newaxis,:].T
+
+    QS_c = [[9.19191,    1.02132333],
+            [0.,         0.        ],
+            [8.69505,    0.96611667],
+            [8.69505,    0.96611667],
+            [0.,         0.        ],
+            [0.,         0.        ],
+            [0.,         0.        ],
+            [0.,         0.        ],
+            [0.,         0.        ],
+            [0.,         0.        ],
+            [0.,         0.        ]]
+
+
+    view_factors = 'viewfactors.txt'
+    data = parse_vf(view_factors)
+    nodes = []
+
+    for entry in data:
+        nodes.append(entry['node number'])
+    #print(nodes, area, vf, eps)
+
+    model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
+
+    params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
+    params.add_output('QI', val=np.repeat(QI_init, npts, axis=1))
+    params.add_output('GL', val=GL_init, units='W/K')
+    params.add_output('GR', val=GR_init)
+    params.add_output('QS_c', val=QS_c)
+    params.add_output('QS_r', val=np.zeros((len(nodes), npts)))
+    
+    problem = om.Problem(model=model)
+    problem.setup(check=True)
+    
+    problem.run_model()
+
+    print(problem['T']-273.)
