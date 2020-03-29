@@ -10,8 +10,8 @@ class PowerOutput(om.ExplicitComponent):
         m = self.options['npts']
         nn = self.options['nn']+1
         
-        self.add_input('QI', val=np.zeros((nn,npts)), desc='Internal power dissipation over time for each node', units='W')
-        self.add_output('P_out', val=np.ones(npts), desc='Total power output over time', units='W')
+        self.add_input('QI', val=np.zeros((nn,m)), desc='Internal power dissipation over time for each node', units='W')
+        self.add_output('P_out', val=np.ones(m), desc='Total power output over time', units='W')
 
     def compute(self,inputs,outputs):
         outputs['P_out'] = np.sum(inputs['QI'], 0)

@@ -1,8 +1,6 @@
 import openmdao.api as om
 import numpy as np
 
-from TempsComp import TempsComp
-
 class SolarCell(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
@@ -51,7 +49,7 @@ class ElectricPower(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n_in', types=int, desc='number of input nodes')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('ar', default=.90, lower=.0, upper=1., desc='solar cell to node surface area ratio')
+        self.options.declare('ar', default=.9, lower=.0, upper=1., desc='solar cell to node surface area ratio')
         self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
 
     def setup(self):
@@ -170,6 +168,55 @@ class QSmtxComp(om.ExplicitComponent):
                 for i,node in enumerate(nodes):
                     d_inputs['QS_r'][i,:] += dQS[node,:]
 
+class TempsComp(om.ImplicitComponent):
+    """Computes steady state node temperatures over multiple points."""
+    def initialize(self):
+        self.options.declare('n', default=1, types=int, desc='number of diffusion nodes')
+        self.options.declare('npts', default=1, types=int, desc='number of points')
+    def setup(self):
+        n = self.options['n'] + 1
+        m = self.options['npts']
+        self.add_output('T', val=np.zeros((n,m)), units='K')
+        self.add_input('GL', val=np.zeros((n,n)), units='W/K')
+        self.add_input('GR', val=np.zeros((n,n)))
+        self.add_input('QS', val=np.zeros((n,m)), units='W')
+        self.add_input('QI', val=np.zeros((n,m)), units='W')
+        self.declare_partials(of='T', wrt='T', method='fd')
+        self.declare_partials(of='T', wrt='GL')
+        self.declare_partials(of='T', wrt='GR')
+        self.declare_partials(of='T', wrt='QI')
+        self.declare_partials(of='T', wrt='QS')
+
+    def apply_nonlinear(self, inputs, outputs, residuals):
+        GL = inputs['GL']
+        GR = inputs['GR']
+        QS = inputs['QS']
+        QI = inputs['QI']
+        T = outputs['T']
+
+        residuals['T'] = GL.dot(T) + GR.dot(T**4) + QS + QI
+
+    def linearize(self, inputs, outputs, partials):
+        n = self.options['n'] + 1
+        m = self.options['npts']
+        GL = inputs['GL']
+        GR = inputs['GR']
+        QS = inputs['QS']
+        QI = inputs['QI']
+        T = outputs['T']
+
+        partials['T', 'GL'] = np.einsum('ik, jl', np.eye(n, n), T.T)
+        partials['T', 'GR'] = np.einsum('ik, jl', np.eye(n, n), (T**4).T)
+        partials['T', 'QS'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
+        partials['T', 'QI'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
+        #partials['T', 'T'] = np.einsum('ik, jl', GL, np.eye(m, m)) + np.einsum('ik, jl', GR, np.eye(m, m))
+    
+    def guess_nonlinear(self, inputs, outputs, residuals):
+        n = self.options['n'] + 1
+        m = self.options['npts']
+        #gues values
+        outputs['T'] = -np.ones((n,m))*50 + 273
+
 class Thermal_Cycle(om.Group):
     def __init__(self, nn, npts, nodes):
             super(Thermal_Cycle, self).__init__()
@@ -188,6 +235,7 @@ class Thermal_Cycle(om.Group):
         self.add_subsystem('el', ElectricPower(n_in=n_in, npts=npts), promotes=['*'])
         self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=npts), promotes=['*'])
         self.add_subsystem('temps', TempsComp(n=self.nn, npts=self.npts), promotes=['*'])
+        
         self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
         self.nonlinear_solver.options['iprint'] = 2
         self.nonlinear_solver.options['maxiter'] = 15
@@ -203,23 +251,18 @@ if __name__ == "__main__":
     from inits import inits
     
     npts = 2
-    nodals = 'Nodal_data.csv'
+    nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    nn, GL_init, GR_init, QI_init, QS_init = inits(nodals, conductors)
+    nn, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
+    nodes2 = 'Nodal_data_2.csv'
+    conductors2 = 'Cond_data_2.csv'
+    nn, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
+    npts = 2
 
-    QI_init = QI_init[np.newaxis,:].T
+    QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
+    QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
-    QS_c = [[9.19191,    1.02132333],
-            [0.,         0.        ],
-            [8.69505,    0.96611667],
-            [8.69505,    0.96611667],
-            [0.,         0.        ],
-            [0.,         0.        ],
-            [0.,         0.        ],
-            [0.,         0.        ],
-            [0.,         0.        ],
-            [0.,         0.        ],
-            [0.,         0.        ]]
+    QS_c = QS_init[1:12,:]*0.91/0.61
 
 
     view_factors = 'viewfactors.txt'
@@ -233,9 +276,9 @@ if __name__ == "__main__":
     model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
 
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
-    params.add_output('QI', val=np.repeat(QI_init, npts, axis=1))
-    params.add_output('GL', val=GL_init, units='W/K')
-    params.add_output('GR', val=GR_init)
+    params.add_output('QI', val=QI_init)
+    params.add_output('GL', val=GL_init1, units='W/K')
+    params.add_output('GR', val=GR_init1)
     params.add_output('QS_c', val=QS_c)
     params.add_output('QS_r', val=np.zeros((len(nodes), npts)))
     
@@ -244,4 +287,11 @@ if __name__ == "__main__":
     
     problem.run_model()
 
-    print(problem['T']-273.)
+    #print(problem['T']-273.)
+    #print(problem['eta'])
+    #print(problem['QS'][1:12,:] - QS_init[1:12,:])
+    #print(GR_init1 == GR_init2)
+
+    totals = problem.compute_totals(of=['T'], wrt=['eta'])
+    print(totals)
+    problem.check_totals(compact_print=True)

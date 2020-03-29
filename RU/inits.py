@@ -45,10 +45,13 @@ def inits(nodes, conductors, env='99999', inact='99998'):
     n =  QI_init.shape[0] # number of thermal nodes in the model
 
     QI_init = np.insert(QI_init, 0, 0) # insert zero for deep space node
+    QI_init = QI_init[np.newaxis,:].T # make array 2D
+
 
     QS = df.filter(regex = 'QS(?!{})(?!{})(?!I)'.format(env, inact))
     QS_init = QS.to_numpy()[0]
     QS_init = np.insert(QS_init, 0, 0)
+    QS_init = QS_init[np.newaxis,:].T
 
     # prepare linear conductors
     
@@ -109,4 +112,4 @@ if __name__ == '__main__':
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
     n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
-    print(n)
+    #print(n)

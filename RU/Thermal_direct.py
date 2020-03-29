@@ -126,9 +126,9 @@ if __name__ == "__main__":
     #print(totals)
     #prob.check_totals(compact_print=True)
 
-    prob.run_driver()
+    #prob.run_driver()
 
-    #prob.model.list_inputs(print_arrays=True, includes=['*GL*'])
+    prob.model.list_inputs(print_arrays=True, includes=['*GR*'])
 
-    #print(prob['temp.T']-273.15)
+    print(prob['temp.T']-273.15)
 

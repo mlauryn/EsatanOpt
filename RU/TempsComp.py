@@ -57,17 +57,20 @@ if __name__ == "__main__":
 
     nodes = 'Nodal_data.csv'
     conductors = 'Cond_data.csv'
-    n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
+    n, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
+    nodes2 = 'Nodal_data_2.csv'
+    conductors2 = 'Cond_data_2.csv'
+    n, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
     npts = 2
 
-    QI_init = QI_init[np.newaxis,:].T
-    QS_init = QS_init[np.newaxis,:].T
+    QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
+    QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('GL', val=GL_init, units='W/K')
-    indeps.add_output('GR', val=GR_init)
-    indeps.add_output('QS', val=np.repeat(QS_init, npts, axis=1), units='W')
-    indeps.add_output('QI', val=np.repeat(QI_init, npts, axis=1), units='W')
+    indeps.add_output('GL', val=GL_init1, units='W/K')
+    indeps.add_output('GR', val=GR_init1)
+    indeps.add_output('QS', val=QS_init, units='W')
+    indeps.add_output('QI', val=QI_init, units='W')
 
     model.add_subsystem('tmm', TempsComp(n=n, npts=npts), promotes=['*'])
 
@@ -84,5 +87,5 @@ if __name__ == "__main__":
     problem.run_model()
     print(problem['T']-273.15)
 
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-3)
-    #problem.model.list_inputs(print_arrays=True, includes=['*G*'])
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-3)
+    #problem.model.list_inputs(print_arrays=True, includes=['*QI*'])

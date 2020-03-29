@@ -30,7 +30,7 @@ class Ilumination(om.ExplicitComponent):
         for i in range(m):
             for nn in [0,2,3]: #these nodes are solar cells
                 QIS[nn,i] = q_s[i] * A[nn] * math.cos(beta[i])
-            QIS[6,i] = q_s[i] * A[6] * math.sin(beta[i])
+            QIS[5,i] = q_s[i] * A[5] * math.sin(beta[i])
         outputs['QIS'] = QIS
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
@@ -50,14 +50,14 @@ class Ilumination(om.ExplicitComponent):
                 for i in range(m):
                     for nn in [0,2,3]: #these nodes are solar cells
                         dQIS[nn,i] -= q_s[i] * A[nn] *  math.sin(beta[i])
-                    dQIS[6,i] += q_s[i] * A[6] * math.cos(beta[i])
+                    dQIS[5,i] += q_s[i] * A[5] * math.cos(beta[i])
         else:
             
             if 'beta' in d_inputs:
                 for i in range(m):
                     for nn in [0,2,3]: #these nodes are solar cells
                         d_inputs['beta'] -= q_s[i] * A[nn] * math.sin(beta[i]) * dQIS[nn,i]
-                    d_inputs['beta'] += q_s[i] * A[6] * math.cos(beta[i]) * dQIS[6,i]
+                    d_inputs['beta'] += q_s[i] * A[5] * math.cos(beta[i]) * dQIS[5,i]
 
 class SolarPower(om.ExplicitComponent):
 
@@ -177,9 +177,21 @@ if __name__ == "__main__":
     problem.run_model()
     
     #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+
+    #compare results with esatan
+    nodes = 'Nodal_data.csv'
+    conductors = 'Cond_data.csv'
+    n, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
+    nodes2 = 'Nodal_data_2.csv'
+    conductors2 = 'Cond_data_2.csv'
+    n, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
+    npts = 2
+
+    QS_init = np.concatenate((QS_init2, QS_init1), axis=1)
     
 
-    print(problem['QS_c'])
-    print(problem['QS_r'])
+    print((problem['QS_c'] - QS_init[1:12,:]*0.91/0.61)/problem['QS_c'])
+    #print(QS_init[1:12,:]*0.91/0.61)
+    
     
     #problem.model.list_inputs(print_arrays=True)
