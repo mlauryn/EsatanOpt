@@ -2,7 +2,7 @@ import openmdao.api as om
 import numpy as np
 
 class TempComp(om.ImplicitComponent):
-    """Computes steady state node temperature residual across a model based on conductor definition and boundary conditions."""
+    """Computes steady state node temperature residual across a model based on conductor definition and boundary conditions at single design point."""
     def initialize(self):
         self.options.declare('n', default=1, types=int, desc='number of diffusion nodes')
     def setup(self):

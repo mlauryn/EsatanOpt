@@ -2,7 +2,7 @@ import openmdao.api as om
 import numpy as np
 
 class TempsComp(om.ImplicitComponent):
-    """Computes steady state node temperatures over multiple points."""
+    """Computes steady state node temperatures over multiple design points."""
     def initialize(self):
         self.options.declare('n', default=1, types=int, desc='number of diffusion nodes')
         self.options.declare('npts', default=1, types=int, desc='number of points')
