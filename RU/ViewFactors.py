@@ -47,7 +47,7 @@ def parse_vf(filepath):
         # if there are no matches
         return None, None
 
-    data = []  # create an empty list to collect the data
+    data = {}  # create an empty dict to collect the data
     # open the file and read through it line by line
     with open(filepath, 'r') as file_object:
         
@@ -76,15 +76,10 @@ def parse_vf(filepath):
                     continue # filter out internal surfacess
             
                 # create a dictionary containing this row of data
-                row = {
-                    'node number': int(node),
-                    'area': float(area),
-                    'emissivity': float(eps),
-                    'vf': vf
-                }
+                entry = {int(node): {'area': float(area), 'eps': float(eps), 'vf': vf}}
                 
                 # append the dictionary to the data list
-                data.append(row)
+                data.update(entry)
 
         """ # create a pandas DataFrame from the list of dicts
         data = pd.DataFrame(data)
@@ -99,7 +94,8 @@ def parse_vf(filepath):
 if __name__ == '__main__':
     filepath = 'ViewFactors.txt'
     data = parse_vf(filepath)
-    nodes = []
+    print(data)
+    """ nodes = []
     area = []
     vf = []
     eps = []
@@ -109,4 +105,4 @@ if __name__ == '__main__':
         area.append(entry['area'])
         vf.append(entry['vf']) 
         eps.append(entry['emissivity'])  
-    print(nodes, area, vf, eps)
+    print(nodes, area, vf, eps) """

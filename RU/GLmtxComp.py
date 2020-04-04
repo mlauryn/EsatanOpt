@@ -1,5 +1,5 @@
 """ 
-Component for generating thermal model linear conductor matrix based on input parameters and esatan data. 
+Component for generating thermal model linear conductor matrix based on input parameters and esatan conductors. 
 This component takes thermal conductivities k as input variables and generates linear conductors GL = k * SF, 
 where SF is shape factor given by SF = A/L (A-crossectional area of conductor, L - length of conductor). 
 Initial GLs are to be provided from esatan model as option parameter GL_init
@@ -11,31 +11,47 @@ class GLmtxComp(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n', types=int, desc='number of diffusion nodes in thermal model')
         self.options.declare('GL_init', desc='initial conductor matrix from thermal model as n+1 x n+1 array')
-        self.options.declare('nodes', types=dict, desc='dictionary of node pair indice tuples (i,j) defining 2 nodes that each conductor connects')
-        self.options.declare('SF', types=dict, desc='dictionary of shape factors for for each input conductor')
+        self.options.declare('user_links', types=list, desc='list of user conductor data dictionaries')
     
     def setup(self):    
         n = self.options['n'] + 1
-        nodes = self.options['nodes']
-        SF = self.options['SF']
+        conductors = self.options['user_links']       
         self.add_output('GL', shape=(n,n))
-        for var in nodes:
-            self.add_input(var) # adds input variable with the same name as user conductor name
-            idx = nodes[var] # reads node pair indices of the input conductor
-            self.declare_partials('GL', var, 
-            rows=[(idx[0])*n+idx[0], (idx[0])*n+idx[1], (idx[1])*n+idx[0], (idx[1])*n+idx[1]],
-            cols=[0,0,0,0],
-            val=np.multiply([-1.,1.,1.,-1.], SF[var]))
-        # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
+               
+        for invar in conductors:
+            name = invar['cond_name']
+            nodes = invar['nodes']
+            shape_factors = invar['SF']
+            self.add_input(name) # adds input conductivity (scalar) with the same name as user conductor name
+
+            partials = np.zeros((n,n))
+
+            for idx, SF in zip(nodes, shape_factors):
+                partials[idx] = SF  # derivative of dGL/dk = SF
+            # do the same as in compute function
+            i_lower = np.tril_indices(n, -1)
+            partials[i_lower] = partials.T[i_lower]
+            di = np.diag_indices(n)
+            diag = np.negative(np.sum(partials, 1))
+            partials[di] = diag
+            
+            # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1)
+            flat_partials = partials.flatten()
+            rows = np.nonzero(flat_partials)[0]
+            values = flat_partials[rows]
+            self.declare_partials('GL', name, rows=rows, cols=[0]*len(rows), val=values)
     
     def compute(self, inputs, outputs):
         n = self.options['n'] + 1
         GL = np.copy(self.options['GL_init'])
-        SF = self.options['SF']
-        nodes = self.options['nodes'] 
-        for var in inputs:
-            idx = nodes[var]
-            GL[idx] = SF[var]*inputs[var] # updates GL values based on input
+        conductors = self.options['user_links']
+         
+        for invar in conductors:
+            name = invar['cond_name']
+            nodes = invar['nodes']
+            shape_factors = invar['SF']
+            for idx, SF in zip(nodes, shape_factors):
+                GL[idx] = SF * inputs[name]  # updates GL values based on input
 
         # mirror values from upper triangle to lower triangle
         i_lower = np.tril_indices(n, -1)
@@ -58,31 +74,24 @@ class GLmtxComp(om.ExplicitComponent):
 if __name__ == "__main__":
     # script for testing partial derivs
     from Conductors import parse_cond
-    from inits import inits
+    from inits import conductors, nodes
     
-    nodes = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
+    node_data = 'nodal_data.csv'
+    cond_data = 'Cond_data.csv'
+    nn, groups = nodes(node_data)
+    GL_init, GR_init = conductors(nn, cond_data) 
 
     filepath = 'conductors.txt'
-    data = parse_cond(filepath)
-    nodes = {}
-    shape_factors = {}
-    values = {}
-    for entry in data:
-        nodes.update( {entry['cond_name'] : entry['nodes']} )
-        shape_factors.update( {entry['cond_name'] : entry['SF'] } )
-        values.update( {entry['cond_name'] : entry['conductivity'] } )  
-    #print(shape_factors, nodes)
+    conductors = parse_cond(filepath)
 
     model = om.Group()
     comp = om.IndepVarComp()
-    for var in nodes:
-        comp.add_output(var, val=values[var] ) # adds output variable with the same name as user conductor name
+    for cond in conductors:
+        comp.add_output(cond['cond_name'], val=cond['values'][0] ) # adds output variable with the same name as user conductor name
     
     
     model.add_subsystem('input', comp, promotes=['*'])
-    model.add_subsystem('example', GLmtxComp(n=n, GL_init=GL_init, nodes=nodes, SF=shape_factors), promotes=['*'])
+    model.add_subsystem('example', GLmtxComp(n=nn, GL_init=GL_init, user_links=conductors), promotes=['*'])
 
     """ model.connect('input.Spacer1', 'example.Spacer1')
     model.connect('input.Spacer2', 'example.Spacer2') """
@@ -92,8 +101,13 @@ if __name__ == "__main__":
     
     problem.run_model()
     
-    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
 
     #print(problem['example.GL'])
 
-    print(problem['example.GL'] - GL_init)
+    import sys
+
+    np.set_printoptions(threshold=sys.maxsize)
+
+    #print(problem['example.GL'] - GL_init)
+    #print(problem['example.GL'])

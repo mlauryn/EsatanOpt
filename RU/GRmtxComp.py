@@ -10,35 +10,37 @@ class GRmtxComp(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n', types=int, desc='number of diffusion nodes in thermal model')
         self.options.declare('GR_init', desc='initial REF matrix from thermal model as n+1 x n+1 array')
-        self.options.declare('nodes', types=list, desc='list of input node numbers')
-        self.options.declare('VF', types=list, desc='list of input node view factors')
-        self.options.declare('A', types=list, desc='list of input node areas')
+        self.options.declare('faces', types=list, desc='names and optical properties of input faces')
     
     def setup(self):    
         n = self.options['n'] + 1
-        nodes = self.options['nodes']
-        VF = self.options['VF']
-        area = self.options['A']
+        faces = self.options['faces']
+        #VF = self.options['VF']
+        #area = self.options['A']
         sigma = 5.670374e-8
         self.add_output('GR', shape=(n,n))
-        for i,node in enumerate(nodes):
-            name = 'eps:{}'.format(node)
-            self.add_input(name) # adds input variable as 'emissivity:node no.'
-            deriv = area[i] * VF[i] * sigma
-            self.declare_partials('GR', name, rows=[node, node * n + node], cols=[0, 0], val=[deriv, -1 * deriv ])
+        for face in faces:
+            self.add_input(face['name']) # adds input variable as face node group label
+            
+            rows = []
+            derivs = []
+            for i,node in enumerate(face['nodes']):
+                deriv = face['areas'][i] * face['VFs'][i] * sigma # derivative of REF with respect to this node emissivity
+                rows.extend([node, node * n + node])
+                derivs.extend([deriv, -1 * deriv ])
+            
+            self.declare_partials('GR', face['name'], rows=rows, cols=[0]*len(face['nodes'])*2, val=derivs)
         
         # note: we define sparsity pattern of constant partial derivatives, openmdao expects shape (n*n, 1) 
     
     def compute(self, inputs, outputs):
         n = self.options['n'] + 1
         GR = np.copy(self.options['GR_init'])
-        VF = self.options['VF']
-        area = self.options['A']
-        nodes = self.options['nodes']
+        faces = self.options['faces']
         sigma = 5.670374e-8
 
-        for i, eps in enumerate(inputs):
-            GR[0, nodes[i]] = area[i] * VF[i] * inputs[eps] * sigma # updates REFs to deep space based on input emissivity, view factor and area
+        for face in faces:
+            GR[0, face['nodes']] = np.array(face['areas']) * np.array(face['VFs']) * sigma * inputs[face['name']] # updates REFs to deep space based on input emissivity, view factor and area
         
         #need to update diagonals
         
@@ -55,33 +57,29 @@ class GRmtxComp(om.ExplicitComponent):
 if __name__ == "__main__":
     # script for testing partial derivs
     from ViewFactors import parse_vf
-    from inits import inits
+    from inits import nodes, conductors
+    from opticals import opticals
     
-    nodals = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    n, GL_init, GR_init, QI_init, QS_init = inits(nodals, conductors)
+    node_data = 'nodal_data.csv'
+    cond_data = 'Cond_data.csv'
+    nn, groups = nodes(node_data)
+    GL_init, GR_init = conductors(nn, cond_data) 
 
-    view_factors = 'viewfactors.txt'
-    data = parse_vf(view_factors)
-    nodes = []
-    area = []
-    vf = []
-    eps = []
-    for entry in data:
-        nodes.append(entry['node number'])
-        area.append(entry['area'])
-        vf.append(entry['vf']) 
-        eps.append(entry['emissivity'])  
-    #print(nodes, area, vf, eps)
+    optprop = parse_vf('viewfactors.txt')
+
+    #groups.update({'my_group': [54,55,56,57]})
+    keys = ['Box:outer', 'Panel_outer:back'] #, 'my_group']
+    faces = opticals(groups, keys, optprop)
 
     model = om.Group()
     params = om.IndepVarComp()
-    for i,node in enumerate(nodes):
-        name = 'eps:{}'.format(node)
-        params.add_output(name, val=eps[i] ) # adds output variable as 'emissivity:node no.'
+    for face in faces:
+        name = face['name']
+        value = face['eps'][0]
+        params.add_output(name, val=value ) # adds independant variable as face name and assigns emissivity of it's first node
     
     model.add_subsystem('params', params, promotes=['*'])
-    model.add_subsystem('example', GRmtxComp(n=n, GR_init=GR_init, nodes=nodes, VF=vf, A=area), promotes=['*'])
+    model.add_subsystem('example', GRmtxComp(n=nn, GR_init=GR_init, faces=faces), promotes=['*'])
     
     problem = om.Problem(model=model)
     problem.setup(check=True)
@@ -91,6 +89,6 @@ if __name__ == "__main__":
     check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
     
 
-    print((problem['example.GR'][0,1:12] - GR_init[0,1:12])/GR_init[0,1:12])
+    #print((problem['example.GR'][0,1:nn] - GR_init[0,1:nn])/GR_init[0,1:nn])
     #print(problem['example.GR'] == GR_init)
     #problem.model.list_inputs(print_arrays=True)

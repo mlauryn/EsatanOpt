@@ -24,7 +24,7 @@ def parse_cond(filepath):
     """
     rx_dict = {
     'cond_name': re.compile(r'USER DEFINED CONDUCTOR = (?P<name>.*)\n'),
-    'type': re.compile(r'TYPE\s*= (?P<type>.*)\n'),
+    'cond_type': re.compile(r'TYPE\s*= (?P<cond_type>.*)\n'),
     'nodes': re.compile(r'\[(?P<nodes>\d.*)\]'),
     'shape factor': re.compile(r'Shape Factor: (?P<sf>\d.\d*)'),
     'conductivity': re.compile(r'Conductivity: (?P<cond>\d.\d*)'),
@@ -53,7 +53,6 @@ def parse_cond(filepath):
         for line in file_object:
             if line.strip() == 'USER-DEFINED LINKS':  
                 break
-        # Reads text until the contact zone block:
         
         for line in file_object:  # This keeps reading the file
             
@@ -64,39 +63,59 @@ def parse_cond(filepath):
             if key == 'cond_name':
                 cond = match.group('name')
 
-            # extract type
-            if key == 'type':
-                type = match.group('type')
+            # extract cond_type
+            if key == 'cond_type':
+                cond_type = match.group('cond_type')
             
             # extract nodes
             if key == 'nodes':
-                nodes = tuple(map(int, match.group('nodes').split(',')))
-
-                key, match = _parse_line(line.split('=')[1])
-                            
-                #extract shape factor    
-                                 
-                SF = float(match.group('sf'))
-            
-                if SF == 0.0:
-                    SF = 1.0 # override by user
-
-                    k = line.split('=')[1].split(',')[2].split(':')[1].strip() # conductivity equals user overriden value
-
-                else:
-                    key, match = _parse_line(line.split('=')[1].split(',')[1])
-                    k = match.group('cond') # else use normal conductivity
                 
-                # create a dictionary containing this row of data
-                row = {
+                nodes = []
+                shape_factors = []
+                values = []
+
+                # read each line of the table until a blank line
+                while line.strip():
+
+                    key, match = _parse_line(line.split('=')[0])
+
+                    node_pair = tuple(map(int, match.group('nodes').split(',')))
+
+                    key, match = _parse_line(line.split('=')[1])
+                                
+                    #extract shape factor    
+                                    
+                    SF = float(match.group('sf'))
+                
+                    if SF == 0.0:
+                        SF = 1.0 # override by user
+
+                        k = line.split('=')[1].split(',')[2].split(':')[1].strip() # conductivity equals user overriden value
+
+                    else:
+                        key, match = _parse_line(line.split('=')[1].split(',')[1])
+                        k = match.group('cond') # else use normal conductivity
+                    
+                    nodes.append(node_pair)
+                    shape_factors.append(SF)
+                    values.append(float(k))
+
+                    line = file_object.readline()
+
+                # create a dictionary containing this conductor data
+                entry = {
                     'cond_name': cond,
-                    'type': type,
+                    'cond_type': cond_type,
                     'nodes': nodes,
-                    'SF': SF,
-                    'conductivity': float(k)
+                    'SF': shape_factors,
+                    'values': values
                 }
                 # append the dictionary to the data list
-                data.append(row)
+                data.append(entry)
+
+                line = file_object.readline() # This keeps reading the file
+            
+            # keeps reading until 'contact zone' block
 
             if line.strip() == 'CONTACT-ZONE LINKS':
                 break
@@ -115,11 +134,12 @@ def parse_cond(filepath):
 if __name__ == '__main__':
     filepath = 'conductors.txt'
     data = parse_cond(filepath)
-    nodes = {}
+    print(data)
+    """ nodes = {}
     shape_factors = {}
     values = {}
     for entry in data:
         nodes.update( {entry['cond_name'] : entry['nodes']} )
         shape_factors.update( {entry['cond_name'] : entry['SF'] } )
-        values.update( {entry['cond_name'] : entry['conductivity'] } ) 
-    print(nodes, shape_factors, values)
+        values.update( {entry['cond_name'] : entry['values'] } ) 
+    print(nodes, shape_factors, values) """
