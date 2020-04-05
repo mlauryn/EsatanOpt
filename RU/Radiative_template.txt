@@ -1,0 +1,71 @@
+RADIATIVE_CASE {name};
+
+DEFINE_RADIATIVE_CASE (
+	radiative_case = {name},
+	title = "Orbit test Case",
+	geometry = "Whole Model",
+	mission_type = "ORBITAL",
+	init_time = 0.0,
+	prop_env =  "");
+
+DEFINE_MISSION (
+	radiative_case = {name},
+	orbit_centre = "SUN",
+	planet_radius = 0.0,
+	sun_radius = 6.96E8,
+	sun_distance = 0.0,
+	solar_decln = 0.0,
+	sun_alpha = 0.0,
+	orbital_precession = 0.0,
+	gc = 274.0,
+	celestial_body_image = "Sun",
+	omega = 0.0,
+	incln = 0.0,
+	alpha = 0.0,
+	alt_p = 1.4797356E11,
+	alt_a = 4.1202644E11,
+	init_anomaly = 0.0,
+	final_anomaly = 180.0,
+	position_method = "ANGLE",
+	angle_gap = 180.0,
+	eclipse_points = FALSE,
+	eclipse_offset = 0.5,
+	orientation =  "POINTING",
+	primary_vector = [0.0, -1.0, 0.0],
+	primary_direction = "TRUE_SUN",
+	second_vector = [0.0, 0.0, 1.0],
+	second_direction = "NORMAL_TO_ORBIT",
+	primary_gen_vector = [1.0, 0.0, 0.0],
+	second_gen_vector = [0.0, -1.0, 0.0],
+	init_phi = {phi},
+	init_psi = {psi},
+	init_omega = {omega},
+	phi_rot_rate = 0.0,
+	psi_rot_rate = 0.0,
+	omega_rot_rate = 0.0,
+	euler_order = "omega, phi, psi",
+	moving_geometry = FALSE,
+	spinning_craft = {is_in_spin},
+	init_offset = 0.0,
+	spin = {spin_axis},
+	spin_orientations = {spin_pos});
+
+DEFINE_ACCURACY (
+	radiative_case = {name});
+
+INTEGER error, orbit_index;
+
+FOR (orbit_index = 1;
+    orbit_index <= {name}.NUM_ORBIT_POSITIONS;
+    orbit_index = orbit_index + 1)
+
+    CALCULATE (
+        radiative_case = {name},
+        calc_types = "SDF",
+        pos_index = orbit_index,
+        eclipse_check = TRUE,
+        error_code = error);
+
+END_FOR
+
+DELETE error;

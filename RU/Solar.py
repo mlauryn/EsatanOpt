@@ -1,63 +1,70 @@
 import openmdao.api as om
 import numpy as np
-import math
+from HeatFluxComp import HeatFluxComp
 
-class Ilumination(om.ExplicitComponent):
+class Incident_Solar(om.ExplicitComponent):
     def initialize(self):
-        self.options.declare('G_sc', default=1365.0, desc='solar constant')
+        self.options.declare('n_in', types=int, desc='number of input nodes')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('A', default=[1]*7, types=list, desc='input surface node areas')
+        self.options.declare('faces', types=list, desc='names and optical properties of input faces')
     def setup(self):
-        nn = len(self.options['A'])
+        faces = self.options['faces']
+        n = self.options['n_in']
         m = self.options['npts']
         self.add_input('dist', val=np.ones(m), desc='distane in AU')
-        self.declare_partials(of='QIS', wrt='dist', dependent=False) # distance will be independat variable
-        self.add_input('beta', val=np.ones(m), units='rad')
-        self.add_output('QIS', val=np.ones((nn,m)), units='W')
+        self.add_input('q_s', val=np.zeros((m,n)))
+        self.add_output('QIS', val=np.ones((n, m)), units='W')
+
+        area = [] # compute area of each node
+        for face in faces:
+            area.extend(face['areas'])
+        self.A = np.array(area)
 
     def compute(self, inputs, outputs):
+
+        n = self.options['n_in']
         m = self.options['npts']
-        nn = len(self.options['A'])
         d = inputs['dist']
-        Gsc = self.options['G_sc']
+        q_s = inputs['q_s']
         
-        A = self.options['A']
-        beta = inputs['beta']
-        QIS = np.zeros((nn,m))
-
-        q_s = Gsc * (1/d)**2 #solar flux at distance d
-
+        QIS = np.zeros((n,m))
         for i in range(m):
-            for nn in [0,2,3]: #these nodes are solar cells
-                QIS[nn,i] = q_s[i] * A[nn] * math.cos(beta[i])
-            QIS[5,i] = q_s[i] * A[5] * math.sin(beta[i])
-        outputs['QIS'] = QIS
+            QIS[:,i] = q_s[i,:] * self.A * d[i]**(-2) # incident solar power at distance d at each point
+
+        outputs['QIS'] = QIS 
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
 
         m = self.options['npts']
+        n = self.options['n_in']
         d = inputs['dist']
-        beta = inputs['beta']
-        A = self.options['A']
-        Gsc = self.options['G_sc']
-        q_s = Gsc * (1/d)**2 #solar flux at distance d
+        q_s = inputs['q_s']
 
         dQIS = d_outputs['QIS']
 
         if mode == 'fwd':
             
-            if 'beta' in d_inputs:
+            if 'q_s' in d_inputs:
+
                 for i in range(m):
-                    for nn in [0,2,3]: #these nodes are solar cells
-                        dQIS[nn,i] -= q_s[i] * A[nn] *  math.sin(beta[i])
-                    dQIS[5,i] += q_s[i] * A[5] * math.cos(beta[i])
+                    dQIS[:,i] += self.A * d[i]**(-2) * d_inputs['q_s'][i,:]
+
+            if 'dist' in d_inputs:
+                for i in range(m):
+                    dQIS[:,i] -= q_s[i,:] * self.A * 2 * d[i]**(-3) * d_inputs['dist'][i]
+
         else:
             
-            if 'beta' in d_inputs:
+            if 'q_s' in d_inputs:
+
                 for i in range(m):
-                    for nn in [0,2,3]: #these nodes are solar cells
-                        d_inputs['beta'] -= q_s[i] * A[nn] * math.sin(beta[i]) * dQIS[nn,i]
-                    d_inputs['beta'] += q_s[i] * A[5] * math.cos(beta[i]) * dQIS[5,i]
+                    d_inputs['q_s'][i,:] += self.A * d[i]**(-2) * dQIS[:,i]
+
+            if 'dist' in d_inputs:
+
+                for i in range(m):
+                    for k in range(n):
+                        d_inputs['dist'][i] -= q_s[i,k] * self.A[k] * 2 * d[i]**(-3) * dQIS[k,i]
 
 class SolarPower(om.ExplicitComponent):
 
@@ -133,41 +140,45 @@ class SolarPower(om.ExplicitComponent):
                     d_inputs['cr'] -= alp_r * (dQSr[:,i] * QIS[:,i])[np.newaxis].T
 
 class Solar(om.Group):
-    def __init__(self, npts, area):
+    def __init__(self, npts, n_in, faces):
             super(Solar, self).__init__()
 
             self.npts = npts # number of points
-            self.area = area #area of optical nodes
+            self.faces = faces # optical properties of input faces
+            self.n = n_in # number of input external surface nodes 
 
     def setup(self):
-        
-        npts = self.npts
-        area = self.area
-        n_in = len(area)
 
-        self.add_subsystem('il', Ilumination(npts=npts, A=area), promotes=['*'])
-        self.add_subsystem('sol', SolarPower(n_in=n_in, npts=npts), promotes=['*'])
+        self.add_subsystem('hf', HeatFluxComp(faces=self.faces, npts=self.npts), promotes=['*'])
+        self.add_subsystem('is', Incident_Solar(npts=self.npts, n_in=self.n, faces=self.faces), promotes=['*'])
+        self.add_subsystem('sol', SolarPower(n_in=self.n, npts=self.npts), promotes=['*'])
 
 if __name__ == "__main__":
 
     from ViewFactors import parse_vf
-    from inits import inits
+    from opticals import opticals
+    from inits import nodes, conductors, inits
+
+    nn, groups = nodes()
+
+    optprop = parse_vf('viewfactors.txt')
+
+    keys = ['Panel_body:solar_cells']
+    faces = opticals(groups, keys, optprop)    
+    
+    #compute total number of nodes in selected faces
+    nodes = []
+    for face in faces:
+        nodes.extend(face['nodes'])
+    n_in = len(nodes)
     
     npts = 2
 
-    view_factors = 'viewfactors.txt'
-    data = parse_vf(view_factors)
-
-    area = []
-    for entry in data:
-        area.append(entry['area'])
-    #print(nodes, area, vf, eps)
-    
     params = om.IndepVarComp()
-    params.add_output('beta', val=np.zeros(npts) )
-    params.add_output('dist', val=[1., 3.])
+    params.add_output('phi', val=np.array([10.,10.]) )
+    params.add_output('dist', val=np.array([2.75, 1.]))
 
-    model = Solar(npts=npts, area=area)
+    model = Solar(npts=npts, n_in = n_in, faces=faces)
 
     model.add_subsystem('params', params, promotes=['*'])
     
@@ -179,19 +190,20 @@ if __name__ == "__main__":
     #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
 
     #compare results with esatan
-    nodes = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    n, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
-    nodes2 = 'Nodal_data_2.csv'
-    conductors2 = 'Cond_data_2.csv'
-    n, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
+    QI_init1, QS_init1 = inits()
+    QI_init2, QS_init2 = inits(data='Nodal_data_2.csv')
+    
     npts = 2
 
-    QS_init = np.concatenate((QS_init2, QS_init1), axis=1)
+    QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
     
-
-    print((problem['QS_c'] - QS_init[1:12,:]*0.91/0.61)/problem['QS_c'])
-    #print(QS_init[1:12,:]*0.91/0.61)
+    #check relative error
+    print((problem['QS_c'] - QS_init[[nodes],:]*0.91/0.61)/problem['QS_c'])
     
+    print(QS_init[[nodes],:]*0.91/0.61)
     
+    print(problem['QS_c'])
     #problem.model.list_inputs(print_arrays=True)
+
+    print(nodes)
+

@@ -33,10 +33,11 @@ if __name__ == '__main__':
     
     filepath = 'ViewFactors.txt'
     optprop = parse_vf(filepath)
-    node_data = 'nodal_data.csv'
-    nn, node_grp = nodes(node_data)
-    node_grp.update({'my_group': [54,55,56,57]})
-    keys = ['Box:outer', 'Panel_outer:back', 'my_group']
+
+    nn, node_grp = nodes()
+    
+    #node_grp.update({'my_group': [54,55,56,57]})
+    keys = ['Box:outer', 'Panel_outer:back']
     a = opticals(node_grp, keys, optprop)
     print(a)
     
