@@ -6,12 +6,12 @@ from smt.surrogate_models import RMTC, RMTB, RBF, IDW, KRG
 from parse_hf import parse_hf
 
 filepath = 'radiative_results.txt'
-df = parse_hf(filepath)
+data = parse_hf(filepath)
 
-data = df.loc[0].pivot(index='var', columns='node', values='IS')  
+nodes=[1,46,57] # user filter which nodes to evaluate
 
-xt = data.index.to_numpy()
-yt = data.to_numpy()
+xt = data[:,0]
+yt = data[:,nodes]
 
 xlimits = np.array([[xt[0], xt[-1]]])
 
@@ -35,8 +35,8 @@ y = sm.predict_values(x)
 xd = np.array([0.,45.])
 dy_dx = sm.predict_derivatives(xd,0)
 
-plt.plot(xt, yt[:,1], "o")
-plt.plot(x, y[:,1])
+plt.plot(xt, yt[:,2], "o")
+plt.plot(x, y[:,2])
 #plt.plot(x, dy_dx[:,0])
 plt.xlabel("x")
 plt.ylabel("y")

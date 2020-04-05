@@ -1,15 +1,15 @@
-RADIATIVE_CASE {name};
+RADIATIVE_CASE SM_training;
 
 DEFINE_RADIATIVE_CASE (
-	radiative_case = {name},
-	title = "Orbit test Case",
+	radiative_case = SM_training,
+	title = "Surrogate training",
 	geometry = "Whole Model",
 	mission_type = "ORBITAL",
 	init_time = 0.0,
 	prop_env =  "");
 
 DEFINE_MISSION (
-	radiative_case = {name},
+	radiative_case = SM_training,
 	orbit_centre = "SUN",
 	planet_radius = 0.0,
 	sun_radius = 6.96E8,
@@ -22,24 +22,24 @@ DEFINE_MISSION (
 	omega = 0.0,
 	incln = 0.0,
 	alpha = 0.0,
-	alt_p = 1.4797356E11,
-	alt_a = 4.1202644E11,
+	alt_p = 1.5E11,
+	alt_a = 1.5E11,
 	init_anomaly = 0.0,
-	final_anomaly = 180.0,
+	final_anomaly = {end_angle},
 	position_method = "ANGLE",
-	angle_gap = 180.0,
+	angle_gap = {angle_gap},
 	eclipse_points = FALSE,
 	eclipse_offset = 0.5,
 	orientation =  "POINTING",
 	primary_vector = [0.0, -1.0, 0.0],
-	primary_direction = "TRUE_SUN",
+	primary_direction = "GENERAL",
 	second_vector = [0.0, 0.0, 1.0],
 	second_direction = "NORMAL_TO_ORBIT",
 	primary_gen_vector = [1.0, 0.0, 0.0],
 	second_gen_vector = [0.0, -1.0, 0.0],
-	init_phi = {phi},
-	init_psi = {psi},
-	init_omega = {omega},
+	init_phi = 180.0,
+	init_psi = 0.0,
+	init_omega = 0.0,
 	phi_rot_rate = 0.0,
 	psi_rot_rate = 0.0,
 	omega_rot_rate = 0.0,
@@ -51,16 +51,16 @@ DEFINE_MISSION (
 	spin_orientations = {spin_pos});
 
 DEFINE_ACCURACY (
-	radiative_case = {name});
+	radiative_case = SM_training);
 
 INTEGER error, orbit_index;
 
 FOR (orbit_index = 1;
-    orbit_index <= {name}.NUM_ORBIT_POSITIONS;
+    orbit_index <= SM_training.NUM_ORBIT_POSITIONS;
     orbit_index = orbit_index + 1)
 
     CALCULATE (
-        radiative_case = {name},
+        radiative_case = SM_training,
         calc_types = "SDF",
         pos_index = orbit_index,
         eclipse_check = TRUE,

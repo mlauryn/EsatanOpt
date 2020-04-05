@@ -25,13 +25,10 @@ class HeatFluxComp(om.ExplicitComponent):
 
         if not train_data:
             train_data = 'radiative_results.txt'
-        df = parse_hf(train_data)
+        data = parse_hf(train_data)
 
-        data = df.loc[0].pivot(index='var', columns='node', values='IS')
-        data = data.filter(items=nodes)  
-
-        xt = data.index.to_numpy()
-        yt = data.to_numpy()
+        xt = data[:,0]
+        yt = data[:,nodes]
 
         xlimits = np.array([[xt[0], xt[-1]]])
 
@@ -66,16 +63,18 @@ class HeatFluxComp(om.ExplicitComponent):
 
     def compute(self, inputs, outputs): 
 
-        outputs['q_s'] = self.sm.predict_values(inputs['phi'])   
+        y = self.sm.predict_values(inputs['phi'])
+
+        outputs['q_s'] = np.absolute(y)  # sometimes surrogate predicts negative values that are close to zero, so need to take absolute here
           
     def compute_partials(self, inputs, partials):
 
         dy_dx = self.sm.predict_derivatives(inputs['phi'], 0)
         
         #need to fit into proper shape
+        n = np.shape(dy_dx)[1]
+        m = np.shape(dy_dx)[0] 
         jac = np.zeros((m,n*m))
-        n=np.shape(dy_dx)[1]
-        m=np.shape(dy_dx)[0] 
         idx = np.array([i for i in range(n)])
         
         for i in range(m):
@@ -103,7 +102,7 @@ if __name__ == "__main__":
 
     # create and connect inputs and outputs
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('phi', val=np.array([45.0, 45.]))
+    indeps.add_output('phi', val=np.array([45., 30.]))
 
     model.add_subsystem('mm', HeatFluxComp(faces=faces, npts=2), promotes=['*'])
 
@@ -112,4 +111,4 @@ if __name__ == "__main__":
 
     print(prob['q_s'])
 
-    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-03)
+    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, form='forward', step=1e-04)

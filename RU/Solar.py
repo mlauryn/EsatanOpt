@@ -79,7 +79,7 @@ class SolarPower(om.ExplicitComponent):
         m = self.options['npts']
         
         self.add_input('QIS', shape=(n,m), desc='incident solar power', units='W')
-        self.add_input('alp_r', shape=(n,1), desc='absorbtivity of the input node radiating surface')
+        self.add_input('alp_r', shape=(n,1), desc='solar absorbtivity of the input node radiating surface')
         self.add_input('cr', shape=(n,1), desc='solar cell or radiator installation decision for input nodes')
         self.add_output('QS_c', shape=(n,m), desc='solar cell absorbed power over time', units='W')
         self.add_output('QS_r', shape=(n,m), desc='radiator absorbed power over time', units='W')
@@ -176,7 +176,9 @@ if __name__ == "__main__":
 
     params = om.IndepVarComp()
     params.add_output('phi', val=np.array([10.,10.]) )
-    params.add_output('dist', val=np.array([2.75, 1.]))
+    params.add_output('dist', val=np.array([3., 1.]))
+    params.add_output('cr', val=np.ones((n_in, 1)))
+    params.add_output('alp_r', val=np.ones((n_in, 1)))
 
     model = Solar(npts=npts, n_in = n_in, faces=faces)
 
@@ -198,12 +200,10 @@ if __name__ == "__main__":
     QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
     
     #check relative error
-    print((problem['QS_c'] - QS_init[[nodes],:]*0.91/0.61)/problem['QS_c'])
+    print((problem['QS_c'] - QS_init[nodes,:]*0.91/0.61)/problem['QS_c'])
     
-    print(QS_init[[nodes],:]*0.91/0.61)
+    print(QS_init[nodes,:]*0.91/0.61)
     
     print(problem['QS_c'])
     #problem.model.list_inputs(print_arrays=True)
-
-    print(nodes)
 
