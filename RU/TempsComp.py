@@ -51,28 +51,28 @@ class TempsComp(om.ImplicitComponent):
         outputs['T'] = -np.ones((n,m))*50 + 273
 
 if __name__ == "__main__":
-    from inits import inits
+    from Pre_process import nodes, conductors, inits
     problem = om.Problem()
     model = problem.model
 
-    nodes = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    n, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
+    nn, groups = nodes()
+    GL_init, GR_init = conductors(nn=nn)
+    QI_init1, QS_init1 = inits()
     nodes2 = 'Nodal_data_2.csv'
-    conductors2 = 'Cond_data_2.csv'
-    n, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
+    QI_init2, QS_init2 = inits(nodes2)
+
     npts = 2
 
     QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
     QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('GL', val=GL_init1, units='W/K')
-    indeps.add_output('GR', val=GR_init1)
+    indeps.add_output('GL', val=GL_init, units='W/K')
+    indeps.add_output('GR', val=GR_init)
     indeps.add_output('QS', val=QS_init, units='W')
     indeps.add_output('QI', val=QI_init, units='W')
 
-    model.add_subsystem('tmm', TempsComp(n=n, npts=npts), promotes=['*'])
+    model.add_subsystem('tmm', TempsComp(n=nn, npts=npts), promotes=['*'])
 
     model.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
     model.nonlinear_solver.options['iprint'] = 2

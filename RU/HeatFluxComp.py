@@ -2,10 +2,8 @@ import numpy as np
 from smt.surrogate_models import RMTB, RMTC
 import openmdao.api as om
 import smt
-import pandas as pd
-from parse_hf import parse_hf
+from Pre_process import parse_hf
  
-
 class HeatFluxComp(om.ExplicitComponent):
     """
     Vectorized surrogate model to predict solar heat flux based on yaw angle
@@ -85,10 +83,7 @@ class HeatFluxComp(om.ExplicitComponent):
 if __name__ == "__main__":
 
     # test partials
-
-    from ViewFactors import parse_vf
-    from opticals import opticals
-    from inits import nodes
+    from Pre_process import parse_vf, opticals, nodes
 
     nn, groups = nodes()
 
@@ -96,7 +91,7 @@ if __name__ == "__main__":
 
     keys = ['Box:outer', 'Panel_outer:back']
     faces = opticals(groups, keys, optprop)
-
+    
     prob = om.Problem()
     model = prob.model
 

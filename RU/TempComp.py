@@ -42,13 +42,13 @@ class TempComp(om.ImplicitComponent):
         outputs['T'] = -np.ones(n)*50 + 273
 
 if __name__ == "__main__":
-    from inits import inits
+    from Pre_process import nodes, conductors, inits
     problem = om.Problem()
     model = problem.model
 
-    nodes = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    n, GL_init, GR_init, QI_init, QS_init = inits(nodes, conductors)
+    nn, groups = nodes()
+    GL_init, GR_init = conductors(nn=nn)
+    QI_init, QS_init = inits()
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
     indeps.add_output('GL', val=GL_init, units='W/K')
@@ -56,20 +56,22 @@ if __name__ == "__main__":
     indeps.add_output('QS', val=QS_init, units='W')
     indeps.add_output('QI', val=QI_init, units='W')
 
-    model.add_subsystem('tmm', TempComp(n=n), promotes=['*'])
+    model.add_subsystem('tmm', TempComp(n=nn), promotes=['*'])
 
-    model.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
+    model.nonlinear_solver = om.NewtonSolver(
+        solve_subsystems=False
+        )
     model.nonlinear_solver.options['iprint'] = 2
     model.nonlinear_solver.options['maxiter'] = 50
-    model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
+    """ model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
-    model.nonlinear_solver.linesearch.options['iprint'] = 2
-    model.linear_solver = om.DirectSolver()
+    model.nonlinear_solver.linesearch.options['iprint'] = 2 """
+    model.linear_solver = om.ScipyKrylov()
 
     problem.setup(check=True)
 
     problem.run_model()
     print(problem['T']-273.15)
 
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-3)
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-3)
     #problem.model.list_inputs(print_arrays=True, includes=['*G*'])

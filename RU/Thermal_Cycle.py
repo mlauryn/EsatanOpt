@@ -4,7 +4,8 @@ import numpy as np
 class SolarCell(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
-        self.options.declare('npts', default=1, types=int, desc='number of points')  
+        self.options.declare('npts', default=1, types=int, desc='number of points')
+        self.options.declare('alp_sc', default=.91, lower=.0, upper=1., desc='absorbtivity of the solar cell' )  
     def setup(self):
         nodes = self.options['nodes']
         n = len(nodes)
@@ -17,6 +18,9 @@ class SolarCell(om.ExplicitComponent):
         self.declare_partials('*', '*')
     def compute(self, inputs, outputs):
         """solar cell data from:https://www.e3s-conferences.org/articles/e3sconf/pdf/2017/04/e3sconf_espc2017_03011.pdf"""
+        
+        alp_sc = self.options['alp_sc']
+        
         T0 = 28. #reference temperature
         eff0 = .285 #efficiency at ref temp
         T1 = -150.
@@ -26,10 +30,11 @@ class SolarCell(om.ExplicitComponent):
 
         slope = (eff1 - eff0) / (T1 - T0)
         
-        outputs['eta'] = eff0 + slope * delta_T
+        outputs['eta'] = (eff0 + slope * delta_T)/alp_sc
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
         
+        alp_sc = self.options['alp_sc']
         T0 = 28.
         eff0 = .285
         T1 = -150.
@@ -40,20 +45,20 @@ class SolarCell(om.ExplicitComponent):
 
         if mode == 'fwd':
             
-            deff_dT += slope * d_inputs['T']
+            deff_dT += slope * d_inputs['T'] / alp_sc
         else:
 
-            d_inputs['T'] = slope * deff_dT
+            d_inputs['T'] = slope * deff_dT / alp_sc
 
 class ElectricPower(om.ExplicitComponent):
     def initialize(self):
-        self.options.declare('n_in', types=int, desc='number of input nodes')
+        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
         self.options.declare('ar', default=.9, lower=.0, upper=1., desc='solar cell to node surface area ratio')
         self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
 
     def setup(self):
-        n = self.options['n_in']
+        n = len(self.options['nodes'])
         m = self.options['npts']
     
         self.add_input('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
@@ -64,7 +69,7 @@ class ElectricPower(om.ExplicitComponent):
     def compute(self, inputs, outputs):
         ar = self.options['ar']
         m = self.options['npts']
-        n = self.options['n_in']
+        n = len(self.options['nodes'])
         eta_con = self.options['eta_con']
     
         eta = inputs['eta'] * eta_con * ar
@@ -112,11 +117,11 @@ class QSmtxComp(om.ExplicitComponent):
         
     def setup(self):
         nn = self.options['nn'] + 1
-        n_in = len(self.options['nodes'])
+        n = len(self.options['nodes'])
         m = self.options['npts']
-        self.add_input('P_el', shape=(n_in,m), desc='solar cell electric power over time', units='W')
-        self.add_input('QS_c', shape=(n_in,m), desc='solar cell absorbed heat over time', units='W')
-        self.add_input('QS_r', shape=(n_in,m), desc='radiator absorbed heat over time', units='W')
+        self.add_input('P_el', shape=(n,m), desc='solar cell electric power over time', units='W')
+        self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed heat over time', units='W')
+        self.add_input('QS_r', shape=(n,m), desc='radiator absorbed heat over time', units='W')
         self.add_output('QS', val=np.zeros((nn,m)), desc='solar absorbed heat over time', units='W')
     
     def compute(self, inputs, outputs):
@@ -226,14 +231,12 @@ class Thermal_Cycle(om.Group):
             self.nodes = nodes
 
     def setup(self):
-        
-        npts = self.npts
+    
         nodes = self.nodes
-        n_in = len(nodes)
 
-        self.add_subsystem('sc', SolarCell(nodes=nodes, npts=npts), promotes=['*'])
-        self.add_subsystem('el', ElectricPower(n_in=n_in, npts=npts), promotes=['*'])
-        self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=npts), promotes=['*'])
+        self.add_subsystem('sc', SolarCell(nodes=nodes, npts=self.npts), promotes=['*'])
+        self.add_subsystem('el', ElectricPower(nodes=nodes, npts=self.npts), promotes=['*'])
+        self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=self.npts), promotes=['*'])
         self.add_subsystem('temps', TempsComp(n=self.nn, npts=self.npts), promotes=['*'])
         
         self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
@@ -247,39 +250,50 @@ class Thermal_Cycle(om.Group):
 
 if __name__ == "__main__":
 
-    from ViewFactors import parse_vf
-    from inits import inits
+    from Pre_process import parse_vf, inits, conductors, nodes, idx_dict, opticals
+    from Solar import Solar
     
     npts = 2
-    nodes = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    nn, GL_init1, GR_init1, QI_init1, QS_init1 = inits(nodes, conductors)
+
+    nn, groups = nodes()
+    GL_init, GR_init = conductors(nn=nn)
+    QI_init1, QS_init1 = inits()
     nodes2 = 'Nodal_data_2.csv'
-    conductors2 = 'Cond_data_2.csv'
-    nn, GL_init2, GR_init2, QI_init2, QS_init2 = inits(nodes2, conductors2)
+    QI_init2, QS_init2 = inits(nodes2)
+
     npts = 2
 
     QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
-    QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
+    #QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
-    QS_c = QS_init[1:12,:]*0.91/0.61
+    optprop = parse_vf()
 
+    #keys = list(groups.keys()) # import all nodes?
+    keys = ['Box:outer', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']
+    faces = opticals(groups, keys, optprop)    
 
-    view_factors = 'viewfactors.txt'
-    data = parse_vf(view_factors)
+    #compute total number of nodes in selected faces
     nodes = []
+    for face in faces:
+        nodes.extend(face['nodes'])
 
-    for entry in data:
-        nodes.append(entry['node number'])
-    #print(nodes, area, vf, eps)
+    """ data = parse_vf()
+    nodes = list(data.keys()) """
+
+    # index dictionary
+    idx = idx_dict(nodes, groups)
+
+    # indices for solar cells
+    #sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']], [])
 
     model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
+    #model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces), promotes=['*'])
 
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
     params.add_output('QI', val=QI_init)
-    params.add_output('GL', val=GL_init1, units='W/K')
-    params.add_output('GR', val=GR_init1)
-    params.add_output('QS_c', val=QS_c)
+    params.add_output('GL', val=GL_init, units='W/K')
+    params.add_output('GR', val=GR_init)
+    params.add_output('QS_c', val=np.zeros((len(nodes), npts)))
     params.add_output('QS_r', val=np.zeros((len(nodes), npts)))
     
     problem = om.Problem(model=model)
@@ -287,11 +301,13 @@ if __name__ == "__main__":
     
     problem.run_model()
 
-    #print(problem['T']-273.)
+    print(problem['T']-273.)
     #print(problem['eta'])
     #print(problem['QS'][1:12,:] - QS_init[1:12,:])
     #print(GR_init1 == GR_init2)
 
-    totals = problem.compute_totals(of=['T'], wrt=['eta'])
+    prob.check_partials(compact_print=True, includes=['eta'])
+
+    """ totals = problem.compute_totals(of=['T'], wrt=['eta'])
     print(totals)
-    problem.check_totals(compact_print=True)
+    problem.check_totals(compact_print=True) """

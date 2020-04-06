@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from smt.surrogate_models import RMTC, RMTB, RBF, IDW, KRG
-from parse_hf import parse_hf
+from Pre_process import parse_hf
 
-filepath = 'radiative_results.txt'
-data = parse_hf(filepath)
+data = parse_hf()
 
 nodes=[1,46,57] # user filter which nodes to evaluate
 

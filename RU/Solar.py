@@ -71,7 +71,6 @@ class SolarPower(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n_in', types=int, desc='number of input nodes')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        #self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
         self.options.declare('alp_sc', default=.91, lower=.0, upper=1., desc='absorbtivity of the solar cell' )
 
     def setup(self):
@@ -92,11 +91,8 @@ class SolarPower(om.ExplicitComponent):
         alp_r = inputs['alp_r']
         cr = inputs['cr']
         
-        QS_c = QIS * alp_sc * cr
-        QS_r = QIS * alp_r * (1 - cr)
-
-        outputs['QS_c'] = QS_c
-        outputs['QS_r'] = QS_r
+        outputs['QS_c'] = QIS * alp_sc * cr
+        outputs['QS_r'] = QIS * alp_r * (1 - cr)
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
         m = self.options['npts']
@@ -155,22 +151,23 @@ class Solar(om.Group):
 
 if __name__ == "__main__":
 
-    from ViewFactors import parse_vf
-    from opticals import opticals
-    from inits import nodes, conductors, inits
+    from Pre_process import parse_vf, opticals, nodes, inits, idx_dict
 
     nn, groups = nodes()
 
-    optprop = parse_vf('viewfactors.txt')
+    optprop = parse_vf()
 
-    keys = ['Panel_body:solar_cells']
+    #keys = list(groups.keys()) # import all nodes?
+    keys = ['Box:outer', 'Panel_inner:solar_cells', ]
     faces = opticals(groups, keys, optprop)    
-    
+
     #compute total number of nodes in selected faces
     nodes = []
     for face in faces:
         nodes.extend(face['nodes'])
     n_in = len(nodes)
+
+    idx = idx_dict(nodes, groups)
     
     npts = 2
 
@@ -186,7 +183,12 @@ if __name__ == "__main__":
     
     problem = om.Problem(model=model)
     problem.setup(check=True)
-    
+
+    #assign initial values
+
+    problem['cr'][list(idx['Box:outer'])] = 0.0
+    problem['alp_r'][list(idx['Box:outer'])] = 0.5    
+
     problem.run_model()
     
     #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
@@ -200,10 +202,15 @@ if __name__ == "__main__":
     QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
     
     #check relative error
-    print((problem['QS_c'] - QS_init[nodes,:]*0.91/0.61)/problem['QS_c'])
-    
-    print(QS_init[nodes,:]*0.91/0.61)
-    
-    print(problem['QS_c'])
+    """ print((problem['QS_c'] - QS_init[nodes,:]*0.91/0.61)/problem['QS_c'])  
+    print(QS_init[nodes,:]*0.91/0.61) 
+    print(problem['QS_c']) """
+
+    print((problem['QS_r'] - QS_init[nodes,:])/problem['QS_r'])
+    print(QS_init[nodes,:])
+    print(problem['QS_r'])
+
+    print(nodes)
+
     #problem.model.list_inputs(print_arrays=True)
 
