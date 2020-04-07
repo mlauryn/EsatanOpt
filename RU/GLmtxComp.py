@@ -16,7 +16,7 @@ class GLmtxComp(om.ExplicitComponent):
     def setup(self):    
         n = self.options['n'] + 1
         conductors = self.options['user_links']       
-        self.add_output('GL', shape=(n,n))
+        self.add_output('GL', shape=(n,n), units='W/K')
                
         for invar in conductors:
             name = invar['cond_name']
@@ -73,8 +73,7 @@ class GLmtxComp(om.ExplicitComponent):
 
 if __name__ == "__main__":
     # script for testing partial derivs
-    from Conductors import parse_cond
-    from inits import conductors, nodes
+    from Pre_process import parse_cond, nodes, conductors
     
     node_data = 'nodal_data.csv'
     cond_data = 'Cond_data.csv'

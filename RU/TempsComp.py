@@ -80,7 +80,7 @@ if __name__ == "__main__":
     model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
     model.nonlinear_solver.linesearch.options['iprint'] = 2
-    model.linear_solver = om.DirectSolver()
+    model.linear_solver = om.ScipyKrylov()
 
     problem.setup(check=True)
 

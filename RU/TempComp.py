@@ -59,14 +59,15 @@ if __name__ == "__main__":
     model.add_subsystem('tmm', TempComp(n=nn), promotes=['*'])
 
     model.nonlinear_solver = om.NewtonSolver(
-        solve_subsystems=False
+        solve_subsystems=True
         )
     model.nonlinear_solver.options['iprint'] = 2
     model.nonlinear_solver.options['maxiter'] = 50
     """ model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
     model.nonlinear_solver.linesearch.options['iprint'] = 2 """
-    model.linear_solver = om.ScipyKrylov()
+    #model.linear_solver = om.DirectSolver(assemble_jac=True)
+    #model.options['assembled_jac_type'] = 'csc'
 
     problem.setup(check=True)
 

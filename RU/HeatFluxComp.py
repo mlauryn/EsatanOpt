@@ -33,6 +33,8 @@ class HeatFluxComp(om.ExplicitComponent):
         if method == 'RMTB':
             
             self.sm = RMTB(
+                print_prediction=False,
+                print_solver=False,
                 xlimits=xlimits,
                 energy_weight=1e-5,
                 regularization_weight=1e-14,
@@ -41,6 +43,8 @@ class HeatFluxComp(om.ExplicitComponent):
             )
         else:
             self.sm = RMTC(
+                print_prediction=False,
+                print_solver=False,
                 xlimits=xlimits,
                 num_elements=15,
                 energy_weight=1e-5,

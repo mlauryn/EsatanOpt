@@ -8,28 +8,39 @@ from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
 class RU_MDP(om.Group):
-    def __init__(self, nn, npts, opticals, area, conductors, SF, VF, GL_init, GR_init):
+    def __init__(self, nn, npts, faces, conductors, GL_init, GR_init):
         super(RU_MDP, self).__init__()
 
         self.nn = nn
         self.npts = npts
-        self.SF = SF
-        self.VF = VF
         self.conductors = conductors
-        self.opticals = opticals
-        self.area = area
+        self.faces = faces
         self.GL_init = GL_init
         self.GR_init = GR_init
 
     def setup(self):
         nn = self.nn
         npts = self.npts
-        n_in = len(self.opticals)
+        nodes = []
+        for face in self.faces:
+            nodes.extend(face['nodes'])
+        n_in = len(nodes)
 
-        self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, opticals=self.opticals, 
-                                area=self.area, SF = self.SF, VF=self.VF, GL_init=self.GL_init, GR_init=GR_init), promotes=['*'])
-        self.add_subsystem('sol', Solar(npts=npts, area=self.area), promotes=['*'])
-        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.opticals), promotes=['*'])
+        params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
+        params.add_output('QI', val=np.zeros((nn+1, npts)), units='W')
+        params.add_output('phi', val=np.array([10.,10.]), units='deg' )
+        params.add_output('dist', val=np.array([3., 1.]))
+        params.add_output('alp_r', val=np.zeros(n_in), desc='absorbtivity of the input node radiating surface')
+        params.add_output('cr', val=np.zeros(n_in), desc='solar cell or radiator installation decision for input nodes')
+        for cond in self.conductors:
+            params.add_output(cond['cond_name'], val=cond['values'][0] ) # adds output variable with the same name as user conductor name
+        for face in faces:
+            params.add_output(face['name'], val=face['eps'][0] ) # adds independant variable as face name and assigns emissivity of it's first node
+
+        self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, faces=self.faces, 
+                            GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
+        self.add_subsystem('sol', Solar(npts=npts, n_in = n_in, faces=self.faces), promotes=['*'])
+        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=nodes), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
         
@@ -47,7 +58,7 @@ class RU_MDP(om.Group):
         # equality contraint for keeping Pin=Pout (conservation of energy)
         equal = om.EQConstraintComp()
         self.add_subsystem('equal', equal)
-        equal.add_eq_output('power_bal', shape=npts, add_constraint=True, normalize=False)
+        equal.add_eq_output('power_bal', shape=npts, add_constraint=True, normalize=False, eq_units='W')
         self.connect('P_out', 'equal.lhs:power_bal')
         self.connect('P_in', 'equal.rhs:power_bal')
 
@@ -72,74 +83,40 @@ class RU_MDP(om.Group):
 
 if __name__ == "__main__":
 
-    from Conductors import parse_cond
-    from ViewFactors import parse_vf
-    from inits import inits
-    
+    from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict
     
     npts = 2
-    nodals = 'Nodal_data.csv'
-    conductors = 'Cond_data.csv'
-    nn, GL_init, GR_init, QI_init, QS_init = inits(nodals, conductors)
-
-    user_conductors = 'conductors.txt'
-    cond_data = parse_cond(user_conductors)
-    cond_nodes = {}
-    shape_factors = {}
-    k = {}
-    for entry in cond_data:
-        cond_nodes.update( {entry['cond_name'] : entry['nodes']} )
-        shape_factors.update( {entry['cond_name'] : entry['SF'] } )
-        k.update( {entry['cond_name'] : entry['conductivity'] } ) 
-
-    view_factors = 'viewfactors.txt'
-    vf_data = parse_vf(view_factors)
-    vf_nodes = []
-    area = []
-    VF = []
-    eps = []
-    for entry in vf_data:
-        vf_nodes.append(entry['node number'])
-        area.append(entry['area'])
-        VF.append(entry['vf']) 
-        eps.append(entry['emissivity'])
-
-    model = RU_MDP(nn=nn, npts=npts, opticals=vf_nodes, area=area, conductors=cond_nodes, SF=shape_factors, VF=VF, GL_init=GL_init, GR_init=GR_init)
-
-    n = len(vf_nodes)
-
-    params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
-    params.add_output('QI', val=np.repeat(QI_init, npts, axis=1))
-    params.add_output('beta', val=np.asarray([60., 30.]), units='deg' )
-    params.add_output('dist', val=[1., 3.])
-    params.add_output('alp_r', shape=(n,1), desc='absorbtivity of the input node radiating surface')
-    params.add_output('cr', shape=(n,1), desc='solar cell or radiator installation decision for input nodes')
-    for var in k:
-        params.add_output(var, val=k[var]) # adds output variable and initial value with the same name as user conductor name
-
-    for i,node in enumerate(vf_nodes):
-        name = 'eps:{}'.format(node)
-        params.add_output(name, val=eps[i]) # adds output variable and initial value as 'emissivity:node no.'
     
+    nn, groups = nodes()
+    GL_init, GR_init = conductors(nn=nn)
+
+    cond_data = parse_cond() 
+    optprop = parse_vf()
+
+    #keys = list(groups.keys()) # import all nodes?
+    keys = ['Box:outer', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells'] # define faces to include in radiative analysis
+    faces = opticals(groups, keys, optprop)
+    nodes = sum([groups[group] for group in keys], [])
+    print(nodes)
+
+    # index dictionary or radiative nodes
+    idx = idx_dict(nodes, groups)
+
+    model = RU_MDP(nn=nn, npts=npts, faces=faces, conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
+  
     prob = om.Problem(model=model)
 
     model.add_design_var('Spacer5', lower=0.25, upper=237.)
     model.add_design_var('Spacer1', lower=0.25, upper=237.)
-    model.add_design_var('Hinge_inner', lower=0.004, upper=.1)
+    model.add_design_var('Body_panel', lower=0.004, upper=.1)
     model.add_design_var('Hinge_middle', lower=0.02, upper=.1)
     model.add_design_var('Hinge_outer', lower=0.02, upper=.1)
 
-    model.add_design_var('cr', lower=0.0, upper=1., indices=[0,5])
-    model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=[0,5])
-    model.add_design_var('eps:2', lower=0.02, upper=0.94)
-    model.add_design_var('eps:5', lower=0.02, upper=0.94)
-    model.add_design_var('eps:6', lower=0.02, upper=0.94)
-    model.add_design_var('eps:8', lower=0.02, upper=0.94)
-    model.add_design_var('eps:9', lower=0.02, upper=0.94)
-    model.add_design_var('eps:10', lower=0.02, upper=0.94)
-    model.add_design_var('eps:11', lower=0.02, upper=0.94)
+    model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
+    model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
+    model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
     model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, 10])
-    model.add_design_var('beta', lower=0., upper=90.)
+    model.add_design_var('phi', lower=45., upper=45.)
 
     #model.add_constraint('T', lower=0.+273, upper=45.+273, indices=[-1, -2])
     #model.add_constraint('power_bal.KS', upper=0.0)
@@ -152,20 +129,28 @@ if __name__ == "__main__":
 
 
     model.add_objective('obj')
-    model.linear_solver = om.DirectSolver()
+    model.linear_solver = om.ScipyKrylov()
     model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
-    prob.driver.options['optimizer']='basinhopping'
+    prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 2
+    prob.driver.options['maxiter'] = 70
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
     prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
     prob.driver.add_recorder(om.SqliteRecorder("ru_mdp.sql"))
 
-    prob.setup(check=True, mode='fwd')
+    prob.setup(check=True)
+
+    # indices for solar cells
+    sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']], [])
+
+    # initial values for solar cells and radiators
+
+    prob['cr'][sc_idx] = 1.0
+    prob['alp_r'][list(idx['Box:outer'])] = 0.5
     
     """ cr = om.CaseReader('thermal_mdp.sql')
     cases = cr.list_cases('driver')
@@ -176,19 +161,13 @@ if __name__ == "__main__":
     last_case = cr.get_case(cases[num_cases-1])
     prob.load_case(last_case) """
 
-    #last_case.list_inputs(print_arrays=True)
-
     prob.run_model()
-    
+    #prob.run_driver()
+    print(prob['T']-273.)
+
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
     #print(totals)
-    #prob.check_totals(compact_print=True)
-
-    prob.run_driver()
-
-    print(prob['T']-273.)
-    #print(prob['eta'])
-    #print(prob['bat_lwr.KS'], prob['bat_upr.KS'], prob['prop_upr.KS'], prob['prop_lwr.KS']) #prob['power_bal.KS']
+    prob.check_totals(compact_print=True)
 
     #print(prob['P_dis'])
     #print(prob['P_in'], prob['P_out'])

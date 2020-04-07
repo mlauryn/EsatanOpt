@@ -245,7 +245,7 @@ class Thermal_Cycle(om.Group):
         self.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
         self.nonlinear_solver.linesearch.options['maxiter'] = 10
         self.nonlinear_solver.linesearch.options['iprint'] = 2
-        self.linear_solver = om.DirectSolver()
+        self.linear_solver = om.ScipyKrylov()
         self.linear_solver.options['assemble_jac'] = False
 
 if __name__ == "__main__":
@@ -284,21 +284,26 @@ if __name__ == "__main__":
     idx = idx_dict(nodes, groups)
 
     # indices for solar cells
-    #sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']], [])
+    sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']], [])
 
     model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
-    #model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces), promotes=['*'])
-
+    
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
+    model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces), promotes=['*'])
     params.add_output('QI', val=QI_init)
     params.add_output('GL', val=GL_init, units='W/K')
     params.add_output('GR', val=GR_init)
-    params.add_output('QS_c', val=np.zeros((len(nodes), npts)))
-    params.add_output('QS_r', val=np.zeros((len(nodes), npts)))
+    params.add_output('phi', val=np.array([10.,10.]) )
+    params.add_output('dist', val=np.array([3., 1.]))
+    params.add_output('cr', val=np.ones((len(nodes), 1)))
+    params.add_output('alp_r', val=np.ones((len(nodes), 1)))
     
     problem = om.Problem(model=model)
     problem.setup(check=True)
     
+    problem['cr'][sc_idx] = 1.0
+    problem['alp_r'][list(idx['Box:outer'])] = 0.5
+
     problem.run_model()
 
     print(problem['T']-273.)
@@ -306,7 +311,7 @@ if __name__ == "__main__":
     #print(problem['QS'][1:12,:] - QS_init[1:12,:])
     #print(GR_init1 == GR_init2)
 
-    prob.check_partials(compact_print=True, includes=['eta'])
+    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='forward', step=1e-03)
 
     """ totals = problem.compute_totals(of=['T'], wrt=['eta'])
     print(totals)
