@@ -1,6 +1,5 @@
 import openmdao.api as om
 import numpy as np
-import math
 
 class Ilumination(om.ExplicitComponent):
     def initialize(self):
@@ -29,8 +28,8 @@ class Ilumination(om.ExplicitComponent):
 
         for i in range(m):
             for n in [0,2,3]: #these nodes are solar cells
-                QIS[n,i] = q_s[i] * A[n] * math.cos(beta)
-            QIS[6,i] = q_s[i] * A[6] * math.sin(beta)
+                QIS[n,i] = q_s[i] * A[n] * np.cos(beta[i])
+            QIS[5,i] = q_s[i] * A[5] * np.sin(beta[i])
         outputs['QIS'] = QIS
 
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
@@ -49,16 +48,15 @@ class Ilumination(om.ExplicitComponent):
             if 'beta' in d_inputs:
                 for i in range(m):
                     for n in [0,2,3]: #these nodes are solar cells
-                        dQIS[n,i] -= q_s[i] * A[n] *  math.sin(beta)
-                    dQIS[6,i] += q_s[i] * A[6] * math.cos(beta)
+                        dQIS[n,i] -= q_s[i] * A[n] *  np.sin(beta[i]) * d_inputs['beta']
+                    dQIS[5,i] += q_s[i] * A[5] * np.cos(beta[i]) * d_inputs['beta']
         else:
             
             if 'beta' in d_inputs:
                 for i in range(m):
                     for n in [0,2,3]: #these nodes are solar cells
-                        d_inputs['beta'] -= q_s[i] * A[n] * math.sin(beta) * dQIS[n,i]
-                    d_inputs['beta'] += q_s[i] * A[6] * math.cos(beta) * dQIS[6,i]
-
+                        d_inputs['beta'] -= q_s[i] * A[n] * np.sin(beta[i]) * dQIS[n,i]
+                    d_inputs['beta'] += q_s[i] * A[5] * np.cos(beta[i]) * dQIS[5,i]
 
 if __name__ == "__main__":
     #debug script:
@@ -68,7 +66,7 @@ if __name__ == "__main__":
     model = prob.model
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('beta', val=0.)
+    indeps.add_output('beta', val=30., units='deg')
     
     model.add_subsystem('QIS', Ilumination(), promotes=['*'])
 

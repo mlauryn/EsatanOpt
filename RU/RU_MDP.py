@@ -3,7 +3,7 @@ import numpy as np
 
 from Solar import Solar
 from GMM_group import GMM
-from Thermal_Cycle import Thermal_Cycle
+from Thermal_Group import Thermal_Group
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
@@ -29,16 +29,16 @@ class RU_MDP(om.Group):
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, opticals=self.opticals, 
                                 area=self.area, SF = self.SF, VF=self.VF, GL_init=self.GL_init, GR_init=GR_init), promotes=['*'])
         self.add_subsystem('sol', Solar(npts=npts, area=self.area), promotes=['*'])
-        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.opticals), promotes=['*'])
+        self.add_subsystem('tc', Thermal_Group(nn=nn, npts=npts, nodes=self.opticals), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
         
         # objective is minimize power consumption
         #self.add_subsystem('Pdis', om.ExecComp('P_dis = P_in - P_out', P_in=np.ones(npts), P_out=np.ones(npts), P_dis = np.ones(npts)), promotes=['*'])
-        self.add_subsystem('obj', om.ExecComp('obj = sum(P_out)', P_out=np.ones(npts)), promotes=['*'] )
+        #self.add_subsystem('obj', om.ExecComp('obj = sum(P_out)', P_out=np.ones(npts)), promotes=['*'] )
         
         #objective is maximize total power input
-        #self.add_subsystem('obj', om.ExecComp('obj = -sum(P_in)', P_in=np.ones(npts)), promotes=['*'] )
+        self.add_subsystem('obj', om.ExecComp('obj = -sum(P_in)', P_in=np.ones(npts)), promotes=['*'] )
          
         #obj is to maximise prop power 
         """ self.add_subsystem('obj', om.ExecComp('obj = -sum(P_prop)', P_prop=np.ones(npts)), promotes=['*'] )
@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
     params.add_output('QI', val=np.repeat(QI_init, npts, axis=1))
-    params.add_output('beta', val=np.asarray([60., 30.]), units='deg' )
+
+    params.add_output('beta', val=np.asarray([45., 0.]), units='deg' )
     params.add_output('dist', val=[1., 3.])
     params.add_output('alp_r', shape=(n,1), desc='absorbtivity of the input node radiating surface')
     params.add_output('cr', shape=(n,1), desc='solar cell or radiator installation decision for input nodes')
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     model.add_design_var('eps:9', lower=0.02, upper=0.94)
     model.add_design_var('eps:10', lower=0.02, upper=0.94)
     model.add_design_var('eps:11', lower=0.02, upper=0.94)
-    model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, 10])
+    model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, -10])
     model.add_design_var('beta', lower=0., upper=90.)
 
     #model.add_constraint('T', lower=0.+273, upper=45.+273, indices=[-1, -2])
@@ -152,20 +153,20 @@ if __name__ == "__main__":
 
 
     model.add_objective('obj')
-    model.linear_solver = om.DirectSolver()
-    model.linear_solver.options['assemble_jac'] = False
+    #model.linear_solver = om.DirectSolver()
+    #model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
-    prob.driver.options['optimizer']='basinhopping'
+    prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 2
+    prob.driver.options['maxiter'] = 100
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
     prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
     prob.driver.add_recorder(om.SqliteRecorder("ru_mdp.sql"))
 
-    prob.setup(check=True, mode='fwd')
+    prob.setup(check=True)
     
     """ cr = om.CaseReader('thermal_mdp.sql')
     cases = cr.list_cases('driver')
@@ -182,7 +183,8 @@ if __name__ == "__main__":
     
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
     #print(totals)
-    #prob.check_totals(compact_print=True)
+    #prob.check_totals(compact_print=True, step=1e-4, form='central')
+    #check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-3)
 
     prob.run_driver()
 

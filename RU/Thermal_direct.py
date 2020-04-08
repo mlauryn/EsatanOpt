@@ -97,6 +97,13 @@ if __name__ == "__main__":
 
     #objective function is to minimize battery temp
     model.add_objective('obj')
+
+    prob.driver = om.ScipyOptimizeDriver()
+    prob.driver.options['optimizer']='SLSQP'
+    prob.driver.options['disp'] = True
+    #prob.driver.opt_settings = {'eps': 1.0e-1, 'ftol':1e-04,}
+    prob.driver.options['debug_print'] = ['desvars', 'objs', 'totals']
+
     prob.setup(check=True)
 
     # initial conductivity values
@@ -111,24 +118,18 @@ if __name__ == "__main__":
     prob.run_model()
 
     #prob.model.list_outputs(print_arrays=True)
-    #print(prob['temp.T']-273.15)
+    
     
 
     #prob.set_solver_print(level=1)
-
-    prob.driver = om.ScipyOptimizeDriver()
-    prob.driver.options['optimizer']='SLSQP'
-    prob.driver.options['disp'] = True
-    #prob.driver.opt_settings = {'eps': 1.0e-1, 'ftol':1e-04,}
-    prob.driver.options['debug_print'] = ['desvars', 'objs', 'totals']
     
     #totals = prob.compute_totals(of=['obj'], wrt=['Spacer5'])
     #print(totals)
-    #prob.check_totals(compact_print=True)
+    prob.check_totals(compact_print=True)
 
     #prob.run_driver()
 
-    prob.model.list_inputs(print_arrays=True, includes=['*GR*'])
+    #prob.model.list_inputs(print_arrays=True, includes=['*GR*'])
 
-    print(prob['temp.T']-273.15)
+    #print(prob['temp.T']-273.15)
 

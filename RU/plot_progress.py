@@ -11,7 +11,7 @@ from matplotlib import pylab
 from openmdao.api import CaseReader
 
 # load cases from recording database
-cr = CaseReader('thermal_mdp.sql')
+cr = CaseReader('ru_mdp.sql')
 #cases = cr.get_cases('driver')
 cases = cr.list_cases('driver')
 case = cr.get_case(cases[0])
