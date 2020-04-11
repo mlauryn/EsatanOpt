@@ -3,7 +3,7 @@ import numpy as np
 
 from Solar import Solar
 from GMM_group import GMM
-from Thermal_Group import Thermal_Group
+from Thermal_Cycle import Thermal_Cycle
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
@@ -27,9 +27,9 @@ class RU_MDP(om.Group):
         n_in = len(self.opticals)
 
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, opticals=self.opticals, 
-                                area=self.area, SF = self.SF, VF=self.VF, GL_init=self.GL_init, GR_init=GR_init), promotes=['*'])
+                                area=self.area, SF = self.SF, VF=self.VF, GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
         self.add_subsystem('sol', Solar(npts=npts, area=self.area), promotes=['*'])
-        self.add_subsystem('tc', Thermal_Group(nn=nn, npts=npts, nodes=self.opticals), promotes=['*'])
+        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.opticals), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
         
@@ -38,11 +38,11 @@ class RU_MDP(om.Group):
         #self.add_subsystem('obj', om.ExecComp('obj = sum(P_out)', P_out=np.ones(npts)), promotes=['*'] )
         
         #objective is maximize total power input
-        self.add_subsystem('obj', om.ExecComp('obj = -sum(P_in)', P_in=np.ones(npts)), promotes=['*'] )
+        #self.add_subsystem('obj', om.ExecComp('obj = -sum(P_in)', P_in=np.ones(npts)), promotes=['*'] )
          
         #obj is to maximise prop power 
-        """ self.add_subsystem('obj', om.ExecComp('obj = -sum(P_prop)', P_prop=np.ones(npts)), promotes=['*'] )
-        self.connect('QI', 'P_prop', src_indices=[(-4,0), (-4,1)]) """
+        self.add_subsystem('obj', om.ExecComp('obj = -sum(P_prop)', P_prop=np.ones(npts)), promotes=['*'] )
+        self.connect('QI', 'P_prop', src_indices=[(-4,0), (-4,1)])
 
         # equality contraint for keeping Pin=Pout (conservation of energy)
         equal = om.EQConstraintComp()
@@ -153,13 +153,13 @@ if __name__ == "__main__":
 
 
     model.add_objective('obj')
-    #model.linear_solver = om.DirectSolver()
-    #model.linear_solver.options['assemble_jac'] = False
+    model.linear_solver = om.DirectSolver()
+    model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 100
+    prob.driver.options['maxiter'] = 120
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
     prob.run_driver()
 
-    print(prob['T']-273.)
+    #print(prob['T']-273.)
     #print(prob['eta'])
     #print(prob['bat_lwr.KS'], prob['bat_upr.KS'], prob['prop_upr.KS'], prob['prop_lwr.KS']) #prob['power_bal.KS']
 

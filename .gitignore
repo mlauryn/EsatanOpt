@@ -18,3 +18,6 @@
 *.pyc
 *.o
 RU/test.py
+*.tex
+*.tikz
+*.pdf

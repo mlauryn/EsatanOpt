@@ -1,6 +1,50 @@
 import openmdao.api as om
 import numpy as np
 
+class SolarCell(om.ExplicitComponent):
+    def initialize(self):
+        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('npts', default=1, types=int, desc='number of points')  
+    def setup(self):
+        nodes = self.options['nodes']
+        n = len(nodes)
+        m = self.options['npts']
+
+        idx_list = [[(i,j) for j in range(m)] for i in nodes]
+
+        self.add_input('T', val=np.ones((n,m))*28., src_indices=idx_list, units='degC')
+        self.add_output('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        self.declare_partials('*', '*')
+    def compute(self, inputs, outputs):
+        """solar cell data from:https://www.e3s-conferences.org/articles/e3sconf/pdf/2017/04/e3sconf_espc2017_03011.pdf"""
+        T0 = 28. #reference temperature
+        eff0 = .285 #efficiency at ref temp
+        T1 = -150.
+        eff1 = 0.335
+
+        delta_T = inputs['T'] - T0
+
+        slope = (eff1 - eff0) / (T1 - T0)
+        
+        outputs['eta'] = eff0 + slope * delta_T
+
+    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
+        
+        T0 = 28.
+        eff0 = .285
+        T1 = -150.
+        eff1 = 0.335
+        slope = (eff1 - eff0) / (T1 - T0)
+        
+        deff_dT = d_outputs['eta']
+
+        if mode == 'fwd':
+            
+            deff_dT += slope * d_inputs['T']
+        else:
+
+            d_inputs['T'] = slope * deff_dT
+
 class ElectricPower(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('n_in', types=int, desc='number of input nodes')
@@ -12,7 +56,7 @@ class ElectricPower(om.ExplicitComponent):
         n = self.options['n_in']
         m = self.options['npts']
     
-        self.add_input('eta', val=np.ones((n,m))*0.28/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        self.add_input('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
         self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed power over time', units='W')
         self.add_output('P_el', shape=(n,m), desc='Electrical power output over time', units='W')
         #self.declare_partials('*', '*')
@@ -173,9 +217,9 @@ class TempsComp(om.ImplicitComponent):
         #gues values
         outputs['T'] = -np.ones((n,m))*50 + 273
 
-class Thermal_Group(om.Group):
+class Thermal_Cycle(om.Group):
     def __init__(self, nn, npts, nodes):
-            super(Thermal_Group, self).__init__()
+            super(Thermal_Cycle, self).__init__()
 
             self.nn = nn
             self.npts = npts
@@ -187,6 +231,7 @@ class Thermal_Group(om.Group):
         nodes = self.nodes
         n_in = len(nodes)
 
+        self.add_subsystem('sc', SolarCell(nodes=nodes, npts=npts), promotes=['*'])
         self.add_subsystem('el', ElectricPower(n_in=n_in, npts=npts), promotes=['*'])
         self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=npts), promotes=['*'])
         self.add_subsystem('temps', TempsComp(n=self.nn, npts=self.npts), promotes=['*'])
@@ -228,7 +273,7 @@ if __name__ == "__main__":
         nodes.append(entry['node number'])
     #print(nodes, area, vf, eps)
 
-    model = Thermal_Group(nn=nn, npts=npts, nodes=nodes)
+    model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
 
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
     params.add_output('QI', val=QI_init)
@@ -247,6 +292,6 @@ if __name__ == "__main__":
     #print(problem['QS'][1:12,:] - QS_init[1:12,:])
     #print(GR_init1 == GR_init2)
 
-    #totals = problem.compute_totals(of=['T'], wrt=['eta'])
-    #print(totals)
-    problem.check_totals(of=['T'], wrt=['QS_c', 'QS_r'], compact_print=True)
+    totals = problem.compute_totals(of=['T'], wrt=['eta'])
+    print(totals)
+    problem.check_totals(compact_print=True)
