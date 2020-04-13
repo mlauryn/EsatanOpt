@@ -239,13 +239,13 @@ class Thermal_Cycle(om.Group):
         self.add_subsystem('QS', QSmtxComp(nn=self.nn, nodes=nodes, npts=self.npts), promotes=['*'])
         self.add_subsystem('temps', TempsComp(n=self.nn, npts=self.npts), promotes=['*'])
         
-        self.nonlinear_solver = om.NewtonSolver(solve_subsystems=True)
+        self.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
         self.nonlinear_solver.options['iprint'] = 2
         self.nonlinear_solver.options['maxiter'] = 15
         self.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
         self.nonlinear_solver.linesearch.options['maxiter'] = 10
         self.nonlinear_solver.linesearch.options['iprint'] = 2
-        self.linear_solver = om.ScipyKrylov()
+        self.linear_solver = om.DirectSolver()
         self.linear_solver.options['assemble_jac'] = False
 
 if __name__ == "__main__":

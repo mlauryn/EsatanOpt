@@ -136,16 +136,17 @@ class SolarPower(om.ExplicitComponent):
                     d_inputs['cr'] -= alp_r * (dQSr[:,i] * QIS[:,i])[np.newaxis].T
 
 class Solar(om.Group):
-    def __init__(self, npts, n_in, faces):
+    def __init__(self, npts, n_in, faces, model):
             super(Solar, self).__init__()
 
             self.npts = npts # number of points
             self.faces = faces # optical properties of input faces
-            self.n = n_in # number of input external surface nodes 
+            self.n = n_in # number of input external surface nodes
+            self.model = model #Esatan radiative model name 
 
     def setup(self):
 
-        self.add_subsystem('hf', HeatFluxComp(faces=self.faces, npts=self.npts), promotes=['*'])
+        self.add_subsystem('hf', HeatFluxComp(faces=self.faces, npts=self.npts, model=self.model), promotes=['*'])
         self.add_subsystem('is', Incident_Solar(npts=self.npts, n_in=self.n, faces=self.faces), promotes=['*'])
         self.add_subsystem('sol', SolarPower(n_in=self.n, npts=self.npts), promotes=['*'])
 
@@ -155,7 +156,7 @@ if __name__ == "__main__":
 
     nn, groups = nodes()
 
-    optprop = parse_vf()
+    optprop = parse_vf(filepath='vf_RU_v4_detail.txt')
 
     #keys = list(groups.keys()) # import all nodes?
     keys = ['Box:outer', 'Panel_inner:solar_cells', ]
@@ -177,7 +178,7 @@ if __name__ == "__main__":
     params.add_output('cr', val=np.ones((n_in, 1)))
     params.add_output('alp_r', val=np.ones((n_in, 1)))
 
-    model = Solar(npts=npts, n_in = n_in, faces=faces)
+    model = Solar(npts=npts, n_in = n_in, faces=faces, model='RU_v4_detail')
 
     model.add_subsystem('params', params, promotes=['*'])
     

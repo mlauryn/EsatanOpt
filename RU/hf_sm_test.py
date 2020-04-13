@@ -5,9 +5,9 @@ import pandas as pd
 from smt.surrogate_models import RMTC, RMTB, RBF, IDW, KRG
 from Pre_process import parse_hf
 
-data = parse_hf()
+data = parse_hf('Ru_v4_base.txt')
 
-nodes=[1,46,57] # user filter which nodes to evaluate
+nodes=[1,3,4,8] # user filter which nodes to evaluate
 
 xt = data[:,0]
 yt = data[:,nodes]
@@ -34,8 +34,8 @@ y = sm.predict_values(x)
 xd = np.array([0.,45.])
 dy_dx = sm.predict_derivatives(xd,0)
 
-plt.plot(xt, yt[:,2], "o")
-plt.plot(x, y[:,2])
+plt.plot(xt, yt[:,-1], "o")
+plt.plot(x, y[:,-1])
 #plt.plot(x, dy_dx[:,0])
 plt.xlabel("x")
 plt.ylabel("y")

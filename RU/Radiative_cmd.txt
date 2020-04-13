@@ -45,7 +45,7 @@ DEFINE_MISSION (
 	omega_rot_rate = 0.0,
 	euler_order = "omega, phi, psi",
 	moving_geometry = FALSE,
-	spinning_craft = TRUE,
+	spinning_craft = FALSE,
 	init_offset = 0.0,
 	spin = [0.0, 1.0, 0.0],
 	spin_orientations = 18);

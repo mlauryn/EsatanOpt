@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from collections import defaultdict
 
-def nodes(data='nodal_data.csv', env='99999', inact='99998' ):
+def nodes(data='nodes_RU_v4_detail_cc.csv', env='99999', inact='99998' ):
     """
     Reads Esatan node data csv export file and returns dict of node numbers grouped by node labels
     Note: labels need to be defined in Esatan model
@@ -54,7 +54,7 @@ def nodes(data='nodal_data.csv', env='99999', inact='99998' ):
     
     return nn, labels
 
-def inits(data='nodal_data.csv', env='99999', inact='99998'):
+def inits(data='nodal_detail_cc.csv', env='99999', inact='99998'):
     """
     Reads Esatan node data csv export file and returns initial heat load boundary conditions
 
@@ -98,7 +98,7 @@ def inits(data='nodal_data.csv', env='99999', inact='99998'):
 
     return QI_init, QS_init
 
-def conductors(nn, data='Cond_data.csv', env='99999', inact='99998'):
+def conductors(nn, data='Cond_detail_cc.csv', env='99999', inact='99998'):
     """
     Parse Esatan conductor data csv export file at given filepath and returns GL and GR conductors
     Note: At least GL and GR entities need to be selected in output calls, print conductor CSV options

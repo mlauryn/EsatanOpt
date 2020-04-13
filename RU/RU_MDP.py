@@ -8,7 +8,7 @@ from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
 class RU_MDP(om.Group):
-    def __init__(self, nn, npts, faces, conductors, GL_init, GR_init):
+    def __init__(self, nn, npts, model, faces, conductors, GL_init, GR_init):
         super(RU_MDP, self).__init__()
 
         self.nn = nn
@@ -17,6 +17,7 @@ class RU_MDP(om.Group):
         self.faces = faces
         self.GL_init = GL_init
         self.GR_init = GR_init
+        self.model = model
 
     def setup(self):
         nn = self.nn
@@ -39,7 +40,7 @@ class RU_MDP(om.Group):
 
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
-        self.add_subsystem('sol', Solar(npts=npts, n_in = n_in, faces=self.faces), promotes=['*'])
+        self.add_subsystem('sol', Solar(npts=npts, n_in = n_in, faces=self.faces, model=self.model), promotes=['*'])
         self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=nodes), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
@@ -88,10 +89,10 @@ if __name__ == "__main__":
     npts = 2
     
     nn, groups = nodes()
-    GL_init, GR_init = conductors(nn=nn)
+    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_detail_cc.csv')
 
-    cond_data = parse_cond() 
-    optprop = parse_vf()
+    cond_data = parse_cond(filepath='links_RU_v4_detail.txt') 
+    optprop = parse_vf(filepath='vf_RU_v4_detail.txt')
 
     #keys = list(groups.keys()) # import all nodes?
     keys = ['Box:outer', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells'] # define faces to include in radiative analysis
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     # index dictionary or radiative nodes
     idx = idx_dict(nodes, groups)
 
-    model = RU_MDP(nn=nn, npts=npts, faces=faces, conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
+    model = RU_MDP(nn=nn, npts=npts, faces=faces, model='RU_v4_detail', conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
   
     prob = om.Problem(model=model)
 
@@ -129,13 +130,13 @@ if __name__ == "__main__":
 
 
     model.add_objective('obj')
-    model.linear_solver = om.DirectSolver()
-    model.linear_solver.options['assemble_jac'] = False
+    #model.linear_solver = om.DirectSolver()
+    #model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 70
+    prob.driver.options['maxiter'] = 1
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
@@ -151,6 +152,7 @@ if __name__ == "__main__":
 
     prob['cr'][sc_idx] = 1.0
     prob['alp_r'][list(idx['Box:outer'])] = 0.5
+    prob['T'] = np.zeros((nn+1,npts))
     
     """ cr = om.CaseReader('thermal_mdp.sql')
     cases = cr.list_cases('driver')

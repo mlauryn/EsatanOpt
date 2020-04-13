@@ -19,3 +19,6 @@
 *.o
 RU/test.py
 RU/iprof.0
+*.pdf
+*.tex
+*.tikz
