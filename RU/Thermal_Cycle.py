@@ -1,11 +1,22 @@
 import openmdao.api as om
 import numpy as np
+from TempsComp import TempsComp
 
 class SolarCell(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('alp_sc', default=.91, lower=.0, upper=1., desc='absorbtivity of the solar cell' )  
+        self.options.declare('alp_sc', default=.91, lower=.0, upper=1., desc='absorbtivity of the solar cell' )
+
+    def deta_dT(self): # derivative value of efficiency wrt temperature
+        alp_sc = self.options['alp_sc']
+        T0 = 28. #reference temperature
+        eff0 = .285 #efficiency at ref temp
+        T1 = -150.
+        eff1 = 0.335
+        slope = (eff1 - eff0) / (T1 - T0) /alp_sc
+        return slope
+
     def setup(self):
         nodes = self.options['nodes']
         n = len(nodes)
@@ -15,40 +26,23 @@ class SolarCell(om.ExplicitComponent):
 
         self.add_input('T', val=np.ones((n,m))*28., src_indices=idx_list, units='degC')
         self.add_output('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
-        self.declare_partials('*', '*')
+        rows = np.arange(n*m)
+        cols = rows
+        self.declare_partials(of='eta', wrt='T', rows=rows, cols=cols, val=self.deta_dT())
+
     def compute(self, inputs, outputs):
-        """solar cell data from:https://www.e3s-conferences.org/articles/e3sconf/pdf/2017/04/e3sconf_espc2017_03011.pdf"""
         
         alp_sc = self.options['alp_sc']
         
         T0 = 28. #reference temperature
         eff0 = .285 #efficiency at ref temp
-        T1 = -150.
-        eff1 = 0.335
 
         delta_T = inputs['T'] - T0
-
-        slope = (eff1 - eff0) / (T1 - T0)
         
-        outputs['eta'] = (eff0 + slope * delta_T)/alp_sc
+        outputs['eta'] = eff0/alp_sc + self.deta_dT() * delta_T
 
-    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
-        
-        alp_sc = self.options['alp_sc']
-        T0 = 28.
-        eff0 = .285
-        T1 = -150.
-        eff1 = 0.335
-        slope = (eff1 - eff0) / (T1 - T0)
-        
-        deff_dT = d_outputs['eta']
-
-        if mode == 'fwd':
-            if 'T' in d_inputs:
-                deff_dT += slope * d_inputs['T'] / alp_sc
-        else:
-            if 'T' in d_inputs:
-                d_inputs['T'] = slope * deff_dT / alp_sc
+    def compute_partials(self, inputs, partials):
+        pass
 
 class ElectricPower(om.ExplicitComponent):
     def initialize(self):
@@ -57,6 +51,12 @@ class ElectricPower(om.ExplicitComponent):
         self.options.declare('ar', default=.9, lower=.0, upper=1., desc='solar cell to node surface area ratio')
         self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
 
+    def eta_in(self): # input path efficiency (mppt losses * area losses)
+        ar = self.options['ar']
+        eta_con = self.options['eta_con']
+        eta_in = eta_con * ar
+        return eta_in
+
     def setup(self):
         n = len(self.options['nodes'])
         m = self.options['npts']
@@ -64,50 +64,24 @@ class ElectricPower(om.ExplicitComponent):
         self.add_input('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
         self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed power over time', units='W')
         self.add_output('P_el', shape=(n,m), desc='Electrical power output over time', units='W')
-        #self.declare_partials('*', '*')
+        rows = np.arange(n*m)
+        cols = rows
+        self.declare_partials('P_el', 'eta', rows=rows, cols=cols)
+        self.declare_partials('P_el', 'QS_c', rows=rows, cols=cols)
 
     def compute(self, inputs, outputs):
-        ar = self.options['ar']
-        m = self.options['npts']
-        n = len(self.options['nodes'])
-        eta_con = self.options['eta_con']
-    
-        eta = inputs['eta'] * eta_con * ar
+        
+        eta = inputs['eta'] * self.eta_in() # total efficiency = cell eff * input path eff
         QS = inputs['QS_c']
 
         outputs['P_el'] = np.multiply(QS, eta)
 
-        """ def compute_partials(self, input, partials):
-        rows = self.options['n_in']
-        cols = self.options['npts']
-        partials['P_el', 'QS_c'] = np.einsum('ik, jl', np.eye(cols, cols), np.eye(rows, rows))
-        partials['P_el', 'eta'] = np.einsum('ik, jl', np.eye(cols, cols), np.eye(rows, rows)) """
-
-    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
-        """
-        Matrix-vector product with the Jacobian.
-        """
-        eta_con = self.options['eta_con']
-        ar = self.options['ar']
-        eta = inputs['eta'] * eta_con * ar
-
-        dP_el = d_outputs['P_el']
-
-        if mode == 'fwd':
-            if 'QS_c' in d_inputs:
-                
-                dP_el += d_inputs['QS_c'] * eta
-
-            if 'eta' in d_inputs:
-                
-                dP_el += d_inputs['eta'] * inputs['QS_c'] * eta_con * ar
-        else:
-            
-            if 'QS_c' in d_inputs:
-                d_inputs['QS_c'] += dP_el * eta
-
-            if 'eta' in d_inputs:
-                d_inputs['eta'] += inputs['QS_c'] * eta_con * ar * dP_el
+    def compute_partials(self, inputs, partials):
+        
+        n = len(self.options['nodes'])
+        m = self.options['npts']
+        partials['P_el','eta'] = (inputs['QS_c'] * self.eta_in()).reshape(n*m,)
+        partials['P_el', 'QS_c'] = (inputs['eta'] * self.eta_in()).reshape(n*m,)
 
 class QSmtxComp(om.ExplicitComponent):
     def initialize(self):
@@ -117,12 +91,20 @@ class QSmtxComp(om.ExplicitComponent):
         
     def setup(self):
         nn = self.options['nn'] + 1
-        n = len(self.options['nodes'])
+        nodes = sorted(self.options['nodes'])
+        n = len(nodes)
         m = self.options['npts']
         self.add_input('P_el', shape=(n,m), desc='solar cell electric power over time', units='W')
         self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed heat over time', units='W')
         self.add_input('QS_r', shape=(n,m), desc='radiator absorbed heat over time', units='W')
         self.add_output('QS', val=np.zeros((nn,m)), desc='solar absorbed heat over time', units='W')
+        
+        y = np.arange(nn*m).reshape((nn,m))
+        rows = y[nodes,:].flatten()
+        cols = np.arange(n*m)
+        self.declare_partials('QS', 'P_el', rows=rows, cols=cols, val=-1.)
+        self.declare_partials('QS', 'QS_c', rows=rows, cols=cols, val=1.)
+        self.declare_partials('QS', 'QS_r', rows=rows, cols=cols, val=1.)
     
     def compute(self, inputs, outputs):
         nn = self.options['nn'] + 1
@@ -131,96 +113,13 @@ class QSmtxComp(om.ExplicitComponent):
         P_el = inputs['P_el']
         QS_c = inputs['QS_c']
         QS_r = inputs['QS_r']
-        for i,node in enumerate(self.options['nodes']):
+        nodes = sorted(self.options['nodes'])
+        for i,node in enumerate(nodes):
             QS[node,:] = QS_c[i,:] + QS_r[i,:] - P_el[i,:] # energy balance
         outputs['QS'] = QS
-    
-    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
 
-        m = self.options['npts']
-        nodes = self.options['nodes']
-                
-        P_el = inputs['P_el']
-        QS_c = inputs['QS_c']
-        QS_r = inputs['QS_r']
-
-        dQS = d_outputs['QS']
-
-        if mode == 'fwd':
-            
-            if 'P_el' in d_inputs:
-                for i,node in enumerate(nodes):
-                    dQS[node,:] -= d_inputs['P_el'][i,:]
-
-            if 'QS_c' in d_inputs:
-                for i,node in enumerate(nodes):
-                    dQS[node,:] += d_inputs['QS_c'][i,:]
-            
-            if 'QS_r' in d_inputs:
-                for i,node in enumerate(nodes):
-                    dQS[node,:] += d_inputs['QS_r'][i,:]
-        else:
-
-            if 'P_el' in d_inputs:
-                for i,node in enumerate(nodes):
-                    d_inputs['P_el'][i,:] -= dQS[node,:]
-
-            if 'QS_c' in d_inputs:
-                for i,node in enumerate(nodes):
-                    d_inputs['QS_c'][i,:] += dQS[node,:]
-            
-            if 'QS_r' in d_inputs:
-                for i,node in enumerate(nodes):
-                    d_inputs['QS_r'][i,:] += dQS[node,:]
-
-class TempsComp(om.ImplicitComponent):
-    """Computes steady state node temperatures over multiple points."""
-    def initialize(self):
-        self.options.declare('n', default=1, types=int, desc='number of diffusion nodes')
-        self.options.declare('npts', default=1, types=int, desc='number of points')
-    def setup(self):
-        n = self.options['n'] + 1
-        m = self.options['npts']
-        self.add_output('T', val=np.zeros((n,m)), units='K')
-        self.add_input('GL', val=np.zeros((n,n)), units='W/K')
-        self.add_input('GR', val=np.zeros((n,n)))
-        self.add_input('QS', val=np.zeros((n,m)), units='W')
-        self.add_input('QI', val=np.zeros((n,m)), units='W')
-        self.declare_partials(of='T', wrt='T', method='fd')
-        self.declare_partials(of='T', wrt='GL')
-        self.declare_partials(of='T', wrt='GR')
-        self.declare_partials(of='T', wrt='QI')
-        self.declare_partials(of='T', wrt='QS')
-
-    def apply_nonlinear(self, inputs, outputs, residuals):
-        GL = inputs['GL']
-        GR = inputs['GR']
-        QS = inputs['QS']
-        QI = inputs['QI']
-        T = outputs['T']
-
-        residuals['T'] = GL.dot(T) + GR.dot(T**4) + QS + QI
-
-    def linearize(self, inputs, outputs, partials):
-        n = self.options['n'] + 1
-        m = self.options['npts']
-        GL = inputs['GL']
-        GR = inputs['GR']
-        QS = inputs['QS']
-        QI = inputs['QI']
-        T = outputs['T']
-
-        partials['T', 'GL'] = np.einsum('ik, jl', np.eye(n, n), T.T)
-        partials['T', 'GR'] = np.einsum('ik, jl', np.eye(n, n), (T**4).T)
-        partials['T', 'QS'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
-        partials['T', 'QI'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
-        #partials['T', 'T'] = np.einsum('ik, jl', GL, np.eye(m, m)) + np.einsum('ik, jl', GR, np.eye(m, m))
-    
-    def guess_nonlinear(self, inputs, outputs, residuals):
-        n = self.options['n'] + 1
-        m = self.options['npts']
-        #gues values
-        outputs['T'] = -np.ones((n,m))*50 + 273
+    def compute_partials(self, inputs, partials):
+        pass
 
 class Thermal_Cycle(om.Group):
     def __init__(self, nn, npts, nodes):
@@ -250,26 +149,25 @@ class Thermal_Cycle(om.Group):
 
 if __name__ == "__main__":
 
-    from Pre_process import parse_vf, inits, conductors, nodes, idx_dict, opticals
+    from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, idx_dict, opticals
     from Solar import Solar
     
     npts = 2
 
-    nn, groups = nodes()
-    GL_init, GR_init = conductors(nn=nn)
-    QI_init1, QS_init1 = inits()
-    nodes2 = 'Nodal_data_2.csv'
-    QI_init2, QS_init2 = inits(nodes2)
+    nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
+    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_base_cc.csv')
 
-    npts = 2
+    cond_data = parse_cond(filepath='links_RU_v4_base.txt') 
+    optprop = parse_vf(filepath='vf_RU_v4_base.txt')
+
+    QI_init1, QS_init1 = inits(data='nodes_RU_v4_base_cc.csv')
+    QI_init2, QS_init2 = inits(data='nodes_RU_v4_base_hc.csv')
 
     QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
     #QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
-    optprop = parse_vf()
-
     #keys = list(groups.keys()) # import all nodes?
-    keys = ['Box:outer', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']
+    keys = ['Box', 'Panel_outer', 'Panel_inner', 'Panel_body']
     faces = opticals(groups, keys, optprop)    
 
     #compute total number of nodes in selected faces
@@ -289,7 +187,7 @@ if __name__ == "__main__":
     model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
     
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
-    model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces), promotes=['*'])
+    model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces, model='RU_v4_base'), promotes=['*'])
     params.add_output('QI', val=QI_init)
     params.add_output('GL', val=GL_init, units='W/K')
     params.add_output('GR', val=GR_init)
@@ -306,7 +204,7 @@ if __name__ == "__main__":
 
     problem.run_model()
 
-    print(problem['T']-273.)
+    #print(problem['T']-273.)
     #print(problem['eta'])
     #print(problem['QS'][1:12,:] - QS_init[1:12,:])
     #print(GR_init1 == GR_init2)
@@ -316,3 +214,4 @@ if __name__ == "__main__":
     """ totals = problem.compute_totals(of=['T'], wrt=['eta'])
     print(totals)
     problem.check_totals(compact_print=True) """
+    
