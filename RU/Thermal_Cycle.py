@@ -44,11 +44,11 @@ class SolarCell(om.ExplicitComponent):
         deff_dT = d_outputs['eta']
 
         if mode == 'fwd':
-            
-            deff_dT += slope * d_inputs['T'] / alp_sc
+            if 'T' in d_inputs:
+                deff_dT += slope * d_inputs['T'] / alp_sc
         else:
-
-            d_inputs['T'] = slope * deff_dT / alp_sc
+            if 'T' in d_inputs:
+                d_inputs['T'] = slope * deff_dT / alp_sc
 
 class ElectricPower(om.ExplicitComponent):
     def initialize(self):

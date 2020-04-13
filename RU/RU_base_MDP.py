@@ -8,7 +8,7 @@ from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals
 
 npts = 2
 
-nn, groups = nodes()
+nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
 GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_base_cc.csv')
 
 cond_data = parse_cond(filepath='links_RU_v4_base.txt') 
@@ -50,13 +50,13 @@ model.add_constraint('prop_pwr.KS', upper=0.0) """
 
 
 model.add_objective('obj')
-model.linear_solver = om.DirectSolver()
-model.linear_solver.options['assemble_jac'] = False
+""" model.linear_solver = om.DirectSolver()
+model.linear_solver.options['assemble_jac'] = False """
 
 prob.driver = om.ScipyOptimizeDriver()
 prob.driver.options['optimizer']='SLSQP'
 prob.driver.options['disp'] = True
-prob.driver.options['maxiter'] = 70
+prob.driver.options['maxiter'] = 2
 prob.driver.options['tol'] = 1.0e-4
 #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
 #prob.driver.opt_settings['stepsize'] = 0.01

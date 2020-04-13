@@ -35,7 +35,7 @@ class RU_MDP(om.Group):
         params.add_output('cr', val=np.zeros(n_in), desc='solar cell or radiator installation decision for input nodes')
         for cond in self.conductors:
             params.add_output(cond['cond_name'], val=cond['values'][0] ) # adds output variable with the same name as user conductor name
-        for face in faces:
+        for face in self.faces:
             params.add_output(face['name'], val=face['eps'][0] ) # adds independant variable as face name and assigns emissivity of it's first node
 
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, faces=self.faces, 
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 1
+    prob.driver.options['maxiter'] = 3
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
