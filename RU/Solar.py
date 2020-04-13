@@ -191,7 +191,7 @@ if __name__ == "__main__":
 
     problem.run_model()
     
-    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-03)
 
     #compare results with esatan
     QI_init1, QS_init1 = inits()
@@ -206,11 +206,11 @@ if __name__ == "__main__":
     print(QS_init[nodes,:]*0.91/0.61) 
     print(problem['QS_c']) """
 
-    print((problem['QS_r'] - QS_init[nodes,:])/problem['QS_r'])
+    """ print((problem['QS_r'] - QS_init[nodes,:])/problem['QS_r'])
     print(QS_init[nodes,:])
     print(problem['QS_r'])
 
-    print(nodes)
+    print(nodes) """
 
     #problem.model.list_inputs(print_arrays=True)
 

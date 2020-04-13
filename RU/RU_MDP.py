@@ -29,7 +29,7 @@ class RU_MDP(om.Group):
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.zeros((nn+1, npts)), units='W')
         params.add_output('phi', val=np.array([10.,10.]), units='deg' )
-        params.add_output('dist', val=np.array([3., 1.]))
+        params.add_output('dist', val=np.array([1., 3.]))
         params.add_output('alp_r', val=np.zeros(n_in), desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=np.zeros(n_in), desc='solar cell or radiator installation decision for input nodes')
         for cond in self.conductors:
@@ -46,14 +46,14 @@ class RU_MDP(om.Group):
         
         # objective is minimize power consumption
         #self.add_subsystem('Pdis', om.ExecComp('P_dis = P_in - P_out', P_in=np.ones(npts), P_out=np.ones(npts), P_dis = np.ones(npts)), promotes=['*'])
-        self.add_subsystem('obj', om.ExecComp('obj = sum(P_out)', P_out=np.ones(npts)), promotes=['*'] )
+        #self.add_subsystem('obj', om.ExecComp('obj = sum(P_out)', P_out=np.ones(npts)), promotes=['*'] )
         
         #objective is maximize total power input
         #self.add_subsystem('obj', om.ExecComp('obj = -sum(P_in)', P_in=np.ones(npts)), promotes=['*'] )
          
         #obj is to maximise prop power 
-        """ self.add_subsystem('obj', om.ExecComp('obj = -sum(P_prop)', P_prop=np.ones(npts)), promotes=['*'] )
-        self.connect('QI', 'P_prop', src_indices=[(-4,0), (-4,1)]) """
+        self.add_subsystem('obj', om.ExecComp('obj = -sum(P_prop)', P_prop=np.ones(npts)), promotes=['*'] )
+        self.connect('QI', 'P_prop', src_indices=[(-4,0), (-4,1)])
 
         # equality contraint for keeping Pin=Pout (conservation of energy)
         equal = om.EQConstraintComp()
@@ -115,8 +115,8 @@ if __name__ == "__main__":
     model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
     model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
     model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-    model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, 10])
-    model.add_design_var('phi', lower=45., upper=45.)
+    model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, -10])
+    model.add_design_var('phi', lower=0., upper=90.)
 
     #model.add_constraint('T', lower=0.+273, upper=45.+273, indices=[-1, -2])
     #model.add_constraint('power_bal.KS', upper=0.0)
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
 
     model.add_objective('obj')
-    model.linear_solver = om.ScipyKrylov()
+    model.linear_solver = om.DirectSolver()
     model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
@@ -161,16 +161,17 @@ if __name__ == "__main__":
     last_case = cr.get_case(cases[num_cases-1])
     prob.load_case(last_case) """
 
-    prob.run_model()
-    #prob.run_driver()
+    #prob.run_model()
+    prob.run_driver()
     print(prob['T']-273.)
 
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
     #print(totals)
-    prob.check_totals(compact_print=True)
+    #check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)
+    #prob.check_totals(compact_print=True)
 
     #print(prob['P_dis'])
     #print(prob['P_in'], prob['P_out'])
     #print(prob['QS_c'], prob['QS_r'])
 
-    #prob.list_inputs(print_arrays=True)
+    #prob.model.list_inputs(print_arrays=True)
