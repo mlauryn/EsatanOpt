@@ -14,11 +14,7 @@ class TempsComp(om.ImplicitComponent):
         self.add_input('GR', val=np.zeros((n,n)))
         self.add_input('QS', val=np.zeros((n,m)), units='W')
         self.add_input('QI', val=np.zeros((n,m)), units='W')
-        self.declare_partials(of='T', wrt='T', method='fd')
-        self.declare_partials(of='T', wrt='GL')
-        self.declare_partials(of='T', wrt='GR')
-        self.declare_partials(of='T', wrt='QI')
-        self.declare_partials(of='T', wrt='QS')
+        self.declare_partials(of='T', wrt='*')
 
     def apply_nonlinear(self, inputs, outputs, residuals):
         GL = inputs['GL']
@@ -42,7 +38,7 @@ class TempsComp(om.ImplicitComponent):
         partials['T', 'GR'] = np.einsum('ik, jl', np.eye(n, n), (T**4).T)
         partials['T', 'QS'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
         partials['T', 'QI'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
-        #partials['T', 'T'] = np.einsum('ik, jl', GL, np.eye(m, m)) + np.einsum('ik, jl', GR, np.eye(m, m))
+        partials['T', 'T'] = np.einsum('ik, jl', GL, np.eye(m, m)) + 4.0 * T**3 * np.einsum('ik, jl', GR, np.eye(m, m))
     
     def guess_nonlinear(self, inputs, outputs, residuals):
         n = self.options['n'] + 1
@@ -55,11 +51,10 @@ if __name__ == "__main__":
     problem = om.Problem()
     model = problem.model
 
-    nn, groups = nodes()
-    GL_init, GR_init = conductors(nn=nn)
-    QI_init1, QS_init1 = inits()
-    nodes2 = 'Nodal_data_2.csv'
-    QI_init2, QS_init2 = inits(nodes2)
+    nn, groups = nodes(data='nodes_RU_v4_detail_cc.csv')
+    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_detail_hc.csv')
+    QI_init1, QS_init1 = inits(data='nodes_RU_v4_detail_cc.csv')
+    QI_init2, QS_init2 = inits(data='nodes_RU_v4_detail_hc.csv')
 
     npts = 2
 
@@ -77,15 +72,15 @@ if __name__ == "__main__":
     model.nonlinear_solver = om.NewtonSolver(solve_subsystems=False)
     model.nonlinear_solver.options['iprint'] = 2
     model.nonlinear_solver.options['maxiter'] = 50
-    model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
+    """ model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
-    model.nonlinear_solver.linesearch.options['iprint'] = 2
-    model.linear_solver = om.ScipyKrylov()
+    model.nonlinear_solver.linesearch.options['iprint'] = 2 """
+    model.linear_solver = om.DirectSolver()
 
     problem.setup(check=True)
 
     problem.run_model()
     print(problem['T']-273.15)
 
-    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-3)
+    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-4)
     #problem.model.list_inputs(print_arrays=True, includes=['*QI*'])

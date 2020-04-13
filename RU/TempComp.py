@@ -34,7 +34,7 @@ class TempComp(om.ImplicitComponent):
         partials['T', 'GR'] = np.einsum('ij, k', np.eye(n, n), T**4)
         partials['T', 'QS'] = np.eye(n, n)
         partials['T', 'QI'] = np.eye(n, n)
-        partials['T', 'T'] = (GL + (4 * (GR * (T ** 3)[np.newaxis, :])))
+        partials['T', 'T'] = (GL + (4 * (GR * (T ** 3))))
     
     def guess_nonlinear(self, inputs, outputs, residuals):
         n = self.options['n'] + 1
@@ -46,9 +46,9 @@ if __name__ == "__main__":
     problem = om.Problem()
     model = problem.model
 
-    nn, groups = nodes()
-    GL_init, GR_init = conductors(nn=nn)
-    QI_init, QS_init = inits()
+    nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
+    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_base_cc.csv')
+    QI_init, QS_init = inits(data='nodes_RU_v4_base_cc.csv')
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
     indeps.add_output('GL', val=GL_init, units='W/K')
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     """ model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
     model.nonlinear_solver.linesearch.options['iprint'] = 2 """
-    #model.linear_solver = om.DirectSolver(assemble_jac=True)
+    model.linear_solver = om.DirectSolver(assemble_jac=True)
     #model.options['assembled_jac_type'] = 'csc'
 
     problem.setup(check=True)
@@ -74,5 +74,5 @@ if __name__ == "__main__":
     problem.run_model()
     print(problem['T']-273.15)
 
-    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-3)
+    #check_partials_data = problem.check_partials(compact_print=False, show_only_incorrect=True, form='central', step=1e-3)
     #problem.model.list_inputs(print_arrays=True, includes=['*G*'])
