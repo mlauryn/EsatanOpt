@@ -15,13 +15,12 @@ cond_data = parse_cond(filepath='links_RU_v4_base.txt')
 optprop = parse_vf(filepath='vf_RU_v4_base.txt')
 
 #keys = list(groups.keys()) # import all nodes?
-keys = ['Box', 'Panel_outer', 'Panel_inner', 'Panel_body'] # define faces to include in radiative analysis
+keys = ['Box', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body'] # define faces to include in radiative analysis
 faces = opticals(groups, keys, optprop)
 nodes = sum([groups[group] for group in keys], [])
-print(nodes)
 
 # index dictionary or radiative nodes
-idx = idx_dict(nodes, groups)
+idx = idx_dict(sorted(nodes), groups)
 
 model = RU_MDP(nn=nn, npts=npts, faces=faces, model='RU_v4_base', conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
 
@@ -66,7 +65,7 @@ prob.driver.add_recorder(om.SqliteRecorder("ru_mdp.sql"))
 prob.setup(check=True)
 
 # indices for solar cells
-sc_idx = sum([idx[keys] for keys in ['Panel_outer', 'Panel_inner', 'Panel_body']], [])
+sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body']], [])
 
 # initial values for solar cells and radiators
 
@@ -74,6 +73,7 @@ prob['cr'][sc_idx] = 1.0
 prob['alp_r'][list(idx['Box'])] = 0.5
 prob['QI'][[-1]] = 0.2
 prob['QI'][[-4]] = 0.3
+prob['phi'][:] = 0.0
 
 """ cr = om.CaseReader('thermal_mdp.sql')
 cases = cr.list_cases('driver')
@@ -84,17 +84,17 @@ print(num_cases)
 last_case = cr.get_case(cases[num_cases-1])
 prob.load_case(last_case) """
 
-#prob.run_model()
-prob.run_driver()
+prob.run_model()
+#prob.run_driver()
 print(prob['T']-273.)
 
 #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
 #print(totals)
-#check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)
+#check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04) #, includes='*tc.QS')
 #prob.check_totals(compact_print=True)
 
 #print(prob['P_dis'])
 #print(prob['P_in'], prob['P_out'])
 #print(prob['QS_c'], prob['QS_r'])
 
-#prob.model.list_inputs(print_arrays=True)
+prob.model.list_inputs(print_arrays=True)

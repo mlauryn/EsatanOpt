@@ -4,7 +4,7 @@ from TempsComp import TempsComp
 
 class SolarCell(om.ExplicitComponent):
     def initialize(self):
-        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('nodes', desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
         self.options.declare('alp_sc', default=.91, lower=.0, upper=1., desc='absorbtivity of the solar cell' )
 
@@ -46,7 +46,7 @@ class SolarCell(om.ExplicitComponent):
 
 class ElectricPower(om.ExplicitComponent):
     def initialize(self):
-        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('nodes', desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
         self.options.declare('ar', default=.9, lower=.0, upper=1., desc='solar cell to node surface area ratio')
         self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
@@ -86,12 +86,12 @@ class ElectricPower(om.ExplicitComponent):
 class QSmtxComp(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nn', types=int, desc='number of diffusion nodes in thermal model')
-        self.options.declare('nodes', types=list, desc='list of input external surface node numbers')
+        self.options.declare('nodes', desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
         
     def setup(self):
         nn = self.options['nn'] + 1
-        nodes = sorted(self.options['nodes'])
+        nodes = self.options['nodes']
         n = len(nodes)
         m = self.options['npts']
         self.add_input('P_el', shape=(n,m), desc='solar cell electric power over time', units='W')
@@ -113,7 +113,7 @@ class QSmtxComp(om.ExplicitComponent):
         P_el = inputs['P_el']
         QS_c = inputs['QS_c']
         QS_r = inputs['QS_r']
-        nodes = sorted(self.options['nodes'])
+        nodes = self.options['nodes']
         for i,node in enumerate(nodes):
             QS[node,:] = QS_c[i,:] + QS_r[i,:] - P_el[i,:] # energy balance
         outputs['QS'] = QS

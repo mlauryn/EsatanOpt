@@ -82,5 +82,5 @@ if __name__ == "__main__":
     problem.run_model()
     print(problem['T']-273.15)
 
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-4)
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-4)
     #problem.model.list_inputs(print_arrays=True, includes=['*QI*'])

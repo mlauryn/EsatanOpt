@@ -1,107 +1,113 @@
-**************************************************************
+***************************************************************
 Model = RU_v4_detail
-Report produced by REPORT_VF procedure at 19:21 Wed 1 Apr 2020
+Report produced by REPORT_VF procedure at 22:15 Tue 14 Apr 2020
 VF name = Cold.IR_VF
-VF calculated on 1:54 Wed 1 Apr 2020, wavelength is INFRA_RED
+VF calculated on 11:20 Mon 13 Apr 2020, wavelength is INFRA_RED
 Geometry is Not in Cavity
-**************************************************************
+***************************************************************
 
 ---------------------------------------------------------------------------
 Emitting Face = 1, Thermal Node = 1
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.025597         25 [        16] 0.001682
+         19 [        10] 0.026542         25 [        16] 0.001676         29 [        20] 0.000025
 
-VF to environment = 0.972600, VF to inactive faces = 0.000000
-VF line sum = 0.999979
+VF to environment = 0.970567, VF to inactive faces = 0.000000
+VF line sum = 0.998876
 
 ---------------------------------------------------------------------------
 Emitting Face = 3, Thermal Node = 2
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.000229         25 [        16] 0.000038
-
-VF to environment = 0.999300, VF to inactive faces = 0.000000
-VF line sum = 0.999567
-
----------------------------------------------------------------------------
-Emitting Face = 5, Thermal Node = 3
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
----------------------------------------------------------------------------
-         19 [        10] 0.000038
-
-VF to environment = 0.999900, VF to inactive faces = 0.000000
-VF line sum = 0.999938
-
----------------------------------------------------------------------------
-Emitting Face = 7, Thermal Node = 4
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
----------------------------------------------------------------------------
-         19 [        10] 0.002509         25 [        16] 0.027649         27 [        18] 0.000038
-         31 [        22] 0.002596
-
-VF to environment = 0.969200, VF to inactive faces = 0.000000
-VF line sum = 1.002093
-
----------------------------------------------------------------------------
-Emitting Face = 9, Thermal Node = 5
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
----------------------------------------------------------------------------
-         19 [        10] 0.000114         25 [        16] 0.000076
+         19 [        10] 0.000114         25 [        16] 0.000038         29 [        20] 0.000013
+         31 [        22] 0.000025
 
 VF to environment = 0.999500, VF to inactive faces = 0.000000
 VF line sum = 0.999691
 
 ---------------------------------------------------------------------------
-Emitting Face = 11, Thermal Node = 6
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Emitting Face = 5, Thermal Node = 3
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
+         19 [        10] 0.000013         27 [        18] 0.000013
 
-VF to environment = 1.000000, VF to inactive faces = 0.000000
-VF line sum = 1.000000
+VF to environment = 0.999933, VF to inactive faces = 0.000000
+VF line sum = 0.999959
+
+---------------------------------------------------------------------------
+Emitting Face = 7, Thermal Node = 4
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
+---------------------------------------------------------------------------
+         19 [        10] 0.002757         25 [        16] 0.028142         27 [        18] 0.000064
+         31 [        22] 0.002307
+
+VF to environment = 0.966567, VF to inactive faces = 0.000000
+VF line sum = 0.999937
+
+---------------------------------------------------------------------------
+Emitting Face = 9, Thermal Node = 5
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
+---------------------------------------------------------------------------
+         19 [        10] 0.000076         21 [        12] 0.000013         25 [        16] 0.000089
+         31 [        22] 0.000013         33 [        24] 0.000013
+
+VF to environment = 0.999467, VF to inactive faces = 0.000000
+VF line sum = 0.999670
+
+---------------------------------------------------------------------------
+Emitting Face = 11, Thermal Node = 6
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
+---------------------------------------------------------------------------
+         29 [        20] 0.000013
+
+VF to environment = 0.999967, VF to inactive faces = 0.000000
+VF line sum = 0.999979
 
 ---------------------------------------------------------------------------
 Emitting Face = 13, Thermal Node = 7
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.000076         25 [        16] 0.001682         31 [        22] 0.026398
-         35 [        26] 0.000038
+         19 [        10] 0.000025         25 [        16] 0.001820         29 [        20] 0.000013
+         31 [        22] 0.026643         33 [        24] 0.000064         35 [        26] 0.000025
 
-VF to environment = 0.970200, VF to inactive faces = 0.000000
-VF line sum = 0.998495
+VF to environment = 0.971467, VF to inactive faces = 0.000000
+VF line sum = 1.000157
 
 ---------------------------------------------------------------------------
 Emitting Face = 15, Thermal Node = 8
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         33 [        24] 0.000038         35 [        26] 0.000038
+         19 [        10] 0.000013         23 [        14] 0.000013         25 [        16] 0.000025
+         31 [        22] 0.000025         33 [        24] 0.000013         35 [        26] 0.000013
 
-VF to environment = 0.999800, VF to inactive faces = 0.000000
-VF line sum = 0.999876
+VF to environment = 0.999733, VF to inactive faces = 0.000000
+VF line sum = 0.999835
 
 ---------------------------------------------------------------------------
 Emitting Face = 17, Thermal Node = 9
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
+         25 [        16] 0.000013         33 [        24] 0.000013
 
-VF to environment = 1.000000, VF to inactive faces = 0.000000
-VF line sum = 1.000000
+VF to environment = 0.999933, VF to inactive faces = 0.000000
+VF line sum = 0.999959
 
 ---------------------------------------------------------------------------
 Emitting Face = 19, Thermal Node = 10
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-          1 [         1] 0.027037          3 [         2] 0.000242          5 [         3] 0.000040
-          7 [         4] 0.002650          9 [         5] 0.000121         13 [         7] 0.000081
-         63 [        50] 0.028052         67 [        52] 0.000178         87 [        62] 0.027293
-         89 [        63] 0.203848         91 [        64] 0.010801         93 [        65] 0.021506
+          1 [         1] 0.028034          3 [         2] 0.000121          5 [         3] 0.000013
+          7 [         4] 0.002912          9 [         5] 0.000081         13 [         7] 0.000027
+         15 [         8] 0.000013         63 [        50] 0.028297         67 [        52] 0.000119
+         87 [        62] 0.026980         89 [        63] 0.204644         91 [        64] 0.011724
+         93 [        65] 0.021411
 
-VF to environment = 0.678600, VF to inactive faces = 0.000000
-VF line sum = 1.001150
+VF to environment = 0.676267, VF to inactive faces = 0.000000
+VF line sum = 1.001545
 
 ---------------------------------------------------------------------------
 Emitting Face = 20, Thermal Node = 11
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -109,57 +115,61 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 21, Thermal Node = 12
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         63 [        50] 0.000723         67 [        52] 0.000036         87 [        62] 0.041718
-         89 [        63] 0.069902         91 [        64] 0.022077         93 [        65] 0.024703
+          9 [         5] 0.000013         63 [        50] 0.000933         67 [        52] 0.000047
+         87 [        62] 0.041631         89 [        63] 0.070409         91 [        64] 0.021748
+         93 [        65] 0.024873
 
-VF to environment = 0.839200, VF to inactive faces = 0.000000
-VF line sum = 0.998958
+VF to environment = 0.838900, VF to inactive faces = 0.000000
+VF line sum = 0.998987
 
 ---------------------------------------------------------------------------
 Emitting Face = 22, Thermal Node = 13
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         40 [        31] 0.000100         42 [        33] 0.000100         54 [        45] 0.000050
+         38 [        29] 0.000017         40 [        31] 0.000050         42 [        33] 0.000150
+         46 [        37] 0.000017         48 [        39] 0.000033         54 [        45] 0.000050
 
-VF to environment = 0.999700, VF to inactive faces = 0.000000
+VF to environment = 0.999633, VF to inactive faces = 0.000000
 VF line sum = 0.999950
 
 ---------------------------------------------------------------------------
 Emitting Face = 23, Thermal Node = 14
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         63 [        50] 0.000071         87 [        62] 0.027388         89 [        63] 0.023705
-         91 [        64] 0.016896         93 [        65] 0.012940
+         15 [         8] 0.000013         63 [        50] 0.000059         87 [        62] 0.027701
+         89 [        63] 0.023780         91 [        64] 0.017130         93 [        65] 0.013427
 
-VF to environment = 0.918500, VF to inactive faces = 0.000000
-VF line sum = 0.999900
+VF to environment = 0.917267, VF to inactive faces = 0.000000
+VF line sum = 0.999677
 
 ---------------------------------------------------------------------------
 Emitting Face = 24, Thermal Node = 15
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         40 [        31] 0.000300         42 [        33] 0.029800         48 [        39] 0.001900
+         38 [        29] 0.000017         40 [        31] 0.000117         42 [        33] 0.028683
+         48 [        39] 0.001850         50 [        41] 0.000033         54 [        45] 0.000050
 
-VF to environment = 0.967900, VF to inactive faces = 0.000000
-VF line sum = 1.000000
+VF to environment = 0.969100, VF to inactive faces = 0.000000
+VF line sum = 0.999950
 
 ---------------------------------------------------------------------------
 Emitting Face = 25, Thermal Node = 16
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-          1 [         1] 0.001777          3 [         2] 0.000040          7 [         4] 0.029204
-          9 [         5] 0.000081         13 [         7] 0.001777         63 [        50] 0.013978
-         67 [        52] 0.015472         87 [        62] 0.022540         89 [        63] 0.130156
-         91 [        64] 0.024228         93 [        65] 0.129716
+          1 [         1] 0.001771          3 [         2] 0.000040          7 [         4] 0.029725
+          9 [         5] 0.000094         13 [         7] 0.001922         15 [         8] 0.000027
+         17 [         9] 0.000013         63 [        50] 0.014013         67 [        52] 0.016342
+         87 [        62] 0.022584         89 [        63] 0.127755         91 [        64] 0.023376
+         93 [        65] 0.131732
 
-VF to environment = 0.629800, VF to inactive faces = 0.000000
-VF line sum = 0.999269
+VF to environment = 0.630700, VF to inactive faces = 0.000000
+VF line sum = 1.000561
 
 ---------------------------------------------------------------------------
 Emitting Face = 26, Thermal Node = 17
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -167,108 +177,114 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 27, Thermal Node = 18
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-          7 [         4] 0.000040         63 [        50] 0.000071         67 [        52] 0.000771
-         87 [        62] 0.035824         89 [        63] 0.052281         91 [        64] 0.034125
-         93 [        65] 0.053861
+          5 [         3] 0.000013          7 [         4] 0.000067         63 [        50] 0.000439
+         67 [        52] 0.000889         87 [        62] 0.035001         89 [        63] 0.053723
+         91 [        64] 0.035662         93 [        65] 0.052784
 
-VF to environment = 0.823400, VF to inactive faces = 0.000000
-VF line sum = 1.000974
+VF to environment = 0.821367, VF to inactive faces = 0.000000
+VF line sum = 1.000511
 
 ---------------------------------------------------------------------------
 Emitting Face = 28, Thermal Node = 19
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         42 [        33] 0.000100         48 [        39] 0.000200         54 [        45] 0.000050
+         40 [        31] 0.000017         42 [        33] 0.000033         48 [        39] 0.000167
+         50 [        41] 0.000017         54 [        45] 0.000083
 
 VF to environment = 0.999600, VF to inactive faces = 0.000000
-VF line sum = 0.999950
+VF line sum = 0.999917
 
 ---------------------------------------------------------------------------
 Emitting Face = 29, Thermal Node = 20
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         63 [        50] 0.000071         87 [        62] 0.023134         89 [        63] 0.019629
-         91 [        64] 0.023348         93 [        65] 0.020603
+          1 [         1] 0.000027          3 [         2] 0.000013         11 [         6] 0.000013
+         13 [         7] 0.000013         63 [        50] 0.000047         65 [        51] 0.000012
+         67 [        52] 0.000115         87 [        62] 0.023499         89 [        63] 0.020192
+         91 [        64] 0.023732         93 [        65] 0.020714
 
-VF to environment = 0.913100, VF to inactive faces = 0.000000
-VF line sum = 1.000186
+VF to environment = 0.912067, VF to inactive faces = 0.000000
+VF line sum = 1.000745
 
 ---------------------------------------------------------------------------
 Emitting Face = 30, Thermal Node = 21
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         42 [        33] 0.002500         48 [        39] 0.026600         52 [        43] 0.000100
-         54 [        45] 0.001900
+         40 [        31] 0.000083         42 [        33] 0.002400         46 [        37] 0.000050
+         48 [        39] 0.027850         52 [        43] 0.000067         54 [        45] 0.001933
 
-VF to environment = 0.969000, VF to inactive faces = 0.000000
-VF line sum = 1.000200
+VF to environment = 0.968333, VF to inactive faces = 0.000000
+VF line sum = 1.000817
 
 ---------------------------------------------------------------------------
 Emitting Face = 31, Thermal Node = 22
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-          7 [         4] 0.002742         13 [         7] 0.027883         63 [        50] 0.001020
-         67 [        52] 0.026224         87 [        62] 0.011704         89 [        63] 0.022053
-         91 [        64] 0.027150         93 [        65] 0.200046
+          3 [         2] 0.000027          7 [         4] 0.002437          9 [         5] 0.000013
+         13 [         7] 0.028142         15 [         8] 0.000027         63 [        50] 0.000411
+         67 [        52] 0.027122         87 [        62] 0.011569         89 [        63] 0.022980
+         91 [        64] 0.026481         93 [        65] 0.201179
 
-VF to environment = 0.680000, VF to inactive faces = 0.000000
-VF line sum = 0.999322
+VF to environment = 0.678033, VF to inactive faces = 0.000000
+VF line sum = 0.999454
 
 ---------------------------------------------------------------------------
 Emitting Face = 32, Thermal Node = 23
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         40 [        31] 0.000050
+         40 [        31] 0.000017         52 [        43] 0.000017
 
-VF to environment = 0.999900, VF to inactive faces = 0.000000
-VF line sum = 0.999950
+VF to environment = 0.999933, VF to inactive faces = 0.000000
+VF line sum = 0.999967
 
 ---------------------------------------------------------------------------
 Emitting Face = 33, Thermal Node = 24
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         15 [         8] 0.000040         63 [        50] 0.000605         67 [        52] 0.000688
-         87 [        62] 0.021613         89 [        63] 0.024881         91 [        64] 0.040565
-         93 [        65] 0.068928
+          9 [         5] 0.000013         13 [         7] 0.000067         15 [         8] 0.000013
+         17 [         9] 0.000013         63 [        50] 0.000340         65 [        51] 0.000012
+         67 [        52] 0.000814         87 [        62] 0.021011         89 [        63] 0.023748
+         91 [        64] 0.038668         93 [        65] 0.067308
 
-VF to environment = 0.839500, VF to inactive faces = 0.000000
-VF line sum = 0.997319
+VF to environment = 0.847200, VF to inactive faces = 0.000000
+VF line sum = 0.999675
 
 ---------------------------------------------------------------------------
 Emitting Face = 34, Thermal Node = 25
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         40 [        31] 0.000050         48 [        39] 0.000050         52 [        43] 0.000050
-         54 [        45] 0.000100
+         40 [        31] 0.000033         42 [        33] 0.000017         48 [        39] 0.000067
+         52 [        43] 0.000017         54 [        45] 0.000067
 
-VF to environment = 0.999800, VF to inactive faces = 0.000000
-VF line sum = 1.000050
+VF to environment = 0.999700, VF to inactive faces = 0.000000
+VF line sum = 0.999900
 
 ---------------------------------------------------------------------------
 Emitting Face = 35, Thermal Node = 26
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         13 [         7] 0.000040         15 [         8] 0.000040         67 [        52] 0.000332
-         87 [        62] 0.018025         89 [        63] 0.011763         91 [        64] 0.024917
-         93 [        65] 0.023206
+         13 [         7] 0.000027         15 [         8] 0.000013         63 [        50] 0.000012
+         67 [        52] 0.000245         69 [        53] 0.000055         87 [        62] 0.017471
+         89 [        63] 0.013209         91 [        64] 0.025847         93 [        65] 0.024010
 
-VF to environment = 0.921600, VF to inactive faces = 0.000000
-VF line sum = 1.000023
+VF to environment = 0.919100, VF to inactive faces = 0.000000
+VF line sum = 1.000256
 
 ---------------------------------------------------------------------------
 Emitting Face = 36, Thermal Node = 27
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         46 [        37] 0.000100         48 [        39] 0.002350         54 [        45] 0.027050
+         42 [        33] 0.000117         46 [        37] 0.000067         48 [        39] 0.002183
+         52 [        43] 0.000133         54 [        45] 0.027417
 
-VF to environment = 0.969500, VF to inactive faces = 0.000000
-VF line sum = 0.999100
+VF to environment = 0.969700, VF to inactive faces = 0.000000
+VF line sum = 0.999717
 
 ---------------------------------------------------------------------------
 Emitting Face = 37, Thermal Node = 28
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -276,17 +292,18 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 38, Thermal Node = 29
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         67 [        52] 0.000083         87 [        62] 0.005692         89 [        63] 0.003232
-         91 [        64] 0.005573         93 [        65] 0.002127
+         22 [        13] 0.000017         24 [        15] 0.000017         63 [        50] 0.000028
+         67 [        52] 0.000028         87 [        62] 0.006820         89 [        63] 0.002903
+         91 [        64] 0.005280         93 [        65] 0.002464
 
-VF to environment = 0.983000, VF to inactive faces = 0.000000
-VF line sum = 0.999706
+VF to environment = 0.982267, VF to inactive faces = 0.000000
+VF line sum = 0.999822
 
 ---------------------------------------------------------------------------
 Emitting Face = 39, Thermal Node = 30
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -294,18 +311,19 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 40, Thermal Node = 31
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         22 [        13] 0.000100         24 [        15] 0.000300         32 [        23] 0.000050
-         34 [        25] 0.000050         87 [        62] 0.010266         89 [        63] 0.004765
-         91 [        64] 0.007854         93 [        65] 0.004408
+         22 [        13] 0.000050         24 [        15] 0.000117         28 [        19] 0.000017
+         30 [        21] 0.000083         32 [        23] 0.000017         34 [        25] 0.000033
+         87 [        62] 0.009918         89 [        63] 0.004745         91 [        64] 0.007391
+         93 [        65] 0.003976
 
-VF to environment = 0.972100, VF to inactive faces = 0.000000
-VF line sum = 0.999993
+VF to environment = 0.974033, VF to inactive faces = 0.000000
+VF line sum = 1.000446
 
 ---------------------------------------------------------------------------
 Emitting Face = 41, Thermal Node = 32
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -313,18 +331,19 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 42, Thermal Node = 33
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         22 [        13] 0.000100         24 [        15] 0.029800         28 [        19] 0.000100
-         30 [        21] 0.002500         87 [        62] 0.011787         89 [        63] 0.006095
-         91 [        64] 0.010325         93 [        65] 0.003897
+         22 [        13] 0.000150         24 [        15] 0.028683         28 [        19] 0.000033
+         30 [        21] 0.002400         34 [        25] 0.000017         36 [        27] 0.000117
+         87 [        62] 0.012508         89 [        63] 0.006507         91 [        64] 0.010131
+         93 [        65] 0.004697
 
-VF to environment = 0.936600, VF to inactive faces = 0.000000
-VF line sum = 1.001405
+VF to environment = 0.934967, VF to inactive faces = 0.000000
+VF line sum = 1.000444
 
 ---------------------------------------------------------------------------
 Emitting Face = 43, Thermal Node = 34
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -332,17 +351,17 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 44, Thermal Node = 35
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         63 [        50] 0.000083         87 [        62] 0.005418         89 [        63] 0.002555
-         91 [        64] 0.005074         93 [        65] 0.003541
+         63 [        50] 0.000028         87 [        62] 0.005699         89 [        63] 0.002677
+         91 [        64] 0.005513         93 [        65] 0.002705
 
-VF to environment = 0.983600, VF to inactive faces = 0.000000
-VF line sum = 1.000270
+VF to environment = 0.983000, VF to inactive faces = 0.000000
+VF line sum = 0.999623
 
 ---------------------------------------------------------------------------
 Emitting Face = 45, Thermal Node = 36
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -350,17 +369,18 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 46, Thermal Node = 37
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         36 [        27] 0.000100         87 [        62] 0.008341         89 [        63] 0.005596
-         91 [        64] 0.008365         93 [        65] 0.005501
+         22 [        13] 0.000017         30 [        21] 0.000050         36 [        27] 0.000067
+         87 [        62] 0.008654         89 [        63] 0.004808         91 [        64] 0.008686
+         93 [        65] 0.005026
 
-VF to environment = 0.972100, VF to inactive faces = 0.000000
-VF line sum = 1.000104
+VF to environment = 0.973067, VF to inactive faces = 0.000000
+VF line sum = 1.000474
 
 ---------------------------------------------------------------------------
 Emitting Face = 47, Thermal Node = 38
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -368,18 +388,19 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 48, Thermal Node = 39
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         24 [        15] 0.001900         28 [        19] 0.000200         30 [        21] 0.026600
-         34 [        25] 0.000050         36 [        27] 0.002350         87 [        62] 0.012405
-         89 [        63] 0.006250         91 [        64] 0.012179         93 [        65] 0.006488
+         22 [        13] 0.000033         24 [        15] 0.001850         28 [        19] 0.000167
+         30 [        21] 0.027850         34 [        25] 0.000067         36 [        27] 0.002183
+         87 [        62] 0.012694         89 [        63] 0.006290         91 [        64] 0.012595
+         93 [        65] 0.006507
 
-VF to environment = 0.931400, VF to inactive faces = 0.000000
-VF line sum = 1.000021
+VF to environment = 0.929600, VF to inactive faces = 0.000000
+VF line sum = 1.000036
 
 ---------------------------------------------------------------------------
 Emitting Face = 49, Thermal Node = 40
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -387,17 +408,17 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 50, Thermal Node = 41
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         87 [        62] 0.007010         89 [        63] 0.001830         91 [        64] 0.005252
-         93 [        65] 0.003078
+         24 [        15] 0.000033         28 [        19] 0.000017         87 [        62] 0.005593
+         89 [        63] 0.002404         91 [        64] 0.005961         93 [        65] 0.002875
 
-VF to environment = 0.981500, VF to inactive faces = 0.000000
-VF line sum = 0.998670
+VF to environment = 0.982667, VF to inactive faces = 0.000000
+VF line sum = 0.999550
 
 ---------------------------------------------------------------------------
 Emitting Face = 51, Thermal Node = 42
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -405,17 +426,18 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 52, Thermal Node = 43
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         30 [        21] 0.000100         34 [        25] 0.000050         87 [        62] 0.008151
-         89 [        63] 0.004693         91 [        64] 0.009708         93 [        65] 0.005097
+         30 [        21] 0.000067         32 [        23] 0.000017         34 [        25] 0.000017
+         36 [        27] 0.000133         63 [        50] 0.000028         87 [        62] 0.008052
+         89 [        63] 0.004313         91 [        64] 0.009458         93 [        65] 0.005422
 
-VF to environment = 0.971600, VF to inactive faces = 0.000000
-VF line sum = 0.999500
+VF to environment = 0.972033, VF to inactive faces = 0.000000
+VF line sum = 0.999640
 
 ---------------------------------------------------------------------------
 Emitting Face = 53, Thermal Node = 44
-Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.8900, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -423,18 +445,19 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 54, Thermal Node = 45
-Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0008, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         22 [        13] 0.000050         28 [        19] 0.000050         30 [        21] 0.001900
-         34 [        25] 0.000100         36 [        27] 0.027050         87 [        62] 0.009375
-         89 [        63] 0.005395         91 [        64] 0.011775         93 [        65] 0.006262
+         22 [        13] 0.000050         24 [        15] 0.000050         28 [        19] 0.000083
+         30 [        21] 0.001933         34 [        25] 0.000067         36 [        27] 0.027417
+         87 [        62] 0.010044         89 [        63] 0.004761         91 [        64] 0.013605
+         93 [        65] 0.006519
 
-VF to environment = 0.939100, VF to inactive faces = 0.000000
-VF line sum = 1.001356
+VF to environment = 0.935733, VF to inactive faces = 0.000000
+VF line sum = 1.000496
 
 ---------------------------------------------------------------------------
 Emitting Face = 55, Thermal Node = 46
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -442,19 +465,20 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 56, Thermal Node = 46
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.000766         68 [        52] 0.162029         70 [        53] 0.022840
-         76 [        56] 0.012012         78 [        57] 0.005301         84 [        60] 0.006353
-         86 [        61] 0.010401         90 [        63] 0.001034         92 [        64] 0.025473
-         94 [        65] 0.158681        107 [        72] 0.003416        109 [        73] 0.586784
+         64 [        50] 0.000681         68 [        52] 0.157442         70 [        53] 0.023550
+         76 [        56] 0.012292         78 [        57] 0.006409         84 [        60] 0.006106
+         86 [        61] 0.010649         90 [        63] 0.000840         92 [        64] 0.024012
+         94 [        65] 0.159113        100 [        68] 0.001050        107 [        72] 0.003679
+        109 [        73] 0.587788
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.999087
+VF line sum = 0.998236
 
 ---------------------------------------------------------------------------
 Emitting Face = 57, Thermal Node = 47
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -462,20 +486,21 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 58, Thermal Node = 47
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         66 [        51] 0.003522         68 [        52] 0.023749         70 [        53] 0.166900
-         72 [        54] 0.003879         76 [        56] 0.178543         78 [        57] 0.029158
-         80 [        58] 0.002693         84 [        60] 0.013108         86 [        61] 0.004636
-         92 [        64] 0.004901         94 [        65] 0.009853         98 [        67] 0.001850
-        102 [        69] 0.003750        107 [        72] 0.006132        109 [        73] 0.543796
+         66 [        51] 0.003557         68 [        52] 0.024333         70 [        53] 0.165338
+         72 [        54] 0.003892         74 [        55] 0.000733         76 [        56] 0.177120
+         78 [        57] 0.028503         80 [        58] 0.001344         84 [        60] 0.013440
+         86 [        61] 0.005398         92 [        64] 0.004784         94 [        65] 0.010176
+         98 [        67] 0.001200        102 [        69] 0.003467        107 [        72] 0.007854
+        109 [        73] 0.542281
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.000472
+VF line sum = 0.997343
 
 ---------------------------------------------------------------------------
 Emitting Face = 59, Thermal Node = 48
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -483,20 +508,21 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 60, Thermal Node = 48
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         68 [        52] 0.010395         70 [        53] 0.005175         74 [        55] 0.003284
-         76 [        56] 0.006103         78 [        57] 0.015504         82 [        59] 0.004543
-         84 [        60] 0.030063         86 [        61] 0.179571         88 [        62] 0.003427
-         92 [        64] 0.164474         94 [        65] 0.023456         96 [        66] 0.003800
-         98 [        67] 0.001400        107 [        72] 0.011231        109 [        73] 0.535293
+         68 [        52] 0.010143         70 [        53] 0.005273         74 [        55] 0.002810
+         76 [        56] 0.005202         78 [        57] 0.014801         80 [        58] 0.000288
+         82 [        59] 0.004077         84 [        60] 0.029430         86 [        61] 0.180782
+         88 [        62] 0.003228         92 [        64] 0.162617         94 [        65] 0.023456
+         96 [        66] 0.003950         98 [        67] 0.002017        107 [        72] 0.010424
+        109 [        73] 0.537181
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.001826
+VF line sum = 0.999879
 
 ---------------------------------------------------------------------------
 Emitting Face = 61, Thermal Node = 49
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -504,218 +530,222 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 62, Thermal Node = 49
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         66 [        51] 0.001467         68 [        52] 0.004660         70 [        53] 0.013005
-         74 [        55] 0.006375         76 [        56] 0.030218         78 [        57] 0.177469
-         80 [        58] 0.005794         84 [        60] 0.176765         86 [        61] 0.031592
-         88 [        62] 0.003388         92 [        64] 0.012323         94 [        65] 0.006362
-         96 [        66] 0.003050         98 [        67] 0.005850        102 [        69] 0.001100
-        107 [        72] 0.015892        109 [        73] 0.500860
+         66 [        51] 0.000851         68 [        52] 0.005723         70 [        53] 0.011846
+         74 [        55] 0.005845         76 [        56] 0.030391         78 [        57] 0.178219
+         80 [        58] 0.005143         82 [        59] 0.000893         84 [        60] 0.177435
+         86 [        61] 0.031012         88 [        62] 0.003047         92 [        64] 0.011892
+         94 [        65] 0.005832         96 [        66] 0.002767         98 [        67] 0.005883
+        102 [        69] 0.001333        107 [        72] 0.014163        109 [        73] 0.506293
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.999167
+VF line sum = 1.002175
 
 ---------------------------------------------------------------------------
 Emitting Face = 63, Thermal Node = 50
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.013413         21 [        12] 0.000346         23 [        14] 0.000034
-         25 [        16] 0.006684         27 [        18] 0.000034         29 [        20] 0.000034
-         31 [        22] 0.000487         33 [        24] 0.000289         44 [        35] 0.000040
+         19 [        10] 0.013530         21 [        12] 0.000446         23 [        14] 0.000028
+         25 [        16] 0.006701         27 [        18] 0.000210         29 [        20] 0.000023
+         31 [        22] 0.000197         33 [        24] 0.000162         35 [        26] 0.000006
+         38 [        29] 0.000013         44 [        35] 0.000013         52 [        43] 0.000013
 
-VF to environment = 0.023800, VF to inactive faces = 0.954100
-VF line sum = 0.999361
+VF to environment = 0.024533, VF to inactive faces = 0.954133
+VF line sum = 1.000075
 
 ---------------------------------------------------------------------------
 Emitting Face = 64, Thermal Node = 50
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.000707         72 [        54] 0.013940         74 [        55] 0.012865
-         76 [        56] 0.012223         78 [        57] 0.010797         80 [        58] 0.018000
-         82 [        59] 0.025900         84 [        60] 0.015150         86 [        61] 0.022550
-         88 [        62] 0.014839         90 [        63] 0.157398         92 [        64] 0.009773
-         94 [        65] 0.031182         96 [        66] 0.004723         98 [        67] 0.001237
-        100 [        68] 0.126594        102 [        69] 0.015677        103 [        70] 0.058586
-        104 [        70] 0.063870        105 [        71] 0.068396        106 [        71] 0.049671
-        107 [        72] 0.106070        108 [        72] 0.074352        110 [        73] 0.088775
+         56 [        46] 0.000628         72 [        54] 0.014823         74 [        55] 0.013322
+         76 [        56] 0.011982         78 [        57] 0.010449         80 [        58] 0.016900
+         82 [        59] 0.026433         84 [        60] 0.014450         86 [        61] 0.020767
+         88 [        62] 0.014559         90 [        63] 0.159227         92 [        64] 0.009637
+         94 [        65] 0.032026         96 [        66] 0.004300         98 [        67] 0.001119
+        100 [        68] 0.124316        102 [        69] 0.015304        103 [        70] 0.055976
+        104 [        70] 0.065721        105 [        71] 0.071019        106 [        71] 0.052304
+        107 [        72] 0.106506        108 [        72] 0.070259        110 [        73] 0.087239
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.007406
+VF line sum = 1.003311
 
 ---------------------------------------------------------------------------
 Emitting Face = 65, Thermal Node = 51
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
+         29 [        20] 0.000006         33 [        24] 0.000006
 
-VF to environment = 0.023400, VF to inactive faces = 0.976600
-VF line sum = 1.000000
+VF to environment = 0.025400, VF to inactive faces = 0.974533
+VF line sum = 0.999945
 
 ---------------------------------------------------------------------------
 Emitting Face = 66, Thermal Node = 51
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         58 [        47] 0.003251         62 [        49] 0.001354         72 [        54] 0.177562
-         74 [        55] 0.016441         76 [        56] 0.032429         78 [        57] 0.011352
-         80 [        58] 0.028700         82 [        59] 0.017600         84 [        60] 0.023900
-         86 [        61] 0.015900         88 [        62] 0.011495         90 [        63] 0.013736
-         92 [        64] 0.010389         94 [        65] 0.010755         96 [        66] 0.001590
-         98 [        67] 0.005416        100 [        68] 0.015021        102 [        69] 0.123591
-        103 [        70] 0.051743        104 [        70] 0.061387        105 [        71] 0.067718
-        106 [        71] 0.051129        107 [        72] 0.100592        108 [        72] 0.065733
-        110 [        73] 0.084494
+         58 [        47] 0.003283         62 [        49] 0.000785         72 [        54] 0.175591
+         74 [        55] 0.016483         76 [        56] 0.032816         78 [        57] 0.011405
+         80 [        58] 0.028267         82 [        59] 0.017250         84 [        60] 0.023517
+         86 [        61] 0.014967         88 [        62] 0.011569         90 [        63] 0.014347
+         92 [        64] 0.010113         94 [        65] 0.011255         96 [        66] 0.001767
+         98 [        67] 0.005620        100 [        68] 0.014533        102 [        69] 0.124826
+        103 [        70] 0.050908        104 [        70] 0.061664        105 [        71] 0.066313
+        106 [        71] 0.049857        107 [        72] 0.099677        108 [        72] 0.066476
+        110 [        73] 0.085163
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.007713
+VF line sum = 1.003064
 
 ---------------------------------------------------------------------------
 Emitting Face = 67, Thermal Node = 52
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.000085         21 [        12] 0.000017         25 [        16] 0.007398
-         27 [        18] 0.000368         31 [        22] 0.012539         33 [        24] 0.000329
-         35 [        26] 0.000159         38 [        29] 0.000040
+         19 [        10] 0.000057         21 [        12] 0.000023         25 [        16] 0.007814
+         27 [        18] 0.000425         29 [        20] 0.000055         31 [        22] 0.012969
+         33 [        24] 0.000389         35 [        26] 0.000117         38 [        29] 0.000013
 
-VF to environment = 0.026700, VF to inactive faces = 0.953800
-VF line sum = 1.001435
+VF to environment = 0.026433, VF to inactive faces = 0.951433
+VF line sum = 0.999795
 
 ---------------------------------------------------------------------------
 Emitting Face = 68, Thermal Node = 52
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.149565         58 [        47] 0.021922         60 [        48] 0.009596
-         62 [        49] 0.004302         72 [        54] 0.011640         74 [        55] 0.011892
-         76 [        56] 0.026214         78 [        57] 0.022671         80 [        58] 0.014600
-         82 [        59] 0.022200         84 [        60] 0.029100         86 [        61] 0.042850
-         88 [        62] 0.009864         90 [        63] 0.031997         92 [        64] 0.022812
-         94 [        65] 0.185219        100 [        68] 0.001060        107 [        72] 0.131170
-        109 [        73] 0.103486        110 [        73] 0.149526
+         56 [        46] 0.145331         58 [        47] 0.022461         60 [        48] 0.009363
+         62 [        49] 0.005283         72 [        54] 0.011793         74 [        55] 0.011524
+         76 [        56] 0.025244         78 [        57] 0.022185         80 [        58] 0.015117
+         82 [        59] 0.022017         84 [        60] 0.029283         86 [        61] 0.044667
+         88 [        62] 0.010759         90 [        63] 0.031810         92 [        64] 0.022782
+         94 [        65] 0.187266        100 [        68] 0.000353        107 [        72] 0.130120
+        109 [        73] 0.101542        110 [        73] 0.149125
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.006012
+VF line sum = 1.002165
 
 ---------------------------------------------------------------------------
 Emitting Face = 69, Thermal Node = 53
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
+         35 [        26] 0.000026
 
-VF to environment = 0.026100, VF to inactive faces = 0.973900
-VF line sum = 1.000000
+VF to environment = 0.023767, VF to inactive faces = 0.976233
+VF line sum = 1.000026
 
 ---------------------------------------------------------------------------
 Emitting Face = 70, Thermal Node = 53
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.021084         58 [        47] 0.154062         60 [        48] 0.004777
-         62 [        49] 0.012005         72 [        54] 0.032936         74 [        55] 0.012230
-         76 [        56] 0.188953         78 [        57] 0.025695         80 [        58] 0.023650
-         82 [        59] 0.015150         84 [        60] 0.045650         86 [        61] 0.031500
-         88 [        62] 0.010257         90 [        63] 0.010031         92 [        64] 0.021098
-         94 [        65] 0.022679         98 [        67] 0.001906        102 [        69] 0.001178
-        107 [        72] 0.126290        109 [        73] 0.093120        110 [        73] 0.144365
+         56 [        46] 0.021739         58 [        47] 0.152619         60 [        48] 0.004868
+         62 [        49] 0.010935         72 [        54] 0.033817         74 [        55] 0.012143
+         76 [        56] 0.190580         78 [        57] 0.025652         80 [        58] 0.023133
+         82 [        59] 0.014433         84 [        60] 0.047117         86 [        61] 0.030400
+         88 [        62] 0.010337         90 [        63] 0.010106         92 [        64] 0.020984
+         94 [        65] 0.024728         98 [        67] 0.001381        102 [        69] 0.001732
+        107 [        72] 0.128511        109 [        73] 0.092439        110 [        73] 0.140934
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.002426
+VF line sum = 1.002934
 
 ---------------------------------------------------------------------------
 Emitting Face = 71, Thermal Node = 54
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
-VF to environment = 0.921100, VF to inactive faces = 0.078900
+VF to environment = 0.918100, VF to inactive faces = 0.081900
 VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 72, Thermal Node = 54
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         58 [        47] 0.003535         64 [        50] 0.013761         66 [        51] 0.175285
-         68 [        52] 0.011491         70 [        53] 0.032514         80 [        58] 0.019908
-         82 [        59] 0.013680         84 [        60] 0.013408         86 [        61] 0.010703
-         88 [        62] 0.017800         90 [        63] 0.026200         92 [        64] 0.014450
-         94 [        65] 0.021800         98 [        67] 0.020561        100 [        68] 0.005243
-        102 [        69] 0.145505        103 [        70] 0.048944        104 [        70] 0.047315
-        105 [        71] 0.065021        106 [        71] 0.048201        107 [        72] 0.079800
-        108 [        72] 0.062939        110 [        73] 0.093189
+         58 [        47] 0.003547         64 [        50] 0.014633         66 [        51] 0.173340
+         68 [        52] 0.011642         70 [        53] 0.033383         80 [        58] 0.018837
+         82 [        59] 0.013052         84 [        60] 0.014056         86 [        61] 0.012330
+         88 [        62] 0.017333         90 [        63] 0.026167         92 [        64] 0.015183
+         94 [        65] 0.022533         96 [        66] 0.001119         98 [        67] 0.020734
+        100 [        68] 0.005373        102 [        69] 0.140976        103 [        70] 0.050731
+        104 [        70] 0.048249        105 [        71] 0.063553        106 [        71] 0.047599
+        107 [        72] 0.082657        108 [        72] 0.064279        110 [        73] 0.092478
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.995435
+VF line sum = 0.997943
 
 ---------------------------------------------------------------------------
 Emitting Face = 73, Thermal Node = 55
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
-VF to environment = 0.996600, VF to inactive faces = 0.003400
+VF to environment = 0.995633, VF to inactive faces = 0.004367
 VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 74, Thermal Node = 55
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         60 [        48] 0.002993         62 [        49] 0.005809         64 [        50] 0.012700
-         66 [        51] 0.016231         68 [        52] 0.011739         70 [        53] 0.012074
-         80 [        58] 0.183743         82 [        59] 0.019764         84 [        60] 0.036699
-         86 [        61] 0.012757         88 [        62] 0.029400         90 [        63] 0.018250
-         92 [        64] 0.023600         94 [        65] 0.014250         96 [        66] 0.006810
-         98 [        67] 0.144303        100 [        68] 0.001296        102 [        69] 0.019795
-        103 [        70] 0.049852        104 [        70] 0.040059        105 [        71] 0.060510
-        106 [        71] 0.044397        107 [        72] 0.076133        108 [        72] 0.061763
-        110 [        73] 0.092663
+         58 [        47] 0.000668         60 [        48] 0.002561         62 [        49] 0.005326
+         64 [        50] 0.013152         66 [        51] 0.016272         68 [        52] 0.011376
+         70 [        53] 0.011987         80 [        58] 0.181502         82 [        59] 0.019089
+         84 [        60] 0.036500         86 [        61] 0.012686         88 [        62] 0.030017
+         90 [        63] 0.017583         92 [        64] 0.023783         94 [        65] 0.014600
+         96 [        66] 0.007117         98 [        67] 0.143910        100 [        68] 0.001783
+        102 [        69] 0.019595        103 [        70] 0.050589        104 [        70] 0.041625
+        105 [        71] 0.061170        106 [        71] 0.045045        107 [        72] 0.077221
+        108 [        72] 0.061088        110 [        73] 0.092783
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.001595
+VF line sum = 1.003073
 
 ---------------------------------------------------------------------------
 Emitting Face = 75, Thermal Node = 56
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
-VF to environment = 0.912800, VF to inactive faces = 0.087200
+VF to environment = 0.911667, VF to inactive faces = 0.088333
 VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 76, Thermal Node = 56
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.010946         58 [        47] 0.162696         60 [        48] 0.005562
-         62 [        49] 0.027536         64 [        50] 0.012067         66 [        51] 0.032013
-         68 [        52] 0.025878         70 [        53] 0.186531         80 [        58] 0.011602
-         82 [        59] 0.012683         84 [        60] 0.025155         86 [        61] 0.023280
-         88 [        62] 0.016100         90 [        63] 0.022100         92 [        64] 0.030350
-         94 [        65] 0.045200        102 [        69] 0.001414        105 [        71] 0.001989
-        107 [        72] 0.129193        109 [        73] 0.078192        110 [        73] 0.127893
+         56 [        46] 0.011201         58 [        47] 0.161400         60 [        48] 0.004741
+         62 [        49] 0.027693         64 [        50] 0.011828         66 [        51] 0.032395
+         68 [        52] 0.024920         70 [        53] 0.188136         80 [        58] 0.012504
+         82 [        59] 0.012337         84 [        60] 0.026165         86 [        61] 0.022689
+         88 [        62] 0.015250         90 [        63] 0.022167         92 [        64] 0.031000
+         94 [        65] 0.043867         98 [        67] 0.000393        102 [        69] 0.001846
+        105 [        71] 0.002479        107 [        72] 0.135569        109 [        73] 0.078447
+        110 [        73] 0.126064
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.992649
+VF line sum = 0.997246
 
 ---------------------------------------------------------------------------
 Emitting Face = 77, Thermal Node = 57
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
-VF to environment = 0.993800, VF to inactive faces = 0.006200
+VF to environment = 0.994667, VF to inactive faces = 0.005333
 VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 78, Thermal Node = 57
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.004831         58 [        47] 0.026570         60 [        48] 0.014128
-         62 [        49] 0.161717         64 [        50] 0.010659         66 [        51] 0.011207
-         68 [        52] 0.022380         70 [        53] 0.025365         80 [        58] 0.036464
-         82 [        59] 0.012918         84 [        60] 0.193375         86 [        61] 0.025792
-         88 [        62] 0.023950         90 [        63] 0.015500         92 [        64] 0.046650
-         94 [        65] 0.031450         96 [        66] 0.002816         98 [        67] 0.004560
-        105 [        71] 0.003517        107 [        72] 0.132283        109 [        73] 0.074402
-        110 [        73] 0.121870
+         56 [        46] 0.005840         58 [        47] 0.025973         60 [        48] 0.013487
+         62 [        49] 0.162401         64 [        50] 0.010315         66 [        51] 0.011259
+         68 [        52] 0.021900         70 [        53] 0.025323         80 [        58] 0.035445
+         82 [        59] 0.013878         84 [        60] 0.197580         86 [        61] 0.025800
+         88 [        62] 0.023800         90 [        63] 0.014033         92 [        64] 0.047383
+         94 [        65] 0.030767         96 [        66] 0.001842         98 [        67] 0.004171
+        105 [        71] 0.002959        107 [        72] 0.129184        109 [        73] 0.073259
+        110 [        73] 0.119525
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.004210
+VF line sum = 0.999190
 
 ---------------------------------------------------------------------------
 Emitting Face = 79, Thermal Node = 58
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -723,24 +753,24 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 80, Thermal Node = 58
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         58 [        47] 0.002486         62 [        49] 0.005348         64 [        50] 0.018000
-         66 [        51] 0.028700         68 [        52] 0.014600         70 [        53] 0.023650
-         72 [        54] 0.020166         74 [        55] 0.186130         76 [        56] 0.011753
-         78 [        57] 0.036938         88 [        62] 0.018266         90 [        63] 0.014829
-         92 [        64] 0.013097         94 [        65] 0.011406         96 [        66] 0.019924
-         98 [        67] 0.144277        100 [        68] 0.001531        102 [        69] 0.006421
-        103 [        70] 0.047448        104 [        70] 0.040829        105 [        71] 0.059525
-        106 [        71] 0.043420        107 [        72] 0.075283        108 [        72] 0.061293
-        110 [        73] 0.093366
+         58 [        47] 0.001241         60 [        48] 0.000265         62 [        49] 0.004747
+         64 [        50] 0.016900         66 [        51] 0.028267         68 [        52] 0.015117
+         70 [        53] 0.023133         72 [        54] 0.019082         74 [        55] 0.183860
+         76 [        56] 0.012667         78 [        57] 0.035906         88 [        62] 0.018382
+         90 [        63] 0.014780         92 [        64] 0.012575         94 [        65] 0.011099
+         96 [        66] 0.021390         98 [        67] 0.147129        100 [        68] 0.002073
+        102 [        69] 0.006572        103 [        70] 0.047693        104 [        70] 0.040333
+        105 [        71] 0.060815        106 [        71] 0.043276        107 [        72] 0.074715
+        108 [        72] 0.061045        110 [        73] 0.095129
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.002092
+VF line sum = 1.001931
 
 ---------------------------------------------------------------------------
 Emitting Face = 81, Thermal Node = 59
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -748,23 +778,24 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 82, Thermal Node = 59
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         60 [        48] 0.004193         64 [        50] 0.025900         66 [        51] 0.017600
-         68 [        52] 0.022200         70 [        53] 0.015150         72 [        54] 0.013858
-         74 [        55] 0.020020         76 [        56] 0.012848         78 [        57] 0.013086
-         88 [        62] 0.178393         90 [        63] 0.014413         92 [        64] 0.033139
-         94 [        65] 0.011919         96 [        66] 0.151140         98 [        67] 0.022307
-        100 [        68] 0.005860        102 [        69] 0.002418        103 [        70] 0.050328
-        104 [        70] 0.042099        105 [        71] 0.063416        106 [        71] 0.045744
-        107 [        72] 0.074677        108 [        72] 0.063762        110 [        73] 0.096946
+         60 [        48] 0.003763         62 [        49] 0.000824         64 [        50] 0.026433
+         66 [        51] 0.017250         68 [        52] 0.022017         70 [        53] 0.014433
+         72 [        54] 0.013222         74 [        55] 0.019337         76 [        56] 0.012497
+         78 [        57] 0.014058         88 [        62] 0.177438         90 [        63] 0.015154
+         92 [        64] 0.034379         94 [        65] 0.011878         96 [        66] 0.145649
+         98 [        67] 0.022337        100 [        68] 0.005467        102 [        69] 0.002581
+        103 [        70] 0.051170        104 [        70] 0.041642        105 [        71] 0.064022
+        106 [        71] 0.047116        107 [        72] 0.078955        108 [        72] 0.062756
+        110 [        73] 0.099256
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.003523
+VF line sum = 1.006184
 
 ---------------------------------------------------------------------------
 Emitting Face = 83, Thermal Node = 60
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -772,23 +803,23 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 84, Thermal Node = 60
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.005864         58 [        47] 0.012100         60 [        48] 0.027750
-         62 [        49] 0.163168         64 [        50] 0.015150         66 [        51] 0.023900
-         68 [        52] 0.029100         70 [        53] 0.045650         72 [        54] 0.013582
-         74 [        55] 0.037176         76 [        56] 0.025482         78 [        57] 0.195886
-         88 [        62] 0.012840         90 [        63] 0.010874         92 [        64] 0.027438
-         94 [        65] 0.021989         98 [        67] 0.004456        102 [        69] 0.001060
-        105 [        71] 0.003075        107 [        72] 0.138172        109 [        73] 0.069616
-        110 [        73] 0.109499
+         56 [        46] 0.005636         58 [        47] 0.012406         60 [        48] 0.027166
+         62 [        49] 0.163786         64 [        50] 0.014450         66 [        51] 0.023517
+         68 [        52] 0.029283         70 [        53] 0.047117         72 [        54] 0.014238
+         74 [        55] 0.036974         76 [        56] 0.026505         78 [        57] 0.200146
+         88 [        62] 0.012042         90 [        63] 0.010985         92 [        64] 0.027474
+         94 [        65] 0.021146         98 [        67] 0.004275        102 [        69] 0.000726
+        105 [        71] 0.003900        107 [        72] 0.131990        109 [        73] 0.068452
+        110 [        73] 0.112726
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.998118
+VF line sum = 0.999606
 
 ---------------------------------------------------------------------------
 Emitting Face = 85, Thermal Node = 61
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -796,141 +827,141 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 86, Thermal Node = 61
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.009600         58 [        47] 0.004279         60 [        48] 0.165758
-         62 [        49] 0.029162         64 [        50] 0.022550         66 [        51] 0.015900
-         68 [        52] 0.042850         70 [        53] 0.031500         72 [        54] 0.010842
-         74 [        55] 0.012923         76 [        56] 0.023583         78 [        57] 0.026127
-         88 [        62] 0.032476         90 [        63] 0.009799         92 [        64] 0.189897
-         94 [        65] 0.022591         96 [        66] 0.002907        105 [        71] 0.003905
-        107 [        72] 0.134642        109 [        73] 0.076987        110 [        73] 0.123150
+         56 [        46] 0.009830         58 [        47] 0.004983         60 [        48] 0.166876
+         62 [        49] 0.028626         64 [        50] 0.020767         66 [        51] 0.014967
+         68 [        52] 0.044667         70 [        53] 0.030400         72 [        54] 0.012490
+         74 [        55] 0.012850         76 [        56] 0.022984         78 [        57] 0.026136
+         88 [        62] 0.033160         90 [        63] 0.011242         92 [        64] 0.194136
+         94 [        65] 0.024322         96 [        66] 0.002818        105 [        71] 0.003756
+        107 [        72] 0.137524        109 [        73] 0.072773        110 [        73] 0.121196
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.995009
+VF line sum = 1.000035
 
 ---------------------------------------------------------------------------
 Emitting Face = 87, Thermal Node = 62
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.012883         21 [        12] 0.019692         23 [        14] 0.012928
-         25 [        16] 0.010639         27 [        18] 0.016910         29 [        20] 0.010920
-         31 [        22] 0.005524         33 [        24] 0.010202         35 [        26] 0.008508
-         38 [        29] 0.002687         40 [        31] 0.004846         42 [        33] 0.005564
-         44 [        35] 0.002558         46 [        37] 0.003937         48 [        39] 0.005855
-         50 [        41] 0.003309         52 [        43] 0.003848         54 [        45] 0.004425
+         19 [        10] 0.012735         21 [        12] 0.019651         23 [        14] 0.013076
+         25 [        16] 0.010660         27 [        18] 0.016521         29 [        20] 0.011092
+         31 [        22] 0.005461         33 [        24] 0.009918         35 [        26] 0.008247
+         38 [        29] 0.003219         40 [        31] 0.004681         42 [        33] 0.005904
+         44 [        35] 0.002690         46 [        37] 0.004085         48 [        39] 0.005992
+         50 [        41] 0.002640         52 [        43] 0.003801         54 [        45] 0.004741
 
-VF to environment = 0.856200, VF to inactive faces = 0.000000
-VF line sum = 1.001435
+VF to environment = 0.854200, VF to inactive faces = 0.000000
+VF line sum = 0.999313
 
 ---------------------------------------------------------------------------
 Emitting Face = 88, Thermal Node = 62
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         60 [        48] 0.003122         62 [        49] 0.003087         64 [        50] 0.014649
-         66 [        51] 0.011348         68 [        52] 0.009737         70 [        53] 0.010126
-         72 [        54] 0.017800         74 [        55] 0.029400         76 [        56] 0.016100
-         78 [        57] 0.023950         80 [        58] 0.018031         82 [        59] 0.176106
-         84 [        60] 0.012675         86 [        61] 0.032060         96 [        66] 0.126523
-         98 [        67] 0.005644        100 [        68] 0.014328        102 [        69] 0.001355
-        103 [        70] 0.050932        104 [        70] 0.060834        105 [        71] 0.061691
-        106 [        71] 0.049549        107 [        72] 0.095784        108 [        72] 0.064184
-        110 [        73] 0.081140
+         60 [        48] 0.002942         62 [        49] 0.002777         64 [        50] 0.014372
+         66 [        51] 0.011421         68 [        52] 0.010621         70 [        53] 0.010205
+         72 [        54] 0.017333         74 [        55] 0.030017         76 [        56] 0.015250
+         78 [        57] 0.023800         80 [        58] 0.018147         82 [        59] 0.175163
+         84 [        60] 0.011887         86 [        61] 0.032735         96 [        66] 0.124968
+         98 [        67] 0.006370        100 [        68] 0.013923        102 [        69] 0.001001
+        103 [        70] 0.052770        104 [        70] 0.061662        105 [        71] 0.065287
+        106 [        71] 0.049669        107 [        72] 0.097218        108 [        72] 0.064406
+        110 [        73] 0.082401
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.992539
+VF line sum = 0.999243
 
 ---------------------------------------------------------------------------
 Emitting Face = 89, Thermal Node = 63
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.096221         21 [        12] 0.032995         23 [        14] 0.011189
-         25 [        16] 0.061437         27 [        18] 0.024678         29 [        20] 0.009265
-         31 [        22] 0.010410         33 [        24] 0.011744         35 [        26] 0.005553
-         38 [        29] 0.001526         40 [        31] 0.002249         42 [        33] 0.002877
-         44 [        35] 0.001206         46 [        37] 0.002642         48 [        39] 0.002950
-         50 [        41] 0.000864         52 [        43] 0.002215         54 [        45] 0.002546
+         19 [        10] 0.096597         21 [        12] 0.033235         23 [        14] 0.011225
+         25 [        16] 0.060304         27 [        18] 0.025358         29 [        20] 0.009531
+         31 [        22] 0.010847         33 [        24] 0.011210         35 [        26] 0.006235
+         38 [        29] 0.001370         40 [        31] 0.002240         42 [        33] 0.003072
+         44 [        35] 0.001264         46 [        37] 0.002270         48 [        39] 0.002969
+         50 [        41] 0.001135         52 [        43] 0.002036         54 [        45] 0.002247
 
-VF to environment = 0.721600, VF to inactive faces = 0.000000
-VF line sum = 1.005072
+VF to environment = 0.717800, VF to inactive faces = 0.000000
+VF line sum = 1.001911
 
 ---------------------------------------------------------------------------
 Emitting Face = 90, Thermal Node = 63
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.000943         64 [        50] 0.155380         66 [        51] 0.013560
-         68 [        52] 0.031587         70 [        53] 0.009902         72 [        54] 0.026200
-         74 [        55] 0.018250         76 [        56] 0.022100         78 [        57] 0.015500
-         80 [        58] 0.014639         82 [        59] 0.014228         84 [        60] 0.010734
-         86 [        61] 0.009673         96 [        66] 0.014363         98 [        67] 0.001591
-        100 [        68] 0.121091        102 [        69] 0.005102        103 [        70] 0.055308
-        104 [        70] 0.071255        105 [        71] 0.074367        106 [        71] 0.055285
-        107 [        72] 0.108156        108 [        72] 0.064617        110 [        73] 0.086387
+         56 [        46] 0.000766         64 [        50] 0.157185         66 [        51] 0.014163
+         68 [        52] 0.031402         70 [        53] 0.009977         72 [        54] 0.026167
+         74 [        55] 0.017583         76 [        56] 0.022167         78 [        57] 0.014033
+         80 [        58] 0.014590         82 [        59] 0.014960         84 [        60] 0.010845
+         86 [        61] 0.011098         96 [        66] 0.014846         98 [        67] 0.001198
+        100 [        68] 0.120855        102 [        69] 0.005047        103 [        70] 0.057834
+        104 [        70] 0.068970        105 [        71] 0.071021        106 [        71] 0.054928
+        107 [        72] 0.108673        108 [        72] 0.070262        110 [        73] 0.084256
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.004840
+VF line sum = 1.006920
 
 ---------------------------------------------------------------------------
 Emitting Face = 91, Thermal Node = 64
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.005098         21 [        12] 0.010421         23 [        14] 0.007975
-         25 [        16] 0.011436         27 [        18] 0.016108         29 [        20] 0.011021
-         31 [        22] 0.012816         33 [        24] 0.019148         35 [        26] 0.011761
-         38 [        29] 0.002630         40 [        31] 0.003707         42 [        33] 0.004874
-         44 [        35] 0.002395         46 [        37] 0.003948         48 [        39] 0.005749
-         50 [        41] 0.002479         52 [        43] 0.004582         54 [        45] 0.005558
+         19 [        10] 0.005534         21 [        12] 0.010266         23 [        14] 0.008086
+         25 [        16] 0.011034         27 [        18] 0.016833         29 [        20] 0.011202
+         31 [        22] 0.012500         33 [        24] 0.018252         35 [        26] 0.012201
+         38 [        29] 0.002492         40 [        31] 0.003489         42 [        33] 0.004782
+         44 [        35] 0.002602         46 [        37] 0.004100         48 [        39] 0.005945
+         50 [        41] 0.002814         52 [        43] 0.004464         54 [        45] 0.006422
 
-VF to environment = 0.855700, VF to inactive faces = 0.000000
-VF line sum = 0.997407
+VF to environment = 0.854600, VF to inactive faces = 0.000000
+VF line sum = 0.997617
 
 ---------------------------------------------------------------------------
 Emitting Face = 92, Thermal Node = 64
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.023212         58 [        47] 0.004466         60 [        48] 0.149876
-         62 [        49] 0.011229         64 [        50] 0.009648         66 [        51] 0.010256
-         68 [        52] 0.022520         70 [        53] 0.020828         72 [        54] 0.014450
-         74 [        55] 0.023600         76 [        56] 0.030350         78 [        57] 0.046650
-         80 [        58] 0.012929         82 [        59] 0.032714         84 [        60] 0.027086
-         86 [        61] 0.187462         96 [        66] 0.002545         98 [        67] 0.001473
-        107 [        72] 0.123636        109 [        73] 0.095357        110 [        73] 0.146500
+         56 [        46] 0.021880         58 [        47] 0.004360         60 [        48] 0.148183
+         62 [        49] 0.010836         64 [        50] 0.009514         66 [        51] 0.009984
+         68 [        52] 0.022489         70 [        53] 0.020715         72 [        54] 0.015183
+         74 [        55] 0.023783         76 [        56] 0.031000         78 [        57] 0.047383
+         80 [        58] 0.012413         82 [        59] 0.033938         84 [        60] 0.027122
+         86 [        61] 0.191647         96 [        66] 0.002294         98 [        67] 0.001155
+        107 [        72] 0.124555        109 [        73] 0.094289        110 [        73] 0.142926
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.000991
+VF line sum = 0.999080
 
 ---------------------------------------------------------------------------
 Emitting Face = 93, Thermal Node = 65
-Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         19 [        10] 0.010151         21 [        12] 0.011660         23 [        14] 0.006108
-         25 [        16] 0.061229         27 [        18] 0.025424         29 [        20] 0.009725
-         31 [        22] 0.094427         33 [        24] 0.032536         35 [        26] 0.010954
-         38 [        29] 0.001004         40 [        31] 0.002081         42 [        33] 0.001840
-         44 [        35] 0.001671         46 [        37] 0.002597         48 [        39] 0.003062
-         50 [        41] 0.001453         52 [        43] 0.002406         54 [        45] 0.002956
+         19 [        10] 0.010107         21 [        12] 0.011741         23 [        14] 0.006338
+         25 [        16] 0.062181         27 [        18] 0.024915         29 [        20] 0.009778
+         31 [        22] 0.094961         33 [        24] 0.031771         35 [        26] 0.011333
+         38 [        29] 0.001163         40 [        31] 0.001877         42 [        33] 0.002217
+         44 [        35] 0.001277         46 [        37] 0.002372         48 [        39] 0.003072
+         50 [        41] 0.001357         52 [        43] 0.002559         54 [        45] 0.003077
 
-VF to environment = 0.719900, VF to inactive faces = 0.000000
-VF line sum = 1.002085
+VF to environment = 0.716200, VF to inactive faces = 0.000000
+VF line sum = 0.999229
 
 ---------------------------------------------------------------------------
 Emitting Face = 94, Thermal Node = 65
-Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0016, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.144597         58 [        47] 0.008978         60 [        48] 0.021374
-         62 [        49] 0.005797         64 [        50] 0.030782         66 [        51] 0.010617
-         68 [        52] 0.182845         70 [        53] 0.022389         72 [        54] 0.021800
-         74 [        55] 0.014250         76 [        56] 0.045200         78 [        57] 0.031450
-         80 [        58] 0.011260         82 [        59] 0.011766         84 [        60] 0.021708
-         86 [        61] 0.022302        107 [        72] 0.125516        109 [        73] 0.102896
-        110 [        73] 0.156120
+         56 [        46] 0.144990         58 [        47] 0.009273         60 [        48] 0.021374
+         62 [        49] 0.005314         64 [        50] 0.031615         66 [        51] 0.011110
+         68 [        52] 0.184865         70 [        53] 0.024411         72 [        54] 0.022533
+         74 [        55] 0.014600         76 [        56] 0.043867         78 [        57] 0.030767
+         80 [        58] 0.010957         82 [        59] 0.011725         84 [        60] 0.020875
+         86 [        61] 0.024011        100 [        68] 0.000589        107 [        72] 0.125345
+        109 [        73] 0.101952        110 [        73] 0.153283
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.994330
+VF line sum = 0.996746
 
 ---------------------------------------------------------------------------
 Emitting Face = 95, Thermal Node = 66
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -938,21 +969,21 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 96, Thermal Node = 66
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         60 [        48] 0.003800         62 [        49] 0.003050         64 [        50] 0.005116
-         66 [        51] 0.001723         74 [        55] 0.007474         78 [        57] 0.003090
-         80 [        58] 0.021584         82 [        59] 0.163735         86 [        61] 0.003150
-         88 [        62] 0.138847         90 [        63] 0.015762         92 [        64] 0.002793
-        104 [        70] 0.605459        106 [        71] 0.010460        108 [        72] 0.006832
-        110 [        73] 0.005761
+         60 [        48] 0.003950         62 [        49] 0.002767         64 [        50] 0.004659
+         66 [        51] 0.001914         72 [        54] 0.001228         74 [        55] 0.007810
+         78 [        57] 0.002021         80 [        58] 0.023173         82 [        59] 0.157786
+         86 [        61] 0.003053         88 [        62] 0.137140         90 [        63] 0.016292
+         92 [        64] 0.002517        104 [        70] 0.607747        106 [        71] 0.010286
+        108 [        72] 0.006224        110 [        73] 0.005541
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.002948
+VF line sum = 0.997967
 
 ---------------------------------------------------------------------------
 Emitting Face = 97, Thermal Node = 67
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -960,22 +991,22 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 98, Thermal Node = 67
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         58 [        47] 0.001850         60 [        48] 0.001400         62 [        49] 0.005850
-         64 [        50] 0.001340         66 [        51] 0.005867         70 [        53] 0.002065
-         72 [        54] 0.022563         74 [        55] 0.158358         78 [        57] 0.005004
-         80 [        58] 0.156300         82 [        59] 0.024166         84 [        60] 0.004827
-         88 [        62] 0.006194         90 [        63] 0.001745         92 [        64] 0.001616
-        104 [        70] 0.560167        106 [        71] 0.015085        108 [        72] 0.007585
-        110 [        73] 0.006657
+         58 [        47] 0.001200         60 [        48] 0.002017         62 [        49] 0.005883
+         64 [        50] 0.001212         66 [        51] 0.006088         70 [        53] 0.001496
+         72 [        54] 0.022753         74 [        55] 0.157927         76 [        56] 0.000431
+         78 [        57] 0.004577         80 [        58] 0.159390         82 [        59] 0.024198
+         84 [        60] 0.004631         88 [        62] 0.006991         90 [        63] 0.001314
+         92 [        64] 0.001267        104 [        70] 0.559661        106 [        71] 0.014010
+        108 [        72] 0.008536        110 [        73] 0.007764
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.992710
+VF line sum = 0.995496
 
 ---------------------------------------------------------------------------
 Emitting Face = 99, Thermal Node = 68
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -983,20 +1014,20 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 100, Thermal Node = 68
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.137144         66 [        51] 0.016272         68 [        52] 0.001148
-         72 [        54] 0.005754         74 [        55] 0.001422         80 [        58] 0.001659
-         82 [        59] 0.006348         88 [        62] 0.015723         90 [        63] 0.132885
-        104 [        70] 0.665186        106 [        71] 0.003416        108 [        72] 0.001927
-        110 [        73] 0.002365
+         56 [        46] 0.001050         64 [        50] 0.134676         66 [        51] 0.015744
+         68 [        52] 0.000383         72 [        54] 0.005896         74 [        55] 0.001957
+         80 [        58] 0.002246         82 [        59] 0.005923         88 [        62] 0.015279
+         90 [        63] 0.132627         94 [        65] 0.000646        104 [        70] 0.667318
+        106 [        71] 0.003796        108 [        72] 0.002073        110 [        73] 0.002307
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.996232
+VF line sum = 0.996470
 
 ---------------------------------------------------------------------------
 Emitting Face = 101, Thermal Node = 69
-Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.1061, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
 
 VF to environment = 1.000000, VF to inactive faces = 0.000000
@@ -1004,128 +1035,128 @@ VF line sum = 1.000000
 
 ---------------------------------------------------------------------------
 Emitting Face = 102, Thermal Node = 69
-Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0015, Emissivity = 0.0200, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         58 [        47] 0.003750         62 [        49] 0.001100         64 [        50] 0.016983
-         66 [        51] 0.133891         70 [        53] 0.001276         72 [        54] 0.159678
-         74 [        55] 0.021723         76 [        56] 0.001552         80 [        58] 0.006956
-         82 [        59] 0.002619         84 [        60] 0.001148         88 [        62] 0.001487
-         90 [        63] 0.005599        104 [        70] 0.617104        106 [        71] 0.008321
-        108 [        72] 0.006132        110 [        73] 0.003591
+         58 [        47] 0.003467         62 [        49] 0.001333         64 [        50] 0.016579
+         66 [        51] 0.135228         70 [        53] 0.001876         72 [        54] 0.154708
+         74 [        55] 0.021503         76 [        56] 0.002026         80 [        58] 0.007119
+         82 [        59] 0.002796         84 [        60] 0.000787         88 [        62] 0.001099
+         90 [        63] 0.005538        104 [        70] 0.619403        106 [        71] 0.008593
+        108 [        72] 0.005139        110 [        73] 0.003825
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.996997
+VF line sum = 0.995400
 
 ---------------------------------------------------------------------------
 Emitting Face = 103, Thermal Node = 70
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.021713         66 [        51] 0.019177         72 [        54] 0.018375
-         74 [        55] 0.018716         80 [        58] 0.017585         82 [        59] 0.018652
-         88 [        62] 0.019121         90 [        63] 0.020764        106 [        71] 0.843050
+         64 [        50] 0.020745         66 [        51] 0.018867         72 [        54] 0.019046
+         74 [        55] 0.018993         80 [        58] 0.017676         82 [        59] 0.018964
+         88 [        62] 0.019811         90 [        63] 0.021712        106 [        71] 0.840950
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.999452
+VF line sum = 0.999430
 
 ---------------------------------------------------------------------------
 Emitting Face = 104, Thermal Node = 70
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.023671         66 [        51] 0.022751         72 [        54] 0.017763
-         74 [        55] 0.015039         80 [        58] 0.015132         82 [        59] 0.015602
-         88 [        62] 0.022839         90 [        63] 0.026751         96 [        66] 0.207131
-         98 [        67] 0.191636        100 [        68] 0.227564        102 [        69] 0.211114
+         64 [        50] 0.024357         66 [        51] 0.022853         72 [        54] 0.018114
+         74 [        55] 0.015627         80 [        58] 0.014948         82 [        59] 0.015433
+         88 [        62] 0.023150         90 [        63] 0.025893         96 [        66] 0.207914
+         98 [        67] 0.191463        100 [        68] 0.228293        102 [        69] 0.211901
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.996993
+VF line sum = 0.999946
 
 ---------------------------------------------------------------------------
 Emitting Face = 105, Thermal Node = 71
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.025349         66 [        51] 0.025097         72 [        54] 0.024411
-         74 [        55] 0.022717         76 [        56] 0.000747         78 [        57] 0.001320
-         80 [        58] 0.022061         82 [        59] 0.023503         84 [        60] 0.001140
-         86 [        61] 0.001447         88 [        62] 0.023160         90 [        63] 0.027919
-        108 [        72] 0.799700
+         64 [        50] 0.026321         66 [        51] 0.024576         72 [        54] 0.023860
+         74 [        55] 0.022965         76 [        56] 0.000931         78 [        57] 0.001111
+         80 [        58] 0.022539         82 [        59] 0.023727         84 [        60] 0.001446
+         86 [        61] 0.001392         88 [        62] 0.024510         90 [        63] 0.026663
+        108 [        72] 0.800583
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.002984
+VF line sum = 1.005080
 
 ---------------------------------------------------------------------------
 Emitting Face = 106, Thermal Node = 71
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.018409         66 [        51] 0.018949         72 [        54] 0.018096
-         74 [        55] 0.016668         80 [        58] 0.016092         82 [        59] 0.016954
-         88 [        62] 0.018602         90 [        63] 0.020755         96 [        66] 0.003579
-         98 [        67] 0.005161        100 [        68] 0.001169        102 [        69] 0.002847
-        103 [        70] 0.843050
+         64 [        50] 0.019384         66 [        51] 0.018478         72 [        54] 0.017870
+         74 [        55] 0.016911         80 [        58] 0.016039         82 [        59] 0.017462
+         88 [        62] 0.018647         90 [        63] 0.020621         96 [        66] 0.003519
+         98 [        67] 0.004793        100 [        68] 0.001299        102 [        69] 0.002940
+        103 [        70] 0.840950
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.004146
+VF line sum = 1.002320
 
 ---------------------------------------------------------------------------
 Emitting Face = 107, Thermal Node = 72
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.001169         58 [        47] 0.002098         60 [        48] 0.003842
-         62 [        49] 0.005437         64 [        50] 0.039311         66 [        51] 0.037281
-         68 [        52] 0.048613         70 [        53] 0.046805         72 [        54] 0.029959
-         74 [        55] 0.028582         76 [        56] 0.048502         78 [        57] 0.049662
-         80 [        58] 0.027901         82 [        59] 0.027676         84 [        60] 0.051208
-         86 [        61] 0.049900         88 [        62] 0.035960         90 [        63] 0.040605
-         92 [        64] 0.046416         94 [        65] 0.047122        110 [        73] 0.323750
+         56 [        46] 0.001259         58 [        47] 0.002687         60 [        48] 0.003566
+         62 [        49] 0.004845         64 [        50] 0.039473         66 [        51] 0.036942
+         68 [        52] 0.048224         70 [        53] 0.047628         72 [        54] 0.031032
+         74 [        55] 0.028991         76 [        56] 0.050896         78 [        57] 0.048499
+         80 [        58] 0.027690         82 [        59] 0.029262         84 [        60] 0.048917
+         86 [        61] 0.050968         88 [        62] 0.036498         90 [        63] 0.040799
+         92 [        64] 0.046761         94 [        65] 0.047058        110 [        73] 0.324417
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 0.994884
+VF line sum = 1.000146
 
 ---------------------------------------------------------------------------
 Emitting Face = 108, Thermal Node = 72
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.027556         66 [        51] 0.024361         72 [        54] 0.023629
-         74 [        55] 0.023188         80 [        58] 0.022716         82 [        59] 0.023631
-         88 [        62] 0.024097         90 [        63] 0.024259         96 [        66] 0.002337
-         98 [        67] 0.002595        100 [        68] 0.000659        102 [        69] 0.002098
-        105 [        71] 0.799700
+         64 [        50] 0.026039         66 [        51] 0.024637         72 [        54] 0.024132
+         74 [        55] 0.022934         80 [        58] 0.022624         82 [        59] 0.023258
+         88 [        62] 0.024180         90 [        63] 0.026378         96 [        66] 0.002129
+         98 [        67] 0.002920        100 [        68] 0.000709        102 [        69] 0.001758
+        105 [        71] 0.800583
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.004643
+VF line sum = 1.005938
 
 ---------------------------------------------------------------------------
 Emitting Face = 109, Thermal Node = 73
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         56 [        46] 0.200742         58 [        47] 0.186035         60 [        48] 0.183127
-         62 [        49] 0.171347         68 [        52] 0.038353         70 [        53] 0.034512
-         76 [        56] 0.029356         78 [        57] 0.027933         84 [        60] 0.025801
-         86 [        61] 0.028532         92 [        64] 0.035800         94 [        65] 0.038630
+         56 [        46] 0.201085         58 [        47] 0.185517         60 [        48] 0.183773
+         62 [        49] 0.173206         68 [        52] 0.037633         70 [        53] 0.034259
+         76 [        56] 0.029451         78 [        57] 0.027504         84 [        60] 0.025369
+         86 [        61] 0.026971         92 [        64] 0.035399         94 [        65] 0.038275
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.000167
+VF line sum = 0.998442
 
 ---------------------------------------------------------------------------
 Emitting Face = 110, Thermal Node = 73
-Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 10000
+Area = 0.0044, Emissivity = 0.0350, Criticality = NORMAL, Rays fired = 30000
 ---------------------------------------------------------------------------
-         64 [        50] 0.032901         66 [        51] 0.031315         68 [        52] 0.055417
-         70 [        53] 0.053504         72 [        54] 0.034986         74 [        55] 0.034788
-         76 [        56] 0.048014         78 [        57] 0.045753         80 [        58] 0.034603
-         82 [        59] 0.035930         84 [        60] 0.040582         86 [        61] 0.045641
-         88 [        62] 0.030462         90 [        63] 0.032432         92 [        64] 0.055000
-         94 [        65] 0.058612         96 [        66] 0.001971         98 [        67] 0.002277
-        100 [        68] 0.000809        102 [        69] 0.001229        107 [        72] 0.323750
+         64 [        50] 0.032332         66 [        51] 0.031563         68 [        52] 0.055268
+         70 [        53] 0.052232         72 [        54] 0.034719         74 [        55] 0.034833
+         76 [        56] 0.047328         78 [        57] 0.044873         80 [        58] 0.035256
+         82 [        59] 0.036786         84 [        60] 0.041778         86 [        61] 0.044917
+         88 [        62] 0.030936         90 [        63] 0.031632         92 [        64] 0.053658
+         94 [        65] 0.057547         96 [        66] 0.001896         98 [        67] 0.002656
+        100 [        68] 0.000789        102 [        69] 0.001309        107 [        72] 0.324417
 
 VF to environment = 0.000000, VF to inactive faces = 0.000000
-VF line sum = 1.004394
+VF line sum = 1.000558
 
 Summary Statistics for Report VF
 ==========================================
 
-Maximum Line Sum Error          =  0.012   at  : Face 76 Node 56
+Maximum Line Sum Error          =  0.009   at  : Face 102 Node 69
 RMS Line Sum Error              =  0.003
-Maximum Factor to Inactive Face =  0.977   at  : Face 65 Node 51
+Maximum Factor to Inactive Face =  0.976   at  : Face 69 Node 53
 
 LineSumError CRIT Face [Submodel: Node]
 
@@ -1142,9 +1173,9 @@ Error Range      No of Faces
 Total Faces      101        
 
 VF to Inactive Faces Face [Submodel: Node]
-      0.97660        65   [          51]  
-      0.97390        69   [          53]  
-      0.95410        63   [          50]  
-      0.95380        67   [          52]  
-      0.08720        75   [          56]  
-      0.07890        71   [          54]  
+      0.97623        69   [          53]  
+      0.97453        65   [          51]  
+      0.95413        63   [          50]  
+      0.95143        67   [          52]  
+      0.08833        75   [          56]  
+      0.08190        71   [          54]  

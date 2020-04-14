@@ -19,17 +19,25 @@ class RU_MDP(om.Group):
         self.GR_init = GR_init
         self.model = model
 
+        nodes = []
+        areas = []
+        for face in self.faces:
+            nodes.extend(face['nodes'])
+            areas.extend(face['areas'])
+
+        self.nodes = np.array(nodes)
+        areas = np.array(areas)
+        self.areas = areas[self.nodes.argsort()] # sort areas by ascending node number
+        self.nodes.sort() # sort node numbers ascending
+
     def setup(self):
         nn = self.nn
         npts = self.npts
-        nodes = []
-        for face in self.faces:
-            nodes.extend(face['nodes'])
-        n_in = len(nodes)
+        n_in = len(self.nodes)
 
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.zeros((nn+1, npts)), units='W')
-        params.add_output('phi', val=np.array([10.,10.]), units='deg' )
+        params.add_output('phi', val=np.array([0.,0.]), units='deg' )
         params.add_output('dist', val=np.array([1., 3.]))
         params.add_output('alp_r', val=np.zeros(n_in), desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=np.zeros(n_in), desc='solar cell or radiator installation decision for input nodes')
@@ -40,8 +48,8 @@ class RU_MDP(om.Group):
 
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
-        self.add_subsystem('sol', Solar(npts=npts, n_in = n_in, faces=self.faces, model=self.model), promotes=['*'])
-        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=nodes), promotes=['*'])
+        self.add_subsystem('sol', Solar(npts=npts, areas=self.areas, nodes=self.nodes, model=self.model), promotes=['*'])
+        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.nodes), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
         
@@ -101,7 +109,7 @@ if __name__ == "__main__":
     print(nodes)
 
     # index dictionary or radiative nodes
-    idx = idx_dict(nodes, groups)
+    idx = idx_dict(sorted(nodes), groups)
 
     model = RU_MDP(nn=nn, npts=npts, faces=faces, model='RU_v4_detail', conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
   
@@ -136,7 +144,7 @@ if __name__ == "__main__":
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
     prob.driver.options['disp'] = True
-    prob.driver.options['maxiter'] = 3
+    prob.driver.options['maxiter'] = 70
     prob.driver.options['tol'] = 1.0e-4
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
@@ -152,7 +160,8 @@ if __name__ == "__main__":
 
     prob['cr'][sc_idx] = 1.0
     prob['alp_r'][list(idx['Box:outer'])] = 0.5
-    prob['T'] = np.zeros((nn+1,npts))
+    prob['QI'][[-1]] = 0.2
+    prob['QI'][[-4]] = 0.3
     
     """ cr = om.CaseReader('thermal_mdp.sql')
     cases = cr.list_cases('driver')
@@ -163,8 +172,8 @@ if __name__ == "__main__":
     last_case = cr.get_case(cases[num_cases-1])
     prob.load_case(last_case) """
 
-    #prob.run_model()
-    prob.run_driver()
+    prob.run_model()
+    #prob.run_driver()
     print(prob['T']-273.)
 
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
@@ -177,3 +186,4 @@ if __name__ == "__main__":
     #print(prob['QS_c'], prob['QS_r'])
 
     #prob.model.list_inputs(print_arrays=True)
+    print(faces)

@@ -10,14 +10,10 @@ class HeatFluxComp(om.ExplicitComponent):
     Regularized minimal-energy tensor-product splines (RMTS) from SMT toolbox
 
     """
-    def __init__(self, faces, npts, model=None, method='RMTB'):
+    def __init__(self, nodes, npts, model=None, method='RMTB'):
         super(HeatFluxComp, self).__init__()
 
         self.npts = npts # number of points (phi angles) at which to evaluate results
-        self.faces = faces # external faces that need to be evaluated
-        nodes = [] #assemble node numbers of the faces
-        for face in faces:
-            nodes.extend(face['nodes'])
 
         self.ny = len(nodes) # number of outputs
 
@@ -89,23 +85,21 @@ class HeatFluxComp(om.ExplicitComponent):
 if __name__ == "__main__":
 
     # test partials
-    from Pre_process import parse_vf, opticals, nodes
+    from Pre_process import nodes
 
     nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
 
-    optprop = parse_vf('vf_RU_v4_base.txt')
-
     keys = ['Box', 'Panel_outer']
-    faces = opticals(groups, keys, optprop)
-    
+    nodes = sum([groups[group] for group in keys], [])
+
     prob = om.Problem()
     model = prob.model
 
     # create and connect inputs and outputs
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
-    indeps.add_output('phi', val=np.array([45., 30.]))
+    indeps.add_output('phi', val=np.array([45., 45.]))
 
-    model.add_subsystem('mm', HeatFluxComp(faces=faces, npts=2, model='RU_v4_base'), promotes=['*'])
+    model.add_subsystem('mm', HeatFluxComp(nodes=nodes, npts=2, model='RU_v4_base'), promotes=['*'])
 
     prob.setup(check=True)
     prob.run_model()

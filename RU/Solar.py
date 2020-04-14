@@ -4,25 +4,20 @@ from HeatFluxComp import HeatFluxComp
 
 class Incident_Solar(om.ExplicitComponent):
     def initialize(self):
-        self.options.declare('n_in', types=int, desc='number of input nodes')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('faces', types=list, desc='names and optical properties of input faces')
+        self.options.declare('areas', desc='1D array of areas of surface nodes')
     def setup(self):
-        faces = self.options['faces']
-        n = self.options['n_in']
+        n = len(self.options['areas'])
         m = self.options['npts']
         self.add_input('dist', val=np.ones(m), desc='distane in AU')
         self.add_input('q_s', val=np.zeros((m,n)))
         self.add_output('QIS', val=np.ones((n, m)), units='W')
 
-        area = [] # compute area of each node
-        for face in faces:
-            area.extend(face['areas'])
-        self.A = np.array(area)
+        self.A = self.options['areas']
 
     def compute(self, inputs, outputs):
 
-        n = self.options['n_in']
+        n = len(self.options['areas'])
         m = self.options['npts']
         d = inputs['dist']
         q_s = inputs['q_s']
@@ -36,7 +31,7 @@ class Incident_Solar(om.ExplicitComponent):
     def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
 
         m = self.options['npts']
-        n = self.options['n_in']
+        n = len(self.options['areas'])
         d = inputs['dist']
         q_s = inputs['q_s']
 
@@ -136,36 +131,40 @@ class SolarPower(om.ExplicitComponent):
                     d_inputs['cr'] -= alp_r * (dQSr[:,i] * QIS[:,i])[np.newaxis].T
 
 class Solar(om.Group):
-    def __init__(self, npts, n_in, faces, model):
+    def __init__(self, npts, areas, nodes, model):
             super(Solar, self).__init__()
 
             self.npts = npts # number of points
-            self.faces = faces # optical properties of input faces
-            self.n = n_in # number of input external surface nodes
-            self.model = model #Esatan radiative model name 
+            self.areas = areas # areas input nodes
+            self.nodes = nodes # input node numbers
+            self.n = len(nodes) # number of input external surface nodes
+            self.model = model #Esatan radiative model name
+
 
     def setup(self):
 
-        self.add_subsystem('hf', HeatFluxComp(faces=self.faces, npts=self.npts, model=self.model), promotes=['*'])
-        self.add_subsystem('is', Incident_Solar(npts=self.npts, n_in=self.n, faces=self.faces), promotes=['*'])
+        self.add_subsystem('hf', HeatFluxComp(nodes=self.nodes, npts=self.npts, model=self.model), promotes=['*'])
+        self.add_subsystem('is', Incident_Solar(npts=self.npts, areas=self.areas), promotes=['*'])
         self.add_subsystem('sol', SolarPower(n_in=self.n, npts=self.npts), promotes=['*'])
 
 if __name__ == "__main__":
 
     from Pre_process import parse_vf, opticals, nodes, inits, idx_dict
 
-    nn, groups = nodes()
+    nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
 
-    optprop = parse_vf(filepath='vf_RU_v4_detail.txt')
+    optprop = parse_vf(filepath='vf_RU_v4_base.txt')
 
     #keys = list(groups.keys()) # import all nodes?
-    keys = ['Box:outer', 'Panel_inner:solar_cells', ]
+    keys = ['Box', 'Panel_body']
     faces = opticals(groups, keys, optprop)    
 
     #compute total number of nodes in selected faces
     nodes = []
-    for face in faces:
+    areas = []
+    for face in self.faces:
         nodes.extend(face['nodes'])
+        areas.extend(face['areas'])
     n_in = len(nodes)
 
     idx = idx_dict(nodes, groups)
@@ -178,7 +177,7 @@ if __name__ == "__main__":
     params.add_output('cr', val=np.ones((n_in, 1)))
     params.add_output('alp_r', val=np.ones((n_in, 1)))
 
-    model = Solar(npts=npts, n_in = n_in, faces=faces, model='RU_v4_detail')
+    model = Solar(npts=npts, n_in = n_in, nodes=nodes, areas=areas, model='RU_v4_base')
 
     model.add_subsystem('params', params, promotes=['*'])
     
@@ -187,16 +186,16 @@ if __name__ == "__main__":
 
     #assign initial values
 
-    problem['cr'][list(idx['Box:outer'])] = 0.0
-    problem['alp_r'][list(idx['Box:outer'])] = 0.5    
+    problem['cr'][list(idx['Box'])] = 0.0
+    problem['alp_r'][list(idx['Box'])] = 0.5    
 
     problem.run_model()
     
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=True, form='central', step=1e-03)
+    check_partials_data = problem.check_partials(compact_print=False, show_only_incorrect=False, form='central', step=1e-04, includes=['*is', 'dist'])
 
     #compare results with esatan
-    QI_init1, QS_init1 = inits()
-    QI_init2, QS_init2 = inits(data='Nodal_data_2.csv')
+    QI_init1, QS_init1 = inits(data='nodes_RU_v4_base_cc.csv')
+    QI_init2, QS_init2 = inits(data='nodes_RU_v4_base_hc.csv')
     
     npts = 2
 
