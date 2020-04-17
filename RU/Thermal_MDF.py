@@ -1,39 +1,44 @@
+import os
 import openmdao.api as om
 import numpy as np
-
+from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict
 from Solar import Solar
 from GMM_group import GMM
 from Thermal_Cycle import Thermal_Cycle
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
-class RU_MDP(om.Group):
-    def __init__(self, nn, npts, model, faces, conductors, GL_init, GR_init):
-        super(RU_MDP, self).__init__()
+class Thermal_MDF(om.Group):
+    def __init__(self, npts, model, labels):
+        super(Thermal_MDF, self).__init__()
 
+        fpath = os.path.dirname(os.path.realpath(__file__))
+        model_dir = fpath + '/Esatan_models/' + model
+        nn, groups = nodes(data=model_dir+'/nodes_output.csv')
+        
+        self.GL_init, self.GR_init = conductors(nn=nn, data=model_dir+'/cond_output.csv')
+        self.conductors = parse_cond(filepath=model_dir+'/cond_report.txt')
+        optprop = parse_vf(filepath=model_dir+'/vf_report.txt')
+        self.faces = opticals(groups, labels, optprop) 
         self.nn = nn
         self.npts = npts
-        self.conductors = conductors
-        self.faces = faces
-        self.GL_init = GL_init
-        self.GR_init = GR_init
         self.model = model
 
-        nodes = []
+        N = []
         areas = []
         for face in self.faces:
-            nodes.extend(face['nodes'])
+            N.extend(face['nodes'])
             areas.extend(face['areas'])
 
-        self.nodes = np.array(nodes)
+        self.N = np.array(N)
         areas = np.array(areas)
-        self.areas = areas[self.nodes.argsort()] # sort areas by ascending node number
-        self.nodes.sort() # sort node numbers ascending
+        self.areas = areas[self.N.argsort()] # sort areas by ascending node number
+        self.N.sort() # sort node numbers ascending
 
     def setup(self):
         nn = self.nn
         npts = self.npts
-        n_in = len(self.nodes)
+        n_in = len(self.N)
 
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.zeros((nn+1, npts)), units='W')
@@ -48,8 +53,8 @@ class RU_MDP(om.Group):
 
         self.add_subsystem('gmm', GMM(n=nn, conductors=self.conductors, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
-        self.add_subsystem('sol', Solar(npts=npts, areas=self.areas, nodes=self.nodes, model=self.model), promotes=['*'])
-        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.nodes), promotes=['*'])
+        self.add_subsystem('sol', Solar(npts=npts, areas=self.areas, nodes=self.N, model=self.model), promotes=['*'])
+        self.add_subsystem('tc', Thermal_Cycle(nn=nn, npts=npts, nodes=self.N), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
         
@@ -91,39 +96,43 @@ class RU_MDP(om.Group):
         self.connect('QI', 'prop_pwr.g', src_indices=[[(-4,0), (-4,1)]]) """
 
 if __name__ == "__main__":
-
-    from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict
-    
-    npts = 2
-    
-    nn, groups = nodes()
-    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_detail_cc.csv')
-
-    cond_data = parse_cond(filepath='links_RU_v4_detail.txt') 
-    optprop = parse_vf(filepath='vf_RU_v4_detail.txt')
-
-    #keys = list(groups.keys()) # import all nodes?
-    keys = ['Box:outer', 'Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells'] # define faces to include in radiative analysis
-    faces = opticals(groups, keys, optprop)
-    nodes = sum([groups[group] for group in keys], [])
-    print(nodes)
-
-    # index dictionary or radiative nodes
-    idx = idx_dict(sorted(nodes), groups)
-
-    model = RU_MDP(nn=nn, npts=npts, faces=faces, model='RU_v4_detail', conductors=cond_data, GL_init=GL_init, GR_init=GR_init)
   
+    npts = 2
+    model = 'RU_v4_detail'
+    #keys = list(groups.keys()) # import all nodes?
+    keys = ['Box:outer',
+        'Panel_outer:solar_cells',
+        'Panel_inner:solar_cells',
+        'Panel_body:solar_cells',
+        'Panel_inner: back',
+        'Panel_outer:back'] # define faces to include in radiative analysis
+    
+    fpath = os.path.dirname(os.path.realpath(__file__))
+    model_dir = fpath + '/Esatan_models/' + model
+    data = model_dir+'/nodes_output.csv'
+    nn, groups = nodes(data=data)
+    nodes_list = sum([groups[group] for group in keys], [])
+    #print(nodes)
+
+    # index dictionary or radiative nodes_list
+    idx = idx_dict(sorted(nodes_list), groups)
+
+    model = Thermal_MDF(npts=npts, labels=keys, model=model)
     prob = om.Problem(model=model)
+
 
     model.add_design_var('Spacer5', lower=0.25, upper=237.)
     model.add_design_var('Spacer1', lower=0.25, upper=237.)
     model.add_design_var('Body_panel', lower=0.004, upper=.1)
     model.add_design_var('Hinge_middle', lower=0.02, upper=.1)
     model.add_design_var('Hinge_outer', lower=0.02, upper=.1)
+    
 
     model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
     model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
     model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
+    model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+    model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
     model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, -10])
     model.add_design_var('phi', lower=0., upper=90.)
 
@@ -149,7 +158,7 @@ if __name__ == "__main__":
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
     prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-    prob.driver.add_recorder(om.SqliteRecorder("ru_mdp.sql"))
+    prob.driver.add_recorder(om.SqliteRecorder("ru_v4_detail.sql"))
 
     prob.setup(check=True)
 
@@ -163,7 +172,7 @@ if __name__ == "__main__":
     prob['QI'][[-1]] = 0.2
     prob['QI'][[-4]] = 0.3
     
-    """ cr = om.CaseReader('thermal_mdp.sql')
+    """ cr = om.CaseReader('ru_v4_detail.sql')
     cases = cr.list_cases('driver')
     num_cases = len(cases)
     print(num_cases)
@@ -172,8 +181,8 @@ if __name__ == "__main__":
     last_case = cr.get_case(cases[num_cases-1])
     prob.load_case(last_case) """
 
-    prob.run_model()
-    #prob.run_driver()
+    #prob.run_model()
+    prob.run_driver()
     print(prob['T']-273.)
 
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
@@ -186,4 +195,3 @@ if __name__ == "__main__":
     #print(prob['QS_c'], prob['QS_r'])
 
     #prob.model.list_inputs(print_arrays=True)
-    print(faces)

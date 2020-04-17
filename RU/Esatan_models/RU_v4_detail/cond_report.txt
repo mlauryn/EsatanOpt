@@ -1,6 +1,6 @@
 ****************************************************************************************************
 MODEL NAME = RU_v4_detail
-report produced by REPORT_CONDUCTORS procedure at 22:10 Tue 14 Apr 2020
+report produced by REPORT_CONDUCTORS procedure at 23:02 Thu 16 Apr 2020
 ****************************************************************************************************
 
 ----------------------------------------------------------------------------------------------------
@@ -318,19 +318,11 @@ USER-DEFINED LINKS
 ----------------------------------------------------------------------------------------------------
 USER DEFINED CONDUCTOR = Body_panel
 TYPE                   = Conductive
-SOURCE                 = [FACE] Box:face15
-DESTINATION            = [SURFACE] Panel_body:surface2
+SOURCE                 = [FACE] Box:face9
+DESTINATION            = [FACE] Panel_body:face10
 ----------------------------------------------------------------------------------------------------
 
-[1, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[2, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[3, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[4, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[5, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[6, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[7, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[8, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
-[9, 53] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
+[5, 50] = Shape Factor: 0.000000, Conductivity: 0.000000, Override: 0.020000 
 
 ----------------------------------------------------------------------------------------------------
 USER DEFINED CONDUCTOR = Hinge_middle

@@ -1,4 +1,5 @@
 import numpy as np
+import os
 from smt.surrogate_models import RMTB, RMTC
 import openmdao.api as om
 import smt
@@ -17,11 +18,9 @@ class HeatFluxComp(om.ExplicitComponent):
 
         self.ny = len(nodes) # number of outputs
 
-        if not model:
-            data = 'sdf_RU_v4_detail.txt'
-        else:
-            data = 'sdf_' + model + '.txt'
-        train_data = parse_hf(data)
+        fpath = os.path.dirname(os.path.realpath(__file__))
+        model_dir = fpath + '/Esatan_models/' + model
+        train_data = parse_hf(filepath=model_dir+'/sdf.txt')
 
         xt = train_data[:,0]
         yt = train_data[:,nodes]
@@ -31,6 +30,7 @@ class HeatFluxComp(om.ExplicitComponent):
         if method == 'RMTB':
             
             self.sm = RMTB(
+                print_training=False,
                 print_prediction=False,
                 print_solver=False,
                 xlimits=xlimits,
@@ -41,6 +41,7 @@ class HeatFluxComp(om.ExplicitComponent):
             )
         else:
             self.sm = RMTC(
+                print_training=False,
                 print_prediction=False,
                 print_solver=False,
                 xlimits=xlimits,
