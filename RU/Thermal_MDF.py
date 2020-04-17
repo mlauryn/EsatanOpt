@@ -103,9 +103,9 @@ if __name__ == "__main__":
     keys = ['Box:outer',
         'Panel_outer:solar_cells',
         'Panel_inner:solar_cells',
-        'Panel_body:solar_cells',
-        'Panel_inner: back',
-        'Panel_outer:back'] # define faces to include in radiative analysis
+        'Panel_body:solar_cells',]
+        #'Panel_inner: back',
+        #'Panel_outer:back'] # define faces to include in radiative analysis
     
     fpath = os.path.dirname(os.path.realpath(__file__))
     model_dir = fpath + '/Esatan_models/' + model
@@ -120,35 +120,25 @@ if __name__ == "__main__":
     model = Thermal_MDF(npts=npts, labels=keys, model=model)
     prob = om.Problem(model=model)
 
-
     model.add_design_var('Spacer5', lower=0.25, upper=237.)
     model.add_design_var('Spacer1', lower=0.25, upper=237.)
     model.add_design_var('Body_panel', lower=0.004, upper=.1)
     model.add_design_var('Hinge_middle', lower=0.02, upper=.1)
     model.add_design_var('Hinge_outer', lower=0.02, upper=.1)
-    
-
     model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
     model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
     model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-    model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
-    model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+    #model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+    #model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
     model.add_design_var('QI', lower = 0.25, upper=7., indices=[-1, -2, -7, -8, -10])
     model.add_design_var('phi', lower=0., upper=90.)
 
-    #model.add_constraint('T', lower=0.+273, upper=45.+273, indices=[-1, -2])
-    #model.add_constraint('power_bal.KS', upper=0.0)
     model.add_constraint('bat_lwr.KS', upper=0.0)
     model.add_constraint('bat_upr.KS', upper=0.0)
     model.add_constraint('prop_upr.KS', upper=0.0)
     model.add_constraint('prop_lwr.KS', upper=0.0)
-    """ model.add_constraint('obc_pwr.KS', upper=0.0)
-    model.add_constraint('prop_pwr.KS', upper=0.0) """
-
 
     model.add_objective('obj')
-    #model.linear_solver = om.DirectSolver()
-    #model.linear_solver.options['assemble_jac'] = False
 
     prob.driver = om.ScipyOptimizeDriver()
     prob.driver.options['optimizer']='SLSQP'
@@ -172,18 +162,20 @@ if __name__ == "__main__":
     prob['QI'][[-1]] = 0.2
     prob['QI'][[-4]] = 0.3
     
-    """ cr = om.CaseReader('ru_v4_detail.sql')
+    cr = om.CaseReader('RU_v4_detail_mstart_40.sql')
     cases = cr.list_cases('driver')
     num_cases = len(cases)
     print(num_cases)
 
     # Load the last case written
     last_case = cr.get_case(cases[num_cases-1])
-    prob.load_case(last_case) """
+    best_case = cr.get_case('Opt_run15_rank0:ScipyOptimize_SLSQP|551')
+    prob.load_case(best_case)
 
-    #prob.run_model()
-    prob.run_driver()
+    prob.run_model()
+    #prob.run_driver()
     print(prob['T']-273.)
+    print(best_case)
 
     #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
     #print(totals)
