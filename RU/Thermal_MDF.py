@@ -162,14 +162,14 @@ if __name__ == "__main__":
     prob['QI'][[-1]] = 0.2
     prob['QI'][[-4]] = 0.3
     
-    cr = om.CaseReader('RU_v4_detail_mstart_40.sql')
+    cr = om.CaseReader('RU_v4_detail_mstart_30.sql')
     cases = cr.list_cases('driver')
     num_cases = len(cases)
     print(num_cases)
 
     # Load the last case written
     last_case = cr.get_case(cases[num_cases-1])
-    best_case = cr.get_case('Opt_run15_rank0:ScipyOptimize_SLSQP|551')
+    best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
     prob.load_case(best_case)
 
     prob.run_model()
@@ -186,4 +186,4 @@ if __name__ == "__main__":
     #print(prob['P_in'], prob['P_out'])
     #print(prob['QS_c'], prob['QS_r'])
 
-    #prob.model.list_inputs(print_arrays=True)
+    prob.model.list_inputs(print_arrays=True)
