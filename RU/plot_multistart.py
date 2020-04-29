@@ -5,7 +5,7 @@ import numpy as np
 from pylab import *
 from openmdao.api import CaseReader
 import re
-samples = [5,10,20, 30,40]
+samples = [1,5,10,20, 30, 40]
 model_name = 'RU_v4_detail'
 
 local_min = []
@@ -59,16 +59,26 @@ for num in samples:
             # add result to list
             objs.append(obj['obj'])
     # add best result to list of local minima    
-    local_min.append(min(objs))
+    local_min.append(glob_min)
     # add all results to global list
     obj_values.extend(objs)
 print('Global minimum ', min(local_min), 'at ', best_case.name, 'in sample', best_sample)
 
 # generate plots
-plot(samples, local_min)
-xlabel('# samples')
-ylabel('local minimum')
-show()
+y1 = np.array(local_min)
+y2 = np.array(obj_values)
+subplot(121)
+plot(samples, -y1, 'ob-')
+#ylim(bottom=0)
+xticks(ticks=samples)
+xlabel('Number of samples', fontsize=14)
+ylabel('Best objective function value ', fontsize=14)
+plt.grid(ls='--')
 
-plot(obj_values, 'r.')
+subplot(122)
+plot(-y2, 'r.')
+xlabel('Number of samples', fontsize=14)
+ylabel('Objective function values', fontsize=14)
+plt.grid(ls='--')
+
 show()

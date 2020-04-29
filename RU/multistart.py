@@ -47,30 +47,32 @@ prob.driver.options['disp'] = True
 prob.driver.options['maxiter'] = 70
 prob.driver.options['tol'] = 1.0e-4
 prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-prob.driver.add_recorder(om.SqliteRecorder("ru_v4_detail_mstart_40.sql"))
+prob.driver.add_recorder(om.SqliteRecorder("ru_v4_detail_mstart_1.sql"))
 
 prob.setup(check=True)
 
-cr = om.CaseReader('RU_v4_detail_doe_40.sql')
+""" cr = om.CaseReader('RU_v4_detail_doe_40.sql')
 cases = cr.list_cases('driver')
-num_cases = len(cases)
+num_cases = len(cases) """
 
-# run optimizer for doe cases
+""" # run optimizer for doe cases
 for i in range(num_cases): 
     # Load the case
     case = cr.get_case(cases[i])
-    prob.load_case(case)
+    prob.load_case(case) """
 
-    # set initial values for solar cells and radiators
-    prob['cr'][sc_idx] = 1.0
-    prob['alp_r'][list(idx['Box:outer'])] = 0.5
+# set initial values for solar cells and radiators
+prob['cr'][sc_idx] = 1.0
+prob['alp_r'][list(idx['Box:outer'])] = 0.5
+prob['QI'][[-1]] = 0.2
+prob['QI'][[-4]] = 0.3
 
-    print(cases[i])
-    prefix = 'Opt_run' + str(i)
+#print(cases[i])
+prefix = 'Opt_run' + '0'
 
-    prob.run_driver(case_prefix=prefix)
+prob.run_driver(case_prefix=prefix)
 
 
 
 #prob.model.list_inputs(print_arrays=True)
-#print(prob['T']-273.)
+print(prob['T']-273.)

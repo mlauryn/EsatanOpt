@@ -1,0 +1,57 @@
+$MODEL RU_v4_2
+# 
+# template file: Template.tpl
+# ESATAN-TMS 2017 sp2, run date 15:52 Sun 19 Apr 2020
+# Model name: RU_v4_2        Analysis case: Hot_sun_pointing
+#
+  $LOCALS
+  # GENCODE LOCALS - DO NOT REMOVE 
+#
+  $NODES
+  # GENCODE NODES - DO NOT REMOVE 
+#
+  $CONDUCTORS
+  # GENCODE CONDUCTORS - DO NOT REMOVE 
+#
+  $CONSTANTS
+  # GENCODE CONSTANTS - DO NOT REMOVE 
+#
+  $ARRAYS
+  # GENCODE ARRAYS - DO NOT REMOVE 
+#
+  $EVENTS
+  # GENCODE EVENTS - DO NOT REMOVE 
+#
+  $SUBROUTINES
+  # GENCODE SUBROUTINES - DO NOT REMOVE 
+C
+  $INITIAL
+  # GENCODE BOUNDARY_CONDS - DO NOT REMOVE 
+  # GENCODE INITIAL - DO NOT REMOVE 
+C
+  $EXECUTION
+C
+C Steady State Solution
+C
+      RELXCA=0.01
+      NLOOP=100
+C
+      CALL SOLVFM
+C
+
+
+C
+  $VARIABLES1
+  # GENCODE VARIABLES1 - DO NOT REMOVE 
+C
+  $VARIABLES2
+C
+  $OUTPUTS
+      CALL PRNDTB(' ', 'L, T', CURRENT)
+      CALL PRNCSV(' ', 'GL, GR, GV', CURRENT, 'ENTITY', 'cond_output.csv')
+
+      CALL PRNCSV(' ', 'L, C, QI, QS, QSI', CURRENT, 'ENTITY', 'nodes_output.csv')
+
+  # GENCODE OUTPUTS - DO NOT REMOVE 
+C
+$ENDMODEL RU_v4_2

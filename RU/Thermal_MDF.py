@@ -98,7 +98,7 @@ class Thermal_MDF(om.Group):
 if __name__ == "__main__":
   
     npts = 2
-    model = 'RU_v4_detail'
+    model_name = 'RU_v4_detail'
     #keys = list(groups.keys()) # import all nodes?
     keys = ['Box:outer',
         'Panel_outer:solar_cells',
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         #'Panel_outer:back'] # define faces to include in radiative analysis
     
     fpath = os.path.dirname(os.path.realpath(__file__))
-    model_dir = fpath + '/Esatan_models/' + model
+    model_dir = fpath + '/Esatan_models/' + model_name
     data = model_dir+'/nodes_output.csv'
     nn, groups = nodes(data=data)
     nodes_list = sum([groups[group] for group in keys], [])
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # index dictionary or radiative nodes_list
     idx = idx_dict(sorted(nodes_list), groups)
 
-    model = Thermal_MDF(npts=npts, labels=keys, model=model)
+    model = Thermal_MDF(npts=npts, labels=keys, model=model_name)
     prob = om.Problem(model=model)
 
     model.add_design_var('Spacer5', lower=0.25, upper=237.)
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     model.add_design_var('Body_panel', lower=0.004, upper=.1)
     model.add_design_var('Hinge_middle', lower=0.02, upper=.1)
     model.add_design_var('Hinge_outer', lower=0.02, upper=.1)
-    model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
+    #model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
     model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
     model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
     #model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
     prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-    prob.driver.add_recorder(om.SqliteRecorder("ru_v4_detail.sql"))
+    prob.driver.add_recorder(om.SqliteRecorder(model_name+'.sql'))
 
     prob.setup(check=True)
 
@@ -172,18 +172,14 @@ if __name__ == "__main__":
     best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
     prob.load_case(best_case)
 
-    prob.run_model()
-    #prob.run_driver()
-    print(prob['T']-273.)
-    print(best_case)
+    #prob.run_model()
+    prob.run_driver()
+    #print(prob['T']-273.)
+    #print(best_case)
 
-    #totals = prob.compute_totals(of=['T'], wrt=['Spacer5'])
+    #totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])
     #print(totals)
     #check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)
     #prob.check_totals(compact_print=True)
 
-    #print(prob['P_dis'])
-    #print(prob['P_in'], prob['P_out'])
-    #print(prob['QS_c'], prob['QS_r'])
-
-    prob.model.list_inputs(print_arrays=True)
+    #prob.model.list_inputs(print_arrays=True)
