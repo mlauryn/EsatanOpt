@@ -14,7 +14,13 @@ class TempsComp(om.ImplicitComponent):
         self.add_input('GR', val=np.zeros((n,n)))
         self.add_input('QS', val=np.zeros((n,m)), units='W')
         self.add_input('QI', val=np.zeros((n,m)), units='W')
-        self.declare_partials(of='T', wrt='*')
+        seq = np.arange(n*m)
+        nn = np.arange(n*n).reshape((n,n))
+        rows = seq.repeat(n)
+        cols = np.repeat(nn,m,axis=0).flatten()
+        self.declare_partials(of='T', wrt='G*', rows=rows, cols=cols)
+        self.declare_partials(of='T', wrt='Q*', rows=seq, cols=seq, val=1.)
+        self.declare_partials(of='T', wrt='T')
 
     def apply_nonlinear(self, inputs, outputs, residuals):
         GL = inputs['GL']
@@ -30,14 +36,10 @@ class TempsComp(om.ImplicitComponent):
         m = self.options['npts']
         GL = inputs['GL']
         GR = inputs['GR']
-        QS = inputs['QS']
-        QI = inputs['QI']
         T = outputs['T']
 
-        partials['T', 'GL'] = np.einsum('ik, jl', np.eye(n, n), T.T)
-        partials['T', 'GR'] = np.einsum('ik, jl', np.eye(n, n), (T**4).T)
-        partials['T', 'QS'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
-        partials['T', 'QI'] = np.einsum('ik, jl', np.eye(n, n), np.eye(m, m))
+        partials['T', 'GL'] = np.tile(T.T,(n,1)).flatten()
+        partials['T', 'GR'] = np.tile((T**4).T,(n,1)).flatten()
         partials['T', 'T'] = np.einsum('ik, jl', GL, np.eye(m, m)) + 4.0 * T**3 * np.einsum('ik, jl', GR, np.eye(m, m))
     
     def guess_nonlinear(self, inputs, outputs, residuals):
@@ -76,7 +78,7 @@ if __name__ == "__main__":
     """ model.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
     model.nonlinear_solver.linesearch.options['maxiter'] = 10
     model.nonlinear_solver.linesearch.options['iprint'] = 2 """
-    model.linear_solver = om.DirectSolver()
+    model.linear_solver = om.DirectSolver(assemble_jac=True)
 
     problem.setup(check=True)
 

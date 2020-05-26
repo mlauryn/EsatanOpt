@@ -12,7 +12,14 @@ class TempComp(om.ImplicitComponent):
         self.add_input('GR', val=np.zeros((n,n)))
         self.add_input('QS', val=np.zeros(n), units='W')
         self.add_input('QI', val=np.zeros(n), units='W')
-        self.declare_partials(of='T', wrt='*')
+        
+        rows = np.arange(n).repeat(n)
+        cols = np.arange(n**2)
+        
+        self.declare_partials(of='T', wrt='G*', cols=cols, rows=rows)
+        self.declare_partials(of='T', wrt='Q*', cols=np.arange(n), rows=np.arange(n), val=1.0)
+        self.declare_partials(of='T', wrt='T')
+
     def apply_nonlinear(self, inputs, outputs, residuals):
         GL = inputs['GL']
         GR = inputs['GR']
@@ -26,14 +33,10 @@ class TempComp(om.ImplicitComponent):
         n = self.options['n'] + 1
         GL = inputs['GL']
         GR = inputs['GR']
-        QS = inputs['QS']
-        QI = inputs['QI']
         T = outputs['T']
 
-        partials['T', 'GL'] = np.einsum('ij, k', np.eye(n, n), T)
-        partials['T', 'GR'] = np.einsum('ij, k', np.eye(n, n), T**4)
-        partials['T', 'QS'] = np.eye(n, n)
-        partials['T', 'QI'] = np.eye(n, n)
+        partials['T', 'GL'] = np.resize(T, n*n)
+        partials['T', 'GR'] = np.resize(T**4, n*n)
         partials['T', 'T'] = (GL + (4 * (GR * (T ** 3))))
     
     def guess_nonlinear(self, inputs, outputs, residuals):
@@ -44,7 +47,7 @@ class TempComp(om.ImplicitComponent):
 if __name__ == "__main__":
     from Pre_process import nodes, conductors, inits
     
-    model_name = 'RU_v4_detail'
+    model_name = 'RU_v4_2'
     nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
     GL_init, GR_init = conductors(nn=nn, data='./Esatan_models/'+model_name+'/cond_output.csv')
     QI_init, QS_init = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
