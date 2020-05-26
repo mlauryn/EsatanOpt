@@ -56,19 +56,15 @@ class GRmtxComp(om.ExplicitComponent):
 
 if __name__ == "__main__":
     # script for testing partial derivs
-    from ViewFactors import parse_vf
-    from inits import nodes, conductors
-    from opticals import opticals
-    
-    node_data = 'nodal_data.csv'
-    cond_data = 'Cond_data.csv'
-    nn, groups = nodes(node_data)
-    GL_init, GR_init = conductors(nn, cond_data) 
+    from Pre_process import parse_vf, inits, nodes, opticals, conductors
 
-    optprop = parse_vf('viewfactors.txt')
+    nn, groups = nodes('./Esatan_models/RU_v4_base/nodes_output.csv')
+    GL_init, GR_init = conductors(nn, './Esatan_models/RU_v4_base/cond_output.csv') 
+
+    optprop = parse_vf('./Esatan_models/RU_v4_base/vf_report.txt')
 
     #groups.update({'my_group': [54,55,56,57]})
-    keys = ['Box:outer', 'Panel_outer:back'] #, 'my_group']
+    keys = ['Box', 'Panel_outer:back', 'Panel_inner:back'] #, 'my_group']
     faces = opticals(groups, keys, optprop)
 
     model = om.Group()
@@ -86,9 +82,10 @@ if __name__ == "__main__":
     
     problem.run_model()
     
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-02)
     
 
     #print((problem['example.GR'][0,1:nn] - GR_init[0,1:nn])/GR_init[0,1:nn])
     #print(problem['example.GR'] == GR_init)
     #problem.model.list_inputs(print_arrays=True)
+    print(GR_init)
