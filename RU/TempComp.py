@@ -43,12 +43,14 @@ class TempComp(om.ImplicitComponent):
 
 if __name__ == "__main__":
     from Pre_process import nodes, conductors, inits
+    
+    model_name = 'RU_v4_detail'
+    nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    GL_init, GR_init = conductors(nn=nn, data='./Esatan_models/'+model_name+'/cond_output.csv')
+    QI_init, QS_init = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    
     problem = om.Problem()
     model = problem.model
-
-    nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
-    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_base_cc.csv')
-    QI_init, QS_init = inits(data='nodes_RU_v4_base_cc.csv')
 
     indeps = model.add_subsystem('indeps', om.IndepVarComp(), promotes=['*'])
     indeps.add_output('GL', val=GL_init, units='W/K')

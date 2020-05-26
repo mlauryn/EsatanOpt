@@ -51,10 +51,11 @@ if __name__ == "__main__":
     problem = om.Problem()
     model = problem.model
 
-    nn, groups = nodes(data='nodes_RU_v4_detail_cc.csv')
-    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_detail_hc.csv')
-    QI_init1, QS_init1 = inits(data='nodes_RU_v4_detail_cc.csv')
-    QI_init2, QS_init2 = inits(data='nodes_RU_v4_detail_hc.csv')
+    model_name = 'RU_v4_detail'
+    nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    GL_init, GR_init = conductors(nn=nn, data='./Esatan_models/'+model_name+'/cond_output.csv')
+    QI_init1, QS_init1 = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    QI_init2, QS_init2 = inits(data='./Esatan_models/'+model_name+'/nodes_output_2.csv')
 
     npts = 2
 
