@@ -14,7 +14,7 @@ glob_min = 0.0
 
 for num in samples:
     
-    file_name = model_name + '_mstart_{num}.sql'.format(num=num)
+    file_name = './Cases/' + model_name + '_mstart_{num}.sql'.format(num=num)
     
     # load cases from recording database
     cr = CaseReader(file_name)

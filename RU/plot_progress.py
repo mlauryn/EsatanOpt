@@ -10,7 +10,7 @@ import re
 from openmdao.api import CaseReader
 
 # load cases from recording database
-cr = CaseReader('RU_v4_detail_mstart_30.sql')
+cr = CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
 #cases = cr.get_cases('driver')
 cases = cr.list_cases('driver')
 opt_run = [case for case in cases if re.search(r'Opt_run3', case)]
@@ -59,7 +59,7 @@ pylab.xlim(0, 50)
 #pylab.ylim(top=1.0)
 pylab.xlabel('Function evaluations')
 pylab.ylabel('Sub-system #1 Power, W')
-pylab.axhline(y=maximum, color="red", label='global maximum')
+pylab.axhline(y=maximum, color="red", label='obj value')
 #trans = transforms.blended_transform_factory(
 #    pylab.get_yticklabels()[0].get_transform(), pylab.transData)
 pylab.text(5,maximum, "{:3.2f}".format(maximum[0]), color="red",  ha="left", va="bottom",) #transform=trans,)

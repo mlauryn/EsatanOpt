@@ -10,7 +10,7 @@ import re
 from openmdao.api import CaseReader
 
 # load cases from recording database
-cr = CaseReader('RU_v4_detail_mstart_30.sql')
+cr = CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
 #cases = cr.get_cases('driver')
 cases = cr.list_cases('driver')
 # filter optimizer run with best result

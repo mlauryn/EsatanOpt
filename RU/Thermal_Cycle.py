@@ -144,8 +144,8 @@ class Thermal_Cycle(om.Group):
         self.nonlinear_solver.linesearch = om.ArmijoGoldsteinLS()
         self.nonlinear_solver.linesearch.options['maxiter'] = 10
         self.nonlinear_solver.linesearch.options['iprint'] = 2
-        self.linear_solver = om.DirectSolver()
-        self.linear_solver.options['assemble_jac'] = False
+        self.linear_solver = om.DirectSolver(assemble_jac=True)
+        self.options['assembled_jac_type'] = 'csc'
 
 if __name__ == "__main__":
 
@@ -154,47 +154,55 @@ if __name__ == "__main__":
     
     npts = 2
 
-    nn, groups = nodes(data='nodes_RU_v4_base_cc.csv')
-    GL_init, GR_init = conductors(nn=nn, data='cond_RU_v4_base_cc.csv')
+    model_name = 'RU_v4_detail'
+    nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    GL_init, GR_init = conductors(nn=nn, data='./Esatan_models/'+model_name+'/cond_output.csv')
+    QI_init1, QS_init1 = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    QI_init2, QS_init2 = inits(data='./Esatan_models/'+model_name+'/nodes_output_2.csv')
 
-    cond_data = parse_cond(filepath='links_RU_v4_base.txt') 
-    optprop = parse_vf(filepath='vf_RU_v4_base.txt')
-
-    QI_init1, QS_init1 = inits(data='nodes_RU_v4_base_cc.csv')
-    QI_init2, QS_init2 = inits(data='nodes_RU_v4_base_hc.csv')
+    optprop = parse_vf(filepath='./Esatan_models/'+model_name+'/vf_report.txt')
 
     QI_init = np.concatenate((QI_init1, QI_init2), axis=1)
     #QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
 
     #keys = list(groups.keys()) # import all nodes?
-    keys = ['Box', 'Panel_outer', 'Panel_inner', 'Panel_body']
+    keys = ['Box:outer',
+        'Panel_outer:solar_cells',
+        'Panel_inner:solar_cells',
+        'Panel_body:solar_cells',]
+        #'Panel_inner: back',
+        #'Panel_outer:back'] # define faces to include in radiative analysis
     faces = opticals(groups, keys, optprop)    
 
     #compute total number of nodes in selected faces
-    nodes = []
+    N = []
+    areas = []
     for face in faces:
-        nodes.extend(face['nodes'])
+        N.extend(face['nodes'])
+        areas.extend(face['areas'])
 
-    """ data = parse_vf()
-    nodes = list(data.keys()) """
+    N = np.array(N)
+    areas = np.array(areas)
+    areas = areas[N.argsort()] # sort areas by ascending node number
+    N.sort() # sort node numbers ascending
 
     # index dictionary
-    idx = idx_dict(nodes, groups)
+    idx = idx_dict(N, groups)
 
     # indices for solar cells
     sc_idx = sum([idx[keys] for keys in ['Panel_outer:solar_cells', 'Panel_inner:solar_cells', 'Panel_body:solar_cells']], [])
 
-    model = Thermal_Cycle(nn=nn, npts=npts, nodes=nodes)
+    model = Thermal_Cycle(nn=nn, npts=npts, nodes=N)
     
     params = model.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
-    model.add_subsystem('sol', Solar(npts=npts, n_in = len(nodes), faces=faces, model='RU_v4_base'), promotes=['*'])
+    model.add_subsystem('sol', Solar(npts=npts, areas=areas, nodes=N, model=model_name), promotes=['*'])
     params.add_output('QI', val=QI_init)
     params.add_output('GL', val=GL_init, units='W/K')
     params.add_output('GR', val=GR_init)
     params.add_output('phi', val=np.array([10.,10.]) )
     params.add_output('dist', val=np.array([3., 1.]))
-    params.add_output('cr', val=np.ones((len(nodes), 1)))
-    params.add_output('alp_r', val=np.ones((len(nodes), 1)))
+    params.add_output('cr', val=np.ones((len(N), 1)))
+    params.add_output('alp_r', val=np.ones((len(N), 1)))
     
     problem = om.Problem(model=model)
     problem.setup(check=True)
@@ -204,7 +212,7 @@ if __name__ == "__main__":
 
     problem.run_model()
 
-    #print(problem['T']-273.)
+    print(problem['T']-273.)
     #print(problem['eta'])
     #print(problem['QS'][1:12,:] - QS_init[1:12,:])
     #print(GR_init1 == GR_init2)

@@ -148,7 +148,7 @@ if __name__ == "__main__":
     #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
     #prob.driver.opt_settings['stepsize'] = 0.01
     prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-    prob.driver.add_recorder(om.SqliteRecorder(model_name+'.sql'))
+    prob.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'.sql'))
 
     prob.setup(check=True)
 
@@ -162,15 +162,16 @@ if __name__ == "__main__":
     prob['QI'][[-1]] = 0.2
     prob['QI'][[-4]] = 0.3
     
-    cr = om.CaseReader('RU_v4_detail_mstart_30.sql')
+    # load case?
+    """ cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
     cases = cr.list_cases('driver')
     num_cases = len(cases)
-    print(num_cases)
+    print(num_cases) """
 
-    # Load the last case written
+    """ # Load the last case written
     last_case = cr.get_case(cases[num_cases-1])
     best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
-    prob.load_case(best_case)
+    prob.load_case(best_case) """
 
     #prob.run_model()
     prob.run_driver()
