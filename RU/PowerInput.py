@@ -10,15 +10,16 @@ class PowerInput(om.ExplicitComponent):
         m = self.options['npts']
         self.add_input('P_el', val=np.ones((n,m)), desc='Electrical power output over time', units='W')
         self.add_output('P_in', val=np.ones(m), desc='Total power input over time', units='W')
+
+        rows = np.arange(m).repeat(n)
+        cols = np.arange(n*m).reshape((n,m)).flatten('F')
+        self.declare_partials('P_in', 'P_el', rows=rows, cols=cols, val=1.)
+
     def compute(self,inputs,outputs):
         outputs['P_in'] = np.sum(inputs['P_el'], 0)
-    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
-        dP_in = d_outputs['P_in']
 
-        if mode == 'fwd':
-            dP_in += np.sum(d_inputs['P_el'], 0)
-        else:
-            d_inputs['P_el'] += dP_in
+    def compute_partials(self, inputs, partials):
+        pass
 
 if __name__ == "__main__":
     
@@ -42,4 +43,4 @@ if __name__ == "__main__":
 
     print(prob['P_in'])
 
-    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-04)
+    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, method='cs')

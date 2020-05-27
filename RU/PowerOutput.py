@@ -13,16 +13,15 @@ class PowerOutput(om.ExplicitComponent):
         self.add_input('QI', val=np.zeros((nn,m)), desc='Internal power dissipation over time for each node', units='W')
         self.add_output('P_out', val=np.ones(m), desc='Total power output over time', units='W')
 
+        rows = np.arange(m).repeat(nn)
+        cols = np.arange(nn*m).reshape((nn,m)).flatten('F')
+        self.declare_partials('P_out', 'QI', rows=rows, cols=cols, val=1.)
+
     def compute(self,inputs,outputs):
         outputs['P_out'] = np.sum(inputs['QI'], 0)
 
-    def compute_jacvec_product(self, inputs, d_inputs, d_outputs, mode):
-        dP_out = d_outputs['P_out']
-
-        if mode == 'fwd':
-            dP_out += np.sum(d_inputs['QI'], 0)
-        else:
-            d_inputs['QI'] += dP_out
+    def compute_partials(self, inputs, partials):
+        pass
 
 if __name__ == "__main__":
     
@@ -46,7 +45,7 @@ if __name__ == "__main__":
 
     print(prob['P_out'])
 
-    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, form='central', step=1e-04)
+    check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=False, method='cs')
         
     
 
