@@ -103,9 +103,10 @@ if __name__ == "__main__":
     keys = ['Box:outer',
         'Panel_outer:solar_cells',
         'Panel_inner:solar_cells',
-        'Panel_body:solar_cells',]
+        'Panel_body:solar_cells',
         #'Panel_inner: back',
-        #'Panel_outer:back'] # define faces to include in radiative analysis
+        #'Panel_outer:back',
+    ] # define faces to include in radiative analysis
     
     fpath = os.path.dirname(os.path.realpath(__file__))
     model_dir = fpath + '/Esatan_models/' + model_name
@@ -173,11 +174,10 @@ if __name__ == "__main__":
     best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
     prob.load_case(best_case) """
 
-    #prob.run_model()
-    prob.run_driver()
-    #print(prob['T']-273.)
+    prob.run_model()
+    #prob.run_driver()
+    print(prob['T']-273.)
     #print(best_case)
-
     #totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])
     #print(totals)
     #check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)

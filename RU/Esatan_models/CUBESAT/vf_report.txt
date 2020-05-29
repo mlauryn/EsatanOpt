@@ -1,0 +1,164 @@
+***************************************************************
+Model = PhD_example
+Report produced by REPORT_VF procedure at 17:25 Thu 28 May 2020
+VF name = case1.IR_VF
+VF calculated on 0:57 Tue 26 May 2020, wavelength is INFRA_RED
+Geometry is Not in Cavity
+***************************************************************
+
+---------------------------------------------------------------------------
+Emitting Face = 1, Thermal Node = 1
+Area = 0.0072, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          4 [         2] 0.278534          6 [         3] 0.193408          8 [         4] 0.170997
+         10 [         5] 0.166779         12 [         6] 0.187485
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 0.997203
+
+---------------------------------------------------------------------------
+Emitting Face = 2, Thermal Node = 1
+Area = 0.0072, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          6 [         3] 0.068769          8 [         4] 0.052577         10 [         5] 0.049078
+         12 [         6] 0.064769         14 [         7] 0.762511
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 0.997705
+
+---------------------------------------------------------------------------
+Emitting Face = 3, Thermal Node = 2
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 4, Thermal Node = 2
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          1 [         1] 0.201241          6 [         3] 0.188950          8 [         4] 0.198650
+         10 [         5] 0.194700         12 [         6] 0.195550         14 [         7] 0.019500
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 0.998591
+
+---------------------------------------------------------------------------
+Emitting Face = 5, Thermal Node = 3
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 6, Thermal Node = 3
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          1 [         1] 0.139737          2 [         1] 0.049685          4 [         2] 0.188950
+          8 [         4] 0.181100         10 [         5] 0.159300         12 [         6] 0.177850
+         14 [         7] 0.099450
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 0.996072
+
+---------------------------------------------------------------------------
+Emitting Face = 7, Thermal Node = 4
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 8, Thermal Node = 4
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          1 [         1] 0.123545          2 [         1] 0.037987          4 [         2] 0.198650
+          6 [         3] 0.181100         10 [         5] 0.184300         12 [         6] 0.160850
+         14 [         7] 0.114000
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000432
+
+---------------------------------------------------------------------------
+Emitting Face = 9, Thermal Node = 5
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 10, Thermal Node = 5
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          1 [         1] 0.120498          2 [         1] 0.035459          4 [         2] 0.194700
+          6 [         3] 0.159300          8 [         4] 0.184300         12 [         6] 0.188200
+         14 [         7] 0.115550
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 0.998006
+
+---------------------------------------------------------------------------
+Emitting Face = 11, Thermal Node = 6
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 12, Thermal Node = 6
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          1 [         1] 0.135458          2 [         1] 0.046796          4 [         2] 0.195550
+          6 [         3] 0.177850          8 [         4] 0.160850         10 [         5] 0.188200
+         14 [         7] 0.106650
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 1.011354
+
+---------------------------------------------------------------------------
+Emitting Face = 13, Thermal Node = 7
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+
+VF to environment = 1.000000, VF to inactive faces = 0.000000
+VF line sum = 1.000000
+
+---------------------------------------------------------------------------
+Emitting Face = 14, Thermal Node = 7
+Area = 0.0100, Emissivity = 0.9000, Criticality = NORMAL, Rays fired = 10000
+---------------------------------------------------------------------------
+          2 [         1] 0.550915          4 [         2] 0.019500          6 [         3] 0.099450
+          8 [         4] 0.114000         10 [         5] 0.115550         12 [         6] 0.106650
+
+VF to environment = 0.000000, VF to inactive faces = 0.000000
+VF line sum = 1.006065
+
+Summary Statistics for Report VF
+==========================================
+
+Maximum Line Sum Error          =  0.011   at  : Face 12 Node 6
+RMS Line Sum Error              =  0.004
+Maximum Factor to Inactive Face =  0.000   at  : Face 1 Node 1
+
+LineSumError CRIT Face [Submodel: Node]
+
+! No results were found matching the defined cutoff criteria !
+
+Error Range      No of Faces
+----------------------------
+0 < - < 0.02     14         
+0.02 < - < 0.05  0          
+0.05 < - < 0.1   0          
+0.1 < - < 0.15   0          
+> 0.15           0          
+                 --         
+Total Faces      14         
+
+VF to Inactive Faces Face [Submodel: Node]
+
+! No results were found matching the defined cutoff criteria !

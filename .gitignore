@@ -22,3 +22,7 @@ RU/iprof.0
 *.pdf
 *.tex
 *.tikz
+*.TMD
+Template.tpl
+*.8
+*.tpl_previous

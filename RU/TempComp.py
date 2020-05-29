@@ -42,7 +42,7 @@ class TempComp(om.ImplicitComponent):
     def guess_nonlinear(self, inputs, outputs, residuals):
         n = self.options['n'] + 1
         #gues values
-        outputs['T'] = -np.ones(n)*50 + 273
+        outputs['T'] = -np.ones(n)*20 + 273
 
 if __name__ == "__main__":
     from Pre_process import nodes, conductors, inits

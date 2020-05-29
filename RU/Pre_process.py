@@ -52,7 +52,16 @@ def nodes(data='nodes_RU_v4_detail_cc.csv', env='99999', inact='99998' ):
     for key in labels:
         labels[key] = list(map(int, (labels[key])))
     
-    return nn, labels
+    # collect node temperatures from analysis case
+
+    temp = df.filter(regex = 'T(?!{})(?!{})(\d+)'.format(env, inact))
+    temp.columns = temp.columns.str.extract(r'T(\d+)', expand=False) # keep just node number
+    temp.index = ['T_ref']
+    #temp.index = df['TIME']
+    output = nodes.append(temp)
+
+    return nn, labels, output.T
+    
 
 def inits(data='nodal_detail_cc.csv', env='99999', inact='99998'):
     """
@@ -256,7 +265,10 @@ def parse_vf(filepath='ViewFactors.txt'):
 
     return data
 
-def opticals(node_grp, keys, optprop):
+def opticals(node_grp, keys, optprop, areas):
+    """
+    Returns a dictionary of external face optical properties
+    """
 
     # new dict of user selected node labels
     node_groups = {new_key: node_grp[new_key] for new_key in keys}
@@ -265,19 +277,19 @@ def opticals(node_grp, keys, optprop):
 
     for grp in node_groups:
         
-        areas =[]
+        ar =[]
         VFs = []
         emissivities = []
 
         for node in node_groups[grp]:
-            area = optprop[node]['area']
+            a = areas[node-1] # minus one because areas are stored in nympy array
             vf = optprop[node]['vf']
             eps = optprop[node]['eps']
-            areas.append(area)
+            ar.append(a)
             VFs.append(vf)
             emissivities.append(eps)
 
-        entry = {'name':grp, 'nodes':node_groups[grp], 'areas':areas, 'VFs': VFs, 'eps':emissivities}
+        entry = {'name':grp, 'nodes':node_groups[grp], 'areas':ar, 'VFs': VFs, 'eps':emissivities}
         faces.append(entry)
 
     return faces
@@ -466,3 +478,35 @@ def idx_dict(src, ref):
             indices[name].append(idx)
 
     return indices
+
+def parse_ar(filepath):
+    """
+    Parses Esatan radiative model report file and returns true (one-sided) areas of nodes
+    
+    """
+    area = []   
+    nodes =[]
+    with open(filepath, 'r') as f:
+        #skip header lines
+        for i in range(11):
+            f.readline()
+        
+        line = f.readline()
+        #read until end of table
+        while line.strip():
+            row = line.split('|')
+            n = row[2].strip() # node number
+            a = row[-1].strip() # node area
+            area.append(a)
+            nodes.append(n)
+            f.readline() #skip every second line with empty data
+            line = f.readline()
+    area = list(map(float, area))
+    nodes = list(map(int, nodes))
+    area_n = np.array(nodes, dtype=int)
+    area_val = np.array(area)
+    data_raw = np.vstack((area_n, area_val))
+    # remove duplicate entries (for two-sided nodes)
+    data = np.unique(data_raw, axis=1)
+
+    return data[1,:]
