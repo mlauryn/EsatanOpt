@@ -1,24 +1,24 @@
 import os
 import openmdao.api as om
+import pandas as pd
 import numpy as np
+from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict, parse_ar
 from Thermal_MDF_unc import Thermal_MDF_unc
-from Thermal_MDF import Thermal_MDF
-from Pre_process import nodes, inits, idx_dict
 
 # number of design points
-npts = 1
-model_name = 'RU_v5_1'
+npts = 8
+model_name = 'CUBESATT'
 
 # define faces to include in radiative analysis
 #face_IDs = list(groups.face_IDs()) # import all nodes?
 face_IDs = [
-    #'outer_surf'
-    'Box:outer',
-    'Panel_outer:solar_cells',
-    'Panel_inner:solar_cells',
+    'outer_surf'
+    #'Box:outer',
+    #'Panel_outer:solar_cells',
+    #'Panel_inner:solar_cells',
     #'Panel_body:solar_cells',
-    'Panel_inner: back',
-    'Panel_outer:back',
+    #'Panel_inner: back',
+    #'Panel_outer:back',
 ]
 
 fpath = os.path.dirname(os.path.realpath(__file__))
@@ -31,7 +31,7 @@ nodes_list = sum([groups[group] for group in face_IDs], [])
 # index dictionary or radiative nodes_list
 idx = idx_dict(sorted(nodes_list), groups)
 
-model = Thermal_MDF(npts=npts, labels=face_IDs, model=model_name)
+model = Thermal_MDF_unc(npts=npts, labels=face_IDs, model=model_name)
 prob = om.Problem(model=model)
 
 prob.driver = om.ScipyOptimizeDriver()
@@ -46,45 +46,30 @@ prob.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'.sql'))
 
 prob.setup(check=True)
 
-# global indices for solar cell nodes
-sc_idx = sum([idx[face_IDs] for face_IDs in [
+# indices for solar cells
+""" sc_idx = sum([idx[face_IDs] for face_IDs in [
     'Panel_outer:solar_cells',
     'Panel_inner:solar_cells',
-    #'Panel_body:solar_cells'
-    ]], [])
+    'Panel_body:solar_cells'
+    ]], []) """
 
 # initial values for some input variables
-prob['cr'][sc_idx] = 1.0
-prob['alp_r'][list(idx['Box:outer'])] = 0.5
-prob['QI'] = QI_init
-#prob['phi'] = 0.
+#prob['cr'][sc_idx] = 1.0
+prob['alp_r'][list(idx['outer_surf'])] = 0.9
+prob['QI'] = np.tile(QI_init, npts)
+prob['phi'] = np.arange(0.,96.,12.)
 #prob['QI'][[-4]] = 0.3
-prob['dist'][0] = 3.
+#prob['dist'][1] = 3.
 
-# load case?
-""" cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
-cases = cr.list_cases('driver')
-num_cases = len(cases)
-print(num_cases) """
-
-# Load the last case written?
-""" last_case = cr.get_case(cases[num_cases-1])
-best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
-prob.load_case(best_case) """
 
 prob.run_model()
 #prob.run_driver()
-
-output['T_res'] = prob['T'][1:,0]-273.15
+#print(prob['T'][1:,:]-273.15)
+df = pd.DataFrame(data=prob['T'][1:,:]-273.15, columns=prob['phi'])
+df.T.to_pickle('./Cases/' + model_name + '.pkl')
+#output['T_res1'] = prob['T'][1:,0]-273.15
 #output['T_res2'] = prob['T'][1:,1]-273.15
-output['abs'] = output['T_ref']-output['T_res']
-output['rel'] = output['abs']/output['T_ref']
-print(output)
-#print(best_case)
+#output['abs'] = output['T_ref']-output['T_res']
+#output['rel'] = output['abs']/output['T_ref']
+print(df)
 
-#totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])
-#print(totals)
-#check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)
-#prob.check_totals(compact_print=True)
-
-#prob.model.list_inputs(print_arrays=True)

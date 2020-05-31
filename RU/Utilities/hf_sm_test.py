@@ -1,13 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import sys
+sys.path.append('../')
 
 from smt.surrogate_models import RMTC, RMTB, RBF, IDW, KRG
 from Pre_process import parse_hf
 
-data = parse_hf('Ru_v4_base.txt')
+model_name = 'CUBESAT3'
+data = parse_hf('../Esatan_models/'+ model_name +'/sdf.txt')
 
-nodes=[1,3,4,8] # user filter which nodes to evaluate
+nodes=[32,41,50,23] # user filter which nodes to evaluate
 
 xt = data[:,0]
 yt = data[:,nodes]

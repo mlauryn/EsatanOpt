@@ -3,10 +3,10 @@ import numpy as np
 from GLmtxComp import GLmtxComp
 from GRmtxComp import GRmtxComp
 from TempComp import TempComp
-from Pre_process import nodes, inits, conductors, parse_vf, opticals, parse_ar
+from Pre_process import nodes, inits, conductors, parse_vf, opticals, parse_ar, parse_cond
 import pandas as pd
 
-model_name = 'CUBESAT2'
+model_name = 'CUBESAT1'
 model_dir = './Esatan_models/'+model_name
 n, groups, output = nodes(data=model_dir+'/nodes_output.csv')
 GL_init, GR_init = conductors(nn=n, data=model_dir+'/cond_output.csv')
@@ -26,10 +26,13 @@ keys = [
 ] 
 
 faces = opticals(groups, keys, optprop, areas)
+#user_cond = parse_cond(filepath=model_dir + '/cond_report.txt')
 
 model = om.Group()
 
 input_var = model.add_subsystem('input', om.IndepVarComp(), promotes=['*'])
+#for cond in user_cond:
+#    input_var.add_output(cond['cond_name'], val=cond['values'][0] )
 for face in faces:
     input_var.add_output(face['name'], val=face['eps'][0] )
 input_var.add_output('GL', val=GL_init)
@@ -37,7 +40,7 @@ input_var.add_output('GL', val=GL_init)
 input_var.add_output('QI', val=QI_init)
 input_var.add_output('QS', val=QS_init)
 
-#model.add_subsystem('GLmtx', GLmtxComp(n=nn, GL_init=GL_init, user_links=))
+#model.add_subsystem('GLmtx', GLmtxComp(n=n, GL_init=GL_init, user_links=user_cond), promotes=['*'])
 model.add_subsystem('GRmtx', GRmtxComp(n=n, GR_init=GR_init, faces=faces), promotes=['*'])
 model.add_subsystem('TMM', TempComp(n=n), promotes=['*'])
 model.add_design_var('outer_surf', lower=0.03, upper=0.95)
@@ -63,8 +66,8 @@ problem.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'.sql'))
 
 problem.setup(check=True)
     
-problem.run_model()
-#problem.run_driver()
+#problem.run_model()
+problem.run_driver()
 
 output['T_res'] = problem['T'][1:]-273.15
 output['abs'] = output['T_ref']-output['T_res']

@@ -47,8 +47,8 @@ class TempComp(om.ImplicitComponent):
 if __name__ == "__main__":
     from Pre_process import nodes, conductors, inits
     
-    model_name = 'RU_v4_2'
-    nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    model_name = 'RU_v5_1'
+    nn, groups, output = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
     GL_init, GR_init = conductors(nn=nn, data='./Esatan_models/'+model_name+'/cond_output.csv')
     QI_init, QS_init = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
     

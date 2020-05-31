@@ -3,9 +3,9 @@ import numpy as np
 from GLmtxComp import GLmtxComp
 from GRmtxComp import GRmtxComp
 
-class GMM(om.Group):
+class Cond_group(om.Group):
     def __init__(self, n, conductors, faces, GL_init, GR_init):
-            super(GMM, self).__init__()
+            super(Cond_group, self).__init__()
 
             self.n = n
             self.conductors = conductors

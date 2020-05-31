@@ -1,5 +1,5 @@
 """
-Plots objective and constraint histories from the recorded data in 'data.sql'.
+Plots temperature as bar plot.
 """
 
 import numpy as np
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from openmdao.api import CaseReader
 
 # load cases from recording database
-cr = CaseReader('RU_v4_base_mstart_1.sql')
+cr = CaseReader('./Cases/RU_v4_base.sql')
 #cases = cr.get_cases('driver')
 cases = cr.list_cases('driver')
 initial = cr.get_case(cases[0])

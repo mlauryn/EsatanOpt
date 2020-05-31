@@ -107,16 +107,24 @@ class Solar(om.Group):
 
 if __name__ == "__main__":
 
-    from Pre_process import parse_vf, opticals, nodes, inits, idx_dict
+    from Pre_process import parse_vf, opticals, nodes, inits, idx_dict, parse_ar
 
-    model_name = 'RU_v4_base'
-    nn, groups = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    model_name = 'RU_v4_detail'
+    nn, groups, outp = nodes(data='./Esatan_models/'+model_name+'/nodes_output.csv')
 
     optprop = parse_vf(filepath='./Esatan_models/'+model_name+'/vf_report.txt')
+    area = parse_ar(filepath='./Esatan_models/'+model_name+'/area.txt')
 
     #keys = list(groups.keys()) # import all nodes?
-    keys = ['Box', 'Panel_body']
-    faces = opticals(groups, keys, optprop)    
+    face_IDs = [
+        'Box:outer',
+        'Panel_outer:solar_cells',
+        'Panel_inner:solar_cells',
+        'Panel_body:solar_cells',
+        #'Panel_inner: back',
+        #'Panel_outer:back',
+    ]
+    faces = opticals(groups, face_IDs, optprop, area)    
 
     #compute total number of nodes in selected faces
     nodes = []
@@ -145,25 +153,22 @@ if __name__ == "__main__":
 
     #assign initial values
 
-    problem['cr'][list(idx['Box'])] = 0.0
-    problem['alp_r'][list(idx['Box'])] = 0.5    
+    problem['cr'][list(idx['Box:outer'])] = 0.0
+    problem['alp_r'][list(idx['Box:outer'])] = 0.5    
 
     problem.run_model()
     
-    check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, method='cs')
+    #check_partials_data = problem.check_partials(compact_print=True, show_only_incorrect=False, method='cs')
 
     #compare results with esatan
-    """ QI_init1, QS_init1 = inits(data='nodes_RU_v4_base_cc.csv')
-    QI_init2, QS_init2 = inits(data='nodes_RU_v4_base_hc.csv')
-    
-    npts = 2
-
-    QS_init = np.concatenate((QS_init1, QS_init2), axis=1) """
+    QI_init1, QS_init1 = inits(data='./Esatan_models/'+model_name+'/nodes_output.csv')
+    QI_init2, QS_init2 = inits(data='./Esatan_models/'+model_name+'/nodes_output_2.csv')
+    QS_init = np.concatenate((QS_init1, QS_init2), axis=1)
     
     #check relative error
-    """ print((problem['QS_c'] - QS_init[nodes,:]*0.91/0.61)/problem['QS_c'])  
+    print((problem['QS_c'] - QS_init[nodes,:]*0.91/0.61)/problem['QS_c'])  
     print(QS_init[nodes,:]*0.91/0.61) 
-    print(problem['QS_c']) """
+    print(problem['QS_c'])
 
     """ print((problem['QS_r'] - QS_init[nodes,:])/problem['QS_r'])
     print(QS_init[nodes,:])

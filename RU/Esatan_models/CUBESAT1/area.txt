@@ -1,0 +1,54 @@
+****************************************************************************
+MODEL NAME = PhD_example
+report produced by REPORT_RADIATIVE_MODEL procedure at 21:10 Sun 31 May 2020
+****************************************************************************
+------------------------------------------------------------------------------------------------------
+Model Name = PhD_example                                                                               
+------------------------------------------------------------------------------------------------------
+FACE | SUBMODEL | NODE | CRIT | PRIMITIVE NAME | FACE LABEL | TYPE |  INFRA-RED/SOLAR    | FACE AREA  
+     |          |      |      |                |            |      | EPSI RHOD RHOS TAU  |            
+     |          |      |      |                |            |      | ALPH RHOD RHOS TAU  |            
+------------------------------------------------------------------------------------------------------
+1    |          | 1    | N    | pcb            |            | RECT | .900 .100 .000 .000 | 7.2250E-003
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+2    |          | 1    | N    | pcb            |            | RECT | .900 .100 .000 .000 | 7.2250E-003
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+3    |          | 2    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+4    |          | 2    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+5    |          | 3    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+6    |          | 3    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+7    |          | 4    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+8    |          | 4    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+9    |          | 5    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+10   |          | 5    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+11   |          | 6    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+12   |          | 6    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+13   |          | 7    | N    | Box            | outer_surf | BOX  | .496 .504 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+14   |          | 7    | N    | Box            |            | BOX  | .900 .100 .000 .000 | 1.0000E-002
+     |          |      |      |                |            |      | .900 .100 .000 .000 |            
+
+
+     ** Statistic details of model **
+
+Total number of faces in the model                     = 14
+Total number of active faces in the model              = 14
+Total number of inactive faces in the model            = 0
+Total number of radiatively active faces in the model  = 0
+Total number of thermally active faces in the model    = 0
+Total number of non geometric faces in the model       = 0
+Total number of geometry in the model                  = 3
+Total number of geometric primitives in the model      = 2
+Total number of non geometric shells in the model      = 0
+Total number of nodes in the thermal model             = 7
+Total number of submodels in the thermal model         = 0
