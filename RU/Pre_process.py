@@ -294,7 +294,7 @@ def opticals(node_grp, keys, optprop, areas):
 
     return faces
 
-def parse_hf(filepath='Radiative_results.txt', end=90.0, num=19):
+def parse_hf(filepath='Radiative_results.txt', start=0.0, step=5.0):
     """
     Parse Esatan radiative restults report file at given filepath
 
@@ -303,14 +303,18 @@ def parse_hf(filepath='Radiative_results.txt', end=90.0, num=19):
     filepath : str
         Filepath for report file to be parsed
 
+    start : float
+        starting point of training variable vector
+    
+    step : float
+        angle separation in degrees between consequtive heat flux training variables (angles)
+
     Returns
     -------
     train_data : numpy array
         Parsed training data for surrogate model
 
     """
-
-    xt = np.linspace(0., end, num) # training variables
 
     rx = re.compile(r'Node (?P<node>\d+)')
 
@@ -339,7 +343,13 @@ def parse_hf(filepath='Radiative_results.txt', end=90.0, num=19):
         
         q_s = list(map(float, data))
 
-        yt = np.array(q_s).reshape((int(node),num))
+        nn = int(node) # number of nodes in the model
+
+        npts = len(q_s)//nn # number of training points
+
+        xt = np.arange(0,npts)*step + start # training variables
+
+        yt = np.array(q_s).reshape((nn,npts))
 
         train_data = np.vstack([xt,yt]).T
     

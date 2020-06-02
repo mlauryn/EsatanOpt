@@ -61,15 +61,19 @@ prob['phi'] = np.arange(0.,96.,12.)
 #prob['QI'][[-4]] = 0.3
 #prob['dist'][1] = 3.
 
-
 prob.run_model()
 #prob.run_driver()
-#print(prob['T'][1:,:]-273.15)
-df = pd.DataFrame(data=prob['T'][1:,:]-273.15, columns=prob['phi'])
-df.T.to_pickle('./Cases/' + model_name + '.pkl')
+
+Temp = prob['T']-273.15
+Qs = prob['QS']
+#print(T_res)
+df_t = pd.DataFrame(data=Temp, columns=prob['phi'])
+df_q = pd.DataFrame(data=Qs, columns=prob['phi'])
+df_t.T.to_pickle('./Cases/' + model_name + '_t.pkl')
+df_q.T.to_pickle('./Cases/' + model_name + '_q.pkl')
 #output['T_res1'] = prob['T'][1:,0]-273.15
 #output['T_res2'] = prob['T'][1:,1]-273.15
 #output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
-print(df)
+
 

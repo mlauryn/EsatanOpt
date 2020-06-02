@@ -1,6 +1,7 @@
 from openmdao.api import CaseReader
 from matplotlib import pyplot as plt
 from plot_size import set_size
+from matplotlib.ticker import FormatStrFormatter
 
 plt.style.use('thesis')
 #plt.rcParams['axes.grid'] = True
@@ -35,12 +36,16 @@ for num in range(1,7):
     y2.append((objs['obj']))
 
 fig, (ax1, ax2)  = plt.subplots(2, sharex=True, figsize=set_size('thesis', subplots=(2,1)))
+fig.subplots_adjust(left=0.15)
 
 ax1.plot(x, y1, '-+')
-ax1.set_ylabel(r'$\epsilon$')
+ax1.set(title='a', ylabel=r'$\epsilon$')
+ax1.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
 ax2.plot(x, y2, '-o', label='OpenMDAO result')
 ax2.plot(x, y3, '-x', label= 'Esatan-TMS result')
-ax2.set(xlabel='number of thermal nodes', ylabel= r'$f(\epsilon)$', xticks=x)
+ax2.set(title = 'b', xlabel='Total number of thermal nodes', ylabel= r'$f(\epsilon)$', xticks=x)
+ax2.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 ax2.legend()
 
 plt.show()

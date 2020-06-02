@@ -31,7 +31,7 @@ nodes_list = sum([groups[group] for group in face_IDs], [])
 # index dictionary or radiative nodes_list
 idx = idx_dict(sorted(nodes_list), groups)
 
-model = Thermal_MDF(npts=npts, labels=face_IDs, model=model_name)
+model = Thermal_MDF_unc(npts=npts, labels=face_IDs, model=model_name)
 prob = om.Problem(model=model)
 
 prob.driver = om.ScipyOptimizeDriver()

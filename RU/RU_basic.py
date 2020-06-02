@@ -8,18 +8,19 @@ from Pre_process import nodes, inits, idx_dict
 npts = 2
 
 # model version name
-model_name = 'RU_v5_1'
+model_name = 'RU_v4_detail'
 
 # define faces to include in radiative analysis
 #face_IDs = list(groups.keys()) # import all nodes?
 face_IDs = [
     #'outer_surf'
+    #'Box',
     'Box:outer',
     'Panel_outer:solar_cells',
     'Panel_inner:solar_cells',
-    #'Panel_body:solar_cells',
-    'Panel_inner: back',
-    'Panel_outer:back',
+    'Panel_body:solar_cells',
+    #'Panel_inner: back',
+    #'Panel_outer:back',
 ]
 
 fpath = os.path.dirname(os.path.realpath(__file__))
@@ -37,11 +38,11 @@ idx = idx_dict(sorted(rad_nodes), groups)
 solar_cells = sum([idx[array] for array in [
     'Panel_outer:solar_cells',
     'Panel_inner:solar_cells',
-    #'Panel_body:solar_cells'
+    'Panel_body:solar_cells'
     ]], [])
 
 # user defined node groups
-groups.update({'radiator':[158]})# extra node to disipate heat in structure
+groups.update({'radiator':[69]})# extra node to disipate heat in structure
 
 # global indices for components with controlled heat disipation
 equip = sum([groups[syst] for syst in [
@@ -61,21 +62,18 @@ model = RemoteUnit(npts=npts, labels=face_IDs, model=model_name)
 ####################################
 
 # design variables
-for i in range(1, 6):
-    for k in range(1, 5):
-        model.add_design_var('Spacer{}_{}'.format(i,k), lower=0.25, upper=237.)
-#model.add_design_var('Body_panel', lower=0.004, upper=.1)
-model.add_design_var('Hinge_inner_1', lower=0.02, upper=.1)
-model.add_design_var('Hinge_inner_2', lower=0.02, upper=.1)
-model.add_design_var('Hinge_outer_1', lower=0.02, upper=.1)
-model.add_design_var('Hinge_outer_2', lower=0.02, upper=.1)
+model.add_design_var('Spacer5', lower=0.25, upper=237.)
+model.add_design_var('Spacer1', lower=0.25, upper=237.)
+model.add_design_var('Body_panel', lower=0.004, upper=.1)
+model.add_design_var('Hinge_middle', lower=0.02, upper=.1)
+model.add_design_var('Hinge_outer', lower=0.02, upper=.1)
 #model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
 model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
 model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
-model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+#model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+#model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
 model.add_design_var('QI', lower = 0., upper=7., indices=(flat_indices[equip,:]).ravel())
-model.add_design_var('phi', lower=0., upper=33.)
+model.add_design_var('phi', lower=0., upper=90.)
 
 # constraints
 model.add_constraint('bat_lwr.KS', upper=0.0)
@@ -103,7 +101,7 @@ prob.setup(check=True)
 # initial values for some input variables
 prob['cr'][solar_cells] = 1.0
 prob['alp_r'][list(idx['Box:outer'])] = 0.5
-#prob['QI'] = QI_init
+prob['QI'] = np.tile(QI_init, (1,npts))
 #prob['phi'] = 0.
 #prob['QI'][[-4]] = 0.3
 prob['dist'] = [1.,3.]
@@ -126,7 +124,7 @@ output['T_res'] = prob['T'][1:,0]-273.15
 output['T_res2'] = prob['T'][1:,1]-273.15
 #output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
-print(output.iloc[[68,95],:])
+print(output.loc[list(map(str, equip)),:])
 #print(best_case)
 
 #totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])

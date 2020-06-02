@@ -47,7 +47,7 @@ class RemoteUnit(om.Group):
         nn = self.nn
         npts = self.npts
         n_in = len(self.surf_nodes)
-        indices = self.groups
+        groups = self.groups
 
         # input variables
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
@@ -76,22 +76,24 @@ class RemoteUnit(om.Group):
         self.connect('P_in', 'equal.rhs:power_bal')
 
         # global indices for components
+        obc_nodes = groups['obc']
+        prop_nodes = groups['Prop']
         flat_indices = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
-        bat_idx = flat_indices[indices['obc'],:]
-        prop_idx = flat_indices[indices['Prop'],:]
+        bat_idx = flat_indices[obc_nodes,:]
+        prop_idx = flat_indices[prop_nodes,:]
 
         # objective function
-        self.add_subsystem('obj', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((9,npts))), promotes=['*'])
+        self.add_subsystem('obj', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
         self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
 
         # temperature constraint aggregation Kreisselmeier-Steinhauser Function
-        self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=9, upper=273., lower_flag=True))
-        self.add_subsystem('bat_upr', om.KSComp(width=npts, vec_size=9, upper=45.+273.))
-        self.add_subsystem('prop_upr', om.KSComp(width=npts, vec_size=9, upper=80.+273.))
-        self.add_subsystem('prop_lwr', om.KSComp(width=npts, vec_size=9, upper=-10.+273., lower_flag=True))
+        self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=273., lower_flag=True))
+        self.add_subsystem('bat_upr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=45.+273.))
+        self.add_subsystem('prop_upr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=80.+273.))
+        self.add_subsystem('prop_lwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=-10.+273., lower_flag=True))
 
         # obc power constraint
-        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=9, upper=0.022, lower_flag=True))
+        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.25/len(obc_nodes), lower_flag=True))
 
         # KS connections
         self.connect('T', 'bat_lwr.g', src_indices=bat_idx, flat_src_indices=True)
