@@ -254,8 +254,8 @@ def parse_vf(filepath='ViewFactors.txt'):
             if key == 'view factor':
                 vf = float(match.group('vf'))
 
-                if vf <= 0.02:
-                    continue # filter out internal surfacess
+                #if vf <= 0.02:
+                    #continue # filter out internal surfacess
             
                 # create a dictionary containing this row of data
                 entry = {int(node): {'area': float(area), 'eps': float(eps), 'vf': vf}}

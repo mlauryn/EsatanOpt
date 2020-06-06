@@ -9,12 +9,12 @@ from Thermal_direct import Thermal_direct
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
-class RemoteUnit(om.Group):
+class MainSP(om.Group):
     """ 
-    Remote unit thermal model with coupling
+    Main s/c thermal model with coupling
     """
     def __init__(self, npts, model, labels):
-        super(RemoteUnit, self).__init__()
+        super(MainSP, self).__init__()
         
         fpath = os.path.dirname(os.path.realpath(__file__))
         model_dir = fpath + '/Esatan_models/' + model
@@ -61,6 +61,7 @@ class RemoteUnit(om.Group):
             params.add_output(cond['cond_name'], val=cond['values'][0] ) # adds output variable with the same name as user conductor name
         for face in self.faces:
             params.add_output(face['name'], val=face['eps'][0] ) # adds independant variable as face name and assigns emissivity of it's first node
+        params.add_output('eta', val=np.ones((n_in,npts))*0.275/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
 
         self.add_subsystem('Cond', Cond_group(n=nn, conductors=self.user_cond, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
@@ -78,28 +79,67 @@ class RemoteUnit(om.Group):
         self.connect('P_in', 'equal.rhs:power_bal')
 
         # global indices for components
-        obc_nodes = groups['obc']
-        prop_nodes = groups['Prop']
+        obc_nodes = groups['PCB']
+        prop_nodes = groups['Propulsion_bot']
+        bat_nodes = groups['Battery']
+        ins_nodes = groups['Instrument_inner']
+        es_nodes = groups['Esail_bot']
+        trx_nodes = groups['TRx']
+        aocs_nodes = groups['AOCS'] + groups['RW_Z']
+
         flat_indices = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
-        bat_idx = flat_indices[obc_nodes,:]
+        obc_idx = flat_indices[obc_nodes,:]
         prop_idx = flat_indices[prop_nodes,:]
+        bat_idx = flat_indices[bat_nodes,:]
+        ins_idx = flat_indices[ins_nodes,:]
+        es_idx = flat_indices[es_nodes,:]
+        trx_idx = flat_indices[trx_nodes,-1]
+        aocs_idx = flat_indices[aocs_nodes,:]
+
 
         # objective function
-        self.add_subsystem('obj', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
-        self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
+        self.add_subsystem('TRx_power', om.ExecComp('P_trx = -sum(QI_trx)', QI_trx=np.ones(len(trx_nodes))), promotes=['*'])
+        self.connect('QI', 'QI_trx', src_indices=trx_idx, flat_src_indices=True)
 
         # temperature constraint aggregation Kreisselmeier-Steinhauser Function
-        self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=273., lower_flag=True))
-        self.add_subsystem('bat_upr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=45.+273.))
+        self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(bat_nodes), upper=273., lower_flag=True))
+        self.add_subsystem('bat_upr', om.KSComp(width=npts, vec_size=len(bat_nodes), upper=45.+273.))
         self.add_subsystem('prop_upr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=80.+273.))
         self.add_subsystem('prop_lwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=-10.+273., lower_flag=True))
+        self.add_subsystem('obc_upr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=85+273.))
+        self.add_subsystem('obc_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=-40.+273., lower_flag=True))
+        self.add_subsystem('ins_upr', om.KSComp(width=npts, vec_size=len(ins_nodes), upper=60.+273.))
+        self.add_subsystem('ins_lwr', om.KSComp(width=npts, vec_size=len(ins_nodes), upper=-20.+273., lower_flag=True))
+        self.add_subsystem('es_upr', om.KSComp(width=npts, vec_size=len(es_nodes), upper=85.+273.))
+        self.add_subsystem('es_lwr', om.KSComp(width=npts, vec_size=len(es_nodes), upper=-40.+273., lower_flag=True))
+        self.add_subsystem('trx_upr', om.KSComp(width=npts, vec_size=len(trx_nodes), upper=50.+273.))
+        self.add_subsystem('trx_lwr', om.KSComp(width=npts, vec_size=len(trx_nodes), upper=-20.+273., lower_flag=True))
+        self.add_subsystem('aocs_upr', om.KSComp(width=npts, vec_size=len(aocs_nodes), upper=70.+273.))
+        self.add_subsystem('aocs_lwr', om.KSComp(width=npts, vec_size=len(aocs_nodes), upper=-40.+273., lower_flag=True))
 
-        # obc power constraint
-        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.25/len(obc_nodes), lower_flag=True))
+        # subsystem power constraint
+        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.5/len(obc_nodes), lower_flag=True))
+        self.add_subsystem('aocs_pwr', om.KSComp(width=npts, vec_size=len(aocs_nodes), upper=1.0/len(aocs_nodes), lower_flag=True))
+        self.add_subsystem('prop_pwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=0.5/len(prop_nodes), lower_flag=True))
+        self.add_subsystem('ins_pwr', om.KSComp(width=npts, vec_size=len(ins_nodes), upper=1.0/len(ins_nodes), lower_flag=True))
 
         # KS connections
         self.connect('T', 'bat_lwr.g', src_indices=bat_idx, flat_src_indices=True)
         self.connect('T', 'bat_upr.g', src_indices=bat_idx, flat_src_indices=True)
         self.connect('T', 'prop_lwr.g', src_indices=prop_idx, flat_src_indices=True)
         self.connect('T', 'prop_upr.g', src_indices=prop_idx, flat_src_indices=True)
-        self.connect('QI', 'obc_pwr.g', src_indices=bat_idx, flat_src_indices=True)
+        self.connect('T', 'obc_lwr.g', src_indices=obc_idx, flat_src_indices=True)
+        self.connect('T', 'obc_upr.g', src_indices=obc_idx, flat_src_indices=True)
+        self.connect('T', 'ins_lwr.g', src_indices=ins_idx, flat_src_indices=True)
+        self.connect('T', 'ins_upr.g', src_indices=ins_idx, flat_src_indices=True)
+        self.connect('T', 'es_lwr.g', src_indices=es_idx, flat_src_indices=True)
+        self.connect('T', 'es_upr.g', src_indices=es_idx, flat_src_indices=True)
+        self.connect('T', 'trx_lwr.g', src_indices=trx_idx, flat_src_indices=True)
+        self.connect('T', 'trx_upr.g', src_indices=trx_idx, flat_src_indices=True)
+        self.connect('T', 'aocs_lwr.g', src_indices=aocs_idx, flat_src_indices=True)
+        self.connect('T', 'aocs_upr.g', src_indices=aocs_idx, flat_src_indices=True)
+
+        self.connect('QI', 'obc_pwr.g', src_indices=obc_idx, flat_src_indices=True)
+        self.connect('QI', 'aocs_pwr.g', src_indices=aocs_idx, flat_src_indices=True)
+        self.connect('QI', 'prop_pwr.g', src_indices=prop_idx, flat_src_indices=True)
+        self.connect('QI', 'ins_pwr.g', src_indices=ins_idx, flat_src_indices=True)

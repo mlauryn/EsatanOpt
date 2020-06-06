@@ -1,8 +1,8 @@
 *************************************************************************************
 Model = RU_v5_1
-Report produced by REPORT_HF_AGAINST_TIME procedure at 2:02 Mon 1 Jun 2020
+Report produced by REPORT_HF_AGAINST_TIME procedure at 1:51 Sat 6 Jun 2020
 HF name = SM_training.SDF
-HF calculated on 1:59 Mon 1 Jun 2020, wavelength is SOLAR
+HF calculated on 1:45 Sat 6 Jun 2020, wavelength is SOLAR
 Geometry is Whole Model
 Calculation method used was RAYTRACING, DIRECT on Faces
 Reported values are heat flux (W/m2)
@@ -2336,7 +2336,7 @@ Face 137, [Node 101]
 Average                158.84
 
 
-Face 138, [Node 101]
+Face 138, [Node 102]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2353,7 +2353,7 @@ Face 138, [Node 101]
 Average                0.00
 
 
-Face 139, [Node 102]
+Face 139, [Node 103]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2370,7 +2370,7 @@ Face 139, [Node 102]
 Average                158.84
 
 
-Face 140, [Node 102]
+Face 140, [Node 104]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2387,7 +2387,7 @@ Face 140, [Node 102]
 Average                0.00
 
 
-Face 141, [Node 103]
+Face 141, [Node 105]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2404,7 +2404,7 @@ Face 141, [Node 103]
 Average                158.84
 
 
-Face 142, [Node 103]
+Face 142, [Node 106]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2421,7 +2421,7 @@ Face 142, [Node 103]
 Average                0.00
 
 
-Face 143, [Node 104]
+Face 143, [Node 107]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2438,7 +2438,7 @@ Face 143, [Node 104]
 Average                158.84
 
 
-Face 144, [Node 104]
+Face 144, [Node 108]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2455,7 +2455,7 @@ Face 144, [Node 104]
 Average                0.00
 
 
-Face 145, [Node 105]
+Face 145, [Node 109]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2472,7 +2472,7 @@ Face 145, [Node 105]
 Average                158.84
 
 
-Face 146, [Node 105]
+Face 146, [Node 110]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2489,7 +2489,7 @@ Face 146, [Node 105]
 Average                0.00
 
 
-Face 147, [Node 106]
+Face 147, [Node 111]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2506,7 +2506,7 @@ Face 147, [Node 106]
 Average                158.84
 
 
-Face 148, [Node 106]
+Face 148, [Node 112]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2523,7 +2523,7 @@ Face 148, [Node 106]
 Average                0.00
 
 
-Face 149, [Node 107]
+Face 149, [Node 113]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2540,7 +2540,7 @@ Face 149, [Node 107]
 Average                158.84
 
 
-Face 150, [Node 107]
+Face 150, [Node 114]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2557,7 +2557,7 @@ Face 150, [Node 107]
 Average                0.00
 
 
-Face 151, [Node 108]
+Face 151, [Node 115]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2574,7 +2574,7 @@ Face 151, [Node 108]
 Average                158.84
 
 
-Face 152, [Node 108]
+Face 152, [Node 116]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2591,7 +2591,7 @@ Face 152, [Node 108]
 Average                0.00
 
 
-Face 153, [Node 109]
+Face 153, [Node 117]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2608,7 +2608,7 @@ Face 153, [Node 109]
 Average                158.84
 
 
-Face 154, [Node 109]
+Face 154, [Node 118]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2625,7 +2625,7 @@ Face 154, [Node 109]
 Average                0.00
 
 
-Face 155, [Node 110]
+Face 155, [Node 119]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2642,7 +2642,7 @@ Face 155, [Node 110]
 Average                158.84
 
 
-Face 156, [Node 110]
+Face 156, [Node 120]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2659,7 +2659,7 @@ Face 156, [Node 110]
 Average                0.00
 
 
-Face 157, [Node 111]
+Face 157, [Node 121]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2676,7 +2676,7 @@ Face 157, [Node 111]
 Average                158.84
 
 
-Face 158, [Node 111]
+Face 158, [Node 122]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2693,7 +2693,7 @@ Face 158, [Node 111]
 Average                0.00
 
 
-Face 159, [Node 112]
+Face 159, [Node 123]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2710,7 +2710,7 @@ Face 159, [Node 112]
 Average                158.84
 
 
-Face 160, [Node 112]
+Face 160, [Node 124]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2727,7 +2727,7 @@ Face 160, [Node 112]
 Average                0.07
 
 
-Face 161, [Node 113]
+Face 161, [Node 125]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2744,7 +2744,7 @@ Face 161, [Node 113]
 Average                158.84
 
 
-Face 162, [Node 113]
+Face 162, [Node 126]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2761,7 +2761,7 @@ Face 162, [Node 113]
 Average                0.00
 
 
-Face 163, [Node 114]
+Face 163, [Node 127]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2778,7 +2778,7 @@ Face 163, [Node 114]
 Average                158.84
 
 
-Face 164, [Node 114]
+Face 164, [Node 128]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2795,7 +2795,7 @@ Face 164, [Node 114]
 Average                0.00
 
 
-Face 165, [Node 115]
+Face 165, [Node 129]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2812,7 +2812,7 @@ Face 165, [Node 115]
 Average                158.84
 
 
-Face 166, [Node 115]
+Face 166, [Node 130]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2829,7 +2829,7 @@ Face 166, [Node 115]
 Average                0.00
 
 
-Face 167, [Node 116]
+Face 167, [Node 131]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -2846,7 +2846,7 @@ Face 167, [Node 116]
 Average                158.84
 
 
-Face 168, [Node 116]
+Face 168, [Node 132]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2863,7 +2863,7 @@ Face 168, [Node 116]
 Average                1.31
 
 
-Face 169, [Node 117]
+Face 169, [Node 133]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -2880,7 +2880,7 @@ Face 169, [Node 117]
 Average                1217.12
 
 
-Face 170, [Node 117]
+Face 170, [Node 134]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2897,7 +2897,7 @@ Face 170, [Node 117]
 Average                0.00
 
 
-Face 171, [Node 118]
+Face 171, [Node 135]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -2914,7 +2914,7 @@ Face 171, [Node 118]
 Average                1217.12
 
 
-Face 172, [Node 118]
+Face 172, [Node 136]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2931,7 +2931,7 @@ Face 172, [Node 118]
 Average                0.00
 
 
-Face 173, [Node 119]
+Face 173, [Node 137]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -2948,7 +2948,7 @@ Face 173, [Node 119]
 Average                1217.12
 
 
-Face 174, [Node 119]
+Face 174, [Node 138]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2965,7 +2965,7 @@ Face 174, [Node 119]
 Average                0.00
 
 
-Face 175, [Node 120]
+Face 175, [Node 139]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -2982,7 +2982,7 @@ Face 175, [Node 120]
 Average                1217.12
 
 
-Face 176, [Node 120]
+Face 176, [Node 140]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -2999,7 +2999,7 @@ Face 176, [Node 120]
 Average                0.00
 
 
-Face 177, [Node 121]
+Face 177, [Node 141]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3016,7 +3016,7 @@ Face 177, [Node 121]
 Average                1217.12
 
 
-Face 178, [Node 121]
+Face 178, [Node 142]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3033,7 +3033,7 @@ Face 178, [Node 121]
 Average                0.00
 
 
-Face 179, [Node 122]
+Face 179, [Node 143]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3050,7 +3050,7 @@ Face 179, [Node 122]
 Average                1217.12
 
 
-Face 180, [Node 122]
+Face 180, [Node 144]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3067,7 +3067,7 @@ Face 180, [Node 122]
 Average                0.00
 
 
-Face 181, [Node 123]
+Face 181, [Node 145]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3084,7 +3084,7 @@ Face 181, [Node 123]
 Average                1217.12
 
 
-Face 182, [Node 123]
+Face 182, [Node 146]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3101,7 +3101,7 @@ Face 182, [Node 123]
 Average                0.00
 
 
-Face 183, [Node 124]
+Face 183, [Node 147]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3118,7 +3118,7 @@ Face 183, [Node 124]
 Average                1217.12
 
 
-Face 184, [Node 124]
+Face 184, [Node 148]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3135,7 +3135,7 @@ Face 184, [Node 124]
 Average                0.00
 
 
-Face 185, [Node 125]
+Face 185, [Node 149]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3152,7 +3152,7 @@ Face 185, [Node 125]
 Average                1217.12
 
 
-Face 186, [Node 125]
+Face 186, [Node 150]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3169,7 +3169,7 @@ Face 186, [Node 125]
 Average                0.00
 
 
-Face 187, [Node 126]
+Face 187, [Node 151]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3186,7 +3186,7 @@ Face 187, [Node 126]
 Average                1217.12
 
 
-Face 188, [Node 126]
+Face 188, [Node 152]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3203,7 +3203,7 @@ Face 188, [Node 126]
 Average                0.00
 
 
-Face 189, [Node 127]
+Face 189, [Node 153]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3220,7 +3220,7 @@ Face 189, [Node 127]
 Average                1217.12
 
 
-Face 190, [Node 127]
+Face 190, [Node 154]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3237,7 +3237,7 @@ Face 190, [Node 127]
 Average                0.00
 
 
-Face 191, [Node 128]
+Face 191, [Node 155]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3254,7 +3254,7 @@ Face 191, [Node 128]
 Average                1217.12
 
 
-Face 192, [Node 128]
+Face 192, [Node 156]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3271,7 +3271,7 @@ Face 192, [Node 128]
 Average                0.00
 
 
-Face 193, [Node 129]
+Face 193, [Node 157]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3288,7 +3288,7 @@ Face 193, [Node 129]
 Average                1217.12
 
 
-Face 194, [Node 129]
+Face 194, [Node 158]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3305,7 +3305,7 @@ Face 194, [Node 129]
 Average                0.00
 
 
-Face 195, [Node 130]
+Face 195, [Node 159]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3322,7 +3322,7 @@ Face 195, [Node 130]
 Average                1217.12
 
 
-Face 196, [Node 130]
+Face 196, [Node 160]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3339,7 +3339,7 @@ Face 196, [Node 130]
 Average                0.00
 
 
-Face 197, [Node 131]
+Face 197, [Node 161]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3356,7 +3356,7 @@ Face 197, [Node 131]
 Average                1217.12
 
 
-Face 198, [Node 131]
+Face 198, [Node 162]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3373,7 +3373,7 @@ Face 198, [Node 131]
 Average                0.00
 
 
-Face 199, [Node 132]
+Face 199, [Node 163]
 
   Angle         Time        IS
    0.00         0.00   1352.74
@@ -3390,7 +3390,7 @@ Face 199, [Node 132]
 Average                1217.12
 
 
-Face 200, [Node 132]
+Face 200, [Node 164]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3407,7 +3407,7 @@ Face 200, [Node 132]
 Average                0.00
 
 
-Face 201, [Node 133]
+Face 201, [Node 165]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3424,7 +3424,7 @@ Face 201, [Node 133]
 Average                161.29
 
 
-Face 202, [Node 133]
+Face 202, [Node 166]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3441,7 +3441,7 @@ Face 202, [Node 133]
 Average                0.00
 
 
-Face 203, [Node 134]
+Face 203, [Node 167]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3458,7 +3458,7 @@ Face 203, [Node 134]
 Average                161.29
 
 
-Face 204, [Node 134]
+Face 204, [Node 168]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3475,7 +3475,7 @@ Face 204, [Node 134]
 Average                0.00
 
 
-Face 205, [Node 135]
+Face 205, [Node 169]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3492,7 +3492,7 @@ Face 205, [Node 135]
 Average                161.29
 
 
-Face 206, [Node 135]
+Face 206, [Node 170]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3509,7 +3509,7 @@ Face 206, [Node 135]
 Average                0.00
 
 
-Face 207, [Node 136]
+Face 207, [Node 171]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3526,7 +3526,7 @@ Face 207, [Node 136]
 Average                161.29
 
 
-Face 208, [Node 136]
+Face 208, [Node 172]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3543,7 +3543,7 @@ Face 208, [Node 136]
 Average                0.00
 
 
-Face 209, [Node 137]
+Face 209, [Node 173]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3560,7 +3560,7 @@ Face 209, [Node 137]
 Average                161.29
 
 
-Face 210, [Node 137]
+Face 210, [Node 174]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3577,7 +3577,7 @@ Face 210, [Node 137]
 Average                0.00
 
 
-Face 211, [Node 138]
+Face 211, [Node 175]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3594,7 +3594,7 @@ Face 211, [Node 138]
 Average                161.29
 
 
-Face 212, [Node 138]
+Face 212, [Node 176]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3611,7 +3611,7 @@ Face 212, [Node 138]
 Average                0.00
 
 
-Face 213, [Node 139]
+Face 213, [Node 177]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3628,7 +3628,7 @@ Face 213, [Node 139]
 Average                161.29
 
 
-Face 214, [Node 139]
+Face 214, [Node 178]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3645,7 +3645,7 @@ Face 214, [Node 139]
 Average                0.00
 
 
-Face 215, [Node 140]
+Face 215, [Node 179]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3662,7 +3662,7 @@ Face 215, [Node 140]
 Average                161.29
 
 
-Face 216, [Node 140]
+Face 216, [Node 180]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3679,7 +3679,7 @@ Face 216, [Node 140]
 Average                0.00
 
 
-Face 217, [Node 141]
+Face 217, [Node 181]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3696,7 +3696,7 @@ Face 217, [Node 141]
 Average                161.29
 
 
-Face 218, [Node 141]
+Face 218, [Node 182]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3713,7 +3713,7 @@ Face 218, [Node 141]
 Average                0.00
 
 
-Face 219, [Node 142]
+Face 219, [Node 183]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3730,7 +3730,7 @@ Face 219, [Node 142]
 Average                161.29
 
 
-Face 220, [Node 142]
+Face 220, [Node 184]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3747,7 +3747,7 @@ Face 220, [Node 142]
 Average                0.00
 
 
-Face 221, [Node 143]
+Face 221, [Node 185]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3764,7 +3764,7 @@ Face 221, [Node 143]
 Average                161.29
 
 
-Face 222, [Node 143]
+Face 222, [Node 186]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3781,7 +3781,7 @@ Face 222, [Node 143]
 Average                0.00
 
 
-Face 223, [Node 144]
+Face 223, [Node 187]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3798,7 +3798,7 @@ Face 223, [Node 144]
 Average                161.29
 
 
-Face 224, [Node 144]
+Face 224, [Node 188]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3815,7 +3815,7 @@ Face 224, [Node 144]
 Average                0.00
 
 
-Face 225, [Node 145]
+Face 225, [Node 189]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3832,7 +3832,7 @@ Face 225, [Node 145]
 Average                161.29
 
 
-Face 226, [Node 145]
+Face 226, [Node 190]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3849,7 +3849,7 @@ Face 226, [Node 145]
 Average                0.00
 
 
-Face 227, [Node 146]
+Face 227, [Node 191]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3866,7 +3866,7 @@ Face 227, [Node 146]
 Average                161.29
 
 
-Face 228, [Node 146]
+Face 228, [Node 192]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3883,7 +3883,7 @@ Face 228, [Node 146]
 Average                0.00
 
 
-Face 229, [Node 147]
+Face 229, [Node 193]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3900,7 +3900,7 @@ Face 229, [Node 147]
 Average                161.29
 
 
-Face 230, [Node 147]
+Face 230, [Node 194]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3917,7 +3917,7 @@ Face 230, [Node 147]
 Average                0.00
 
 
-Face 231, [Node 148]
+Face 231, [Node 195]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -3934,7 +3934,7 @@ Face 231, [Node 148]
 Average                161.29
 
 
-Face 232, [Node 148]
+Face 232, [Node 196]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3951,7 +3951,7 @@ Face 232, [Node 148]
 Average                0.00
 
 
-Face 233, [Node 149]
+Face 233, [Node 197]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -3968,7 +3968,7 @@ Face 233, [Node 149]
 Average                0.00
 
 
-Face 234, [Node 149]
+Face 234, [Node 198]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -3985,7 +3985,7 @@ Face 234, [Node 149]
 Average                 7.41
 
 
-Face 235, [Node 150]
+Face 235, [Node 199]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4002,7 +4002,7 @@ Face 235, [Node 150]
 Average                0.00
 
 
-Face 236, [Node 150]
+Face 236, [Node 200]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4019,7 +4019,7 @@ Face 236, [Node 150]
 Average                0.02
 
 
-Face 237, [Node 151]
+Face 237, [Node 201]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4036,7 +4036,7 @@ Face 237, [Node 151]
 Average                0.00
 
 
-Face 238, [Node 151]
+Face 238, [Node 202]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4053,7 +4053,7 @@ Face 238, [Node 151]
 Average                0.00
 
 
-Face 239, [Node 152]
+Face 239, [Node 203]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4070,7 +4070,7 @@ Face 239, [Node 152]
 Average                0.00
 
 
-Face 240, [Node 152]
+Face 240, [Node 204]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4087,7 +4087,7 @@ Face 240, [Node 152]
 Average                0.00
 
 
-Face 241, [Node 153]
+Face 241, [Node 205]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4104,7 +4104,7 @@ Face 241, [Node 153]
 Average                0.00
 
 
-Face 242, [Node 153]
+Face 242, [Node 206]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4121,7 +4121,7 @@ Face 242, [Node 153]
 Average                25.07
 
 
-Face 243, [Node 154]
+Face 243, [Node 207]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4138,7 +4138,7 @@ Face 243, [Node 154]
 Average                0.00
 
 
-Face 244, [Node 154]
+Face 244, [Node 208]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4155,7 +4155,7 @@ Face 244, [Node 154]
 Average                0.00
 
 
-Face 245, [Node 155]
+Face 245, [Node 209]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4172,7 +4172,7 @@ Face 245, [Node 155]
 Average                0.00
 
 
-Face 246, [Node 155]
+Face 246, [Node 210]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4189,7 +4189,7 @@ Face 246, [Node 155]
 Average                0.00
 
 
-Face 247, [Node 156]
+Face 247, [Node 211]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4206,7 +4206,7 @@ Face 247, [Node 156]
 Average                0.00
 
 
-Face 248, [Node 156]
+Face 248, [Node 212]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4223,7 +4223,7 @@ Face 248, [Node 156]
 Average                0.00
 
 
-Face 249, [Node 157]
+Face 249, [Node 213]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4240,7 +4240,7 @@ Face 249, [Node 157]
 Average                0.00
 
 
-Face 250, [Node 157]
+Face 250, [Node 214]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4257,7 +4257,7 @@ Face 250, [Node 157]
 Average                26.79
 
 
-Face 251, [Node 158]
+Face 251, [Node 215]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4274,7 +4274,7 @@ Face 251, [Node 158]
 Average                0.00
 
 
-Face 252, [Node 158]
+Face 252, [Node 216]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4291,7 +4291,7 @@ Face 252, [Node 158]
 Average                0.22
 
 
-Face 253, [Node 159]
+Face 253, [Node 217]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4308,7 +4308,7 @@ Face 253, [Node 159]
 Average                0.00
 
 
-Face 254, [Node 159]
+Face 254, [Node 218]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4325,7 +4325,7 @@ Face 254, [Node 159]
 Average                0.00
 
 
-Face 255, [Node 160]
+Face 255, [Node 219]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4342,7 +4342,7 @@ Face 255, [Node 160]
 Average                0.00
 
 
-Face 256, [Node 160]
+Face 256, [Node 220]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4359,7 +4359,7 @@ Face 256, [Node 160]
 Average                0.00
 
 
-Face 257, [Node 161]
+Face 257, [Node 221]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4376,7 +4376,7 @@ Face 257, [Node 161]
 Average                0.00
 
 
-Face 258, [Node 161]
+Face 258, [Node 222]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4393,7 +4393,7 @@ Face 258, [Node 161]
 Average                 9.86
 
 
-Face 259, [Node 162]
+Face 259, [Node 223]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4410,7 +4410,7 @@ Face 259, [Node 162]
 Average                0.00
 
 
-Face 260, [Node 162]
+Face 260, [Node 224]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4427,7 +4427,7 @@ Face 260, [Node 162]
 Average                0.64
 
 
-Face 261, [Node 163]
+Face 261, [Node 225]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4444,7 +4444,7 @@ Face 261, [Node 163]
 Average                0.00
 
 
-Face 262, [Node 163]
+Face 262, [Node 226]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4461,7 +4461,7 @@ Face 262, [Node 163]
 Average                0.00
 
 
-Face 263, [Node 164]
+Face 263, [Node 227]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4478,7 +4478,7 @@ Face 263, [Node 164]
 Average                0.00
 
 
-Face 264, [Node 164]
+Face 264, [Node 228]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4495,7 +4495,7 @@ Face 264, [Node 164]
 Average                0.00
 
 
-Face 265, [Node 165]
+Face 265, [Node 229]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4512,7 +4512,7 @@ Face 265, [Node 165]
 Average                 60.72
 
 
-Face 266, [Node 165]
+Face 266, [Node 230]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4529,7 +4529,7 @@ Face 266, [Node 165]
 Average                0.00
 
 
-Face 267, [Node 166]
+Face 267, [Node 231]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4546,7 +4546,7 @@ Face 267, [Node 166]
 Average                 54.20
 
 
-Face 268, [Node 166]
+Face 268, [Node 232]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4563,7 +4563,7 @@ Face 268, [Node 166]
 Average                0.00
 
 
-Face 269, [Node 167]
+Face 269, [Node 233]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4580,7 +4580,7 @@ Face 269, [Node 167]
 Average                 42.50
 
 
-Face 270, [Node 167]
+Face 270, [Node 234]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4597,7 +4597,7 @@ Face 270, [Node 167]
 Average                0.00
 
 
-Face 271, [Node 168]
+Face 271, [Node 235]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4614,7 +4614,7 @@ Face 271, [Node 168]
 Average                24.30
 
 
-Face 272, [Node 168]
+Face 272, [Node 236]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4631,7 +4631,7 @@ Face 272, [Node 168]
 Average                0.00
 
 
-Face 273, [Node 169]
+Face 273, [Node 237]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4648,7 +4648,7 @@ Face 273, [Node 169]
 Average                 26.92
 
 
-Face 274, [Node 169]
+Face 274, [Node 238]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4665,7 +4665,7 @@ Face 274, [Node 169]
 Average                0.00
 
 
-Face 275, [Node 170]
+Face 275, [Node 239]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4682,7 +4682,7 @@ Face 275, [Node 170]
 Average                11.77
 
 
-Face 276, [Node 170]
+Face 276, [Node 240]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4699,7 +4699,7 @@ Face 276, [Node 170]
 Average                0.00
 
 
-Face 277, [Node 171]
+Face 277, [Node 241]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4716,7 +4716,7 @@ Face 277, [Node 171]
 Average                 1.86
 
 
-Face 278, [Node 171]
+Face 278, [Node 242]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4733,7 +4733,7 @@ Face 278, [Node 171]
 Average                0.00
 
 
-Face 279, [Node 172]
+Face 279, [Node 243]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4750,7 +4750,7 @@ Face 279, [Node 172]
 Average                0.00
 
 
-Face 280, [Node 172]
+Face 280, [Node 244]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4767,7 +4767,7 @@ Face 280, [Node 172]
 Average                0.00
 
 
-Face 281, [Node 173]
+Face 281, [Node 245]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4784,7 +4784,7 @@ Face 281, [Node 173]
 Average                 26.60
 
 
-Face 282, [Node 173]
+Face 282, [Node 246]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4801,7 +4801,7 @@ Face 282, [Node 173]
 Average                0.00
 
 
-Face 283, [Node 174]
+Face 283, [Node 247]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4818,7 +4818,7 @@ Face 283, [Node 174]
 Average                11.45
 
 
-Face 284, [Node 174]
+Face 284, [Node 248]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4835,7 +4835,7 @@ Face 284, [Node 174]
 Average                0.00
 
 
-Face 285, [Node 175]
+Face 285, [Node 249]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -4852,7 +4852,7 @@ Face 285, [Node 175]
 Average                 1.65
 
 
-Face 286, [Node 175]
+Face 286, [Node 250]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4869,7 +4869,7 @@ Face 286, [Node 175]
 Average                0.00
 
 
-Face 287, [Node 176]
+Face 287, [Node 251]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4886,7 +4886,7 @@ Face 287, [Node 176]
 Average                0.00
 
 
-Face 288, [Node 176]
+Face 288, [Node 252]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4903,7 +4903,7 @@ Face 288, [Node 176]
 Average                0.00
 
 
-Face 289, [Node 177]
+Face 289, [Node 253]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4920,7 +4920,7 @@ Face 289, [Node 177]
 Average                 59.55
 
 
-Face 290, [Node 177]
+Face 290, [Node 254]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4937,7 +4937,7 @@ Face 290, [Node 177]
 Average                0.00
 
 
-Face 291, [Node 178]
+Face 291, [Node 255]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4954,7 +4954,7 @@ Face 291, [Node 178]
 Average                 52.58
 
 
-Face 292, [Node 178]
+Face 292, [Node 256]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -4971,7 +4971,7 @@ Face 292, [Node 178]
 Average                0.00
 
 
-Face 293, [Node 179]
+Face 293, [Node 257]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -4988,7 +4988,7 @@ Face 293, [Node 179]
 Average                 40.15
 
 
-Face 294, [Node 179]
+Face 294, [Node 258]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5005,7 +5005,7 @@ Face 294, [Node 179]
 Average                0.00
 
 
-Face 295, [Node 180]
+Face 295, [Node 259]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -5022,7 +5022,7 @@ Face 295, [Node 180]
 Average                21.52
 
 
-Face 296, [Node 180]
+Face 296, [Node 260]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5039,7 +5039,7 @@ Face 296, [Node 180]
 Average                0.00
 
 
-Face 297, [Node 181]
+Face 297, [Node 261]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5056,7 +5056,7 @@ Face 297, [Node 181]
 Average                158.84
 
 
-Face 298, [Node 181]
+Face 298, [Node 262]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5073,7 +5073,7 @@ Face 298, [Node 181]
 Average                0.00
 
 
-Face 299, [Node 182]
+Face 299, [Node 263]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5090,7 +5090,7 @@ Face 299, [Node 182]
 Average                158.84
 
 
-Face 300, [Node 182]
+Face 300, [Node 264]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5107,7 +5107,7 @@ Face 300, [Node 182]
 Average                0.00
 
 
-Face 301, [Node 183]
+Face 301, [Node 265]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5124,7 +5124,7 @@ Face 301, [Node 183]
 Average                158.84
 
 
-Face 302, [Node 183]
+Face 302, [Node 266]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5141,7 +5141,7 @@ Face 302, [Node 183]
 Average                0.00
 
 
-Face 303, [Node 184]
+Face 303, [Node 267]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5158,7 +5158,7 @@ Face 303, [Node 184]
 Average                158.84
 
 
-Face 304, [Node 184]
+Face 304, [Node 268]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5175,7 +5175,7 @@ Face 304, [Node 184]
 Average                1.34
 
 
-Face 305, [Node 185]
+Face 305, [Node 269]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5192,7 +5192,7 @@ Face 305, [Node 185]
 Average                158.84
 
 
-Face 306, [Node 185]
+Face 306, [Node 270]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5209,7 +5209,7 @@ Face 306, [Node 185]
 Average                0.00
 
 
-Face 307, [Node 186]
+Face 307, [Node 271]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5226,7 +5226,7 @@ Face 307, [Node 186]
 Average                158.84
 
 
-Face 308, [Node 186]
+Face 308, [Node 272]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5243,7 +5243,7 @@ Face 308, [Node 186]
 Average                0.00
 
 
-Face 309, [Node 187]
+Face 309, [Node 273]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5260,7 +5260,7 @@ Face 309, [Node 187]
 Average                158.84
 
 
-Face 310, [Node 187]
+Face 310, [Node 274]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5277,7 +5277,7 @@ Face 310, [Node 187]
 Average                0.00
 
 
-Face 311, [Node 188]
+Face 311, [Node 275]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5294,7 +5294,7 @@ Face 311, [Node 188]
 Average                158.84
 
 
-Face 312, [Node 188]
+Face 312, [Node 276]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5311,7 +5311,7 @@ Face 312, [Node 188]
 Average                0.08
 
 
-Face 313, [Node 189]
+Face 313, [Node 277]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5328,7 +5328,7 @@ Face 313, [Node 189]
 Average                158.84
 
 
-Face 314, [Node 189]
+Face 314, [Node 278]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5345,7 +5345,7 @@ Face 314, [Node 189]
 Average                0.00
 
 
-Face 315, [Node 190]
+Face 315, [Node 279]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5362,7 +5362,7 @@ Face 315, [Node 190]
 Average                158.84
 
 
-Face 316, [Node 190]
+Face 316, [Node 280]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5379,7 +5379,7 @@ Face 316, [Node 190]
 Average                0.00
 
 
-Face 317, [Node 191]
+Face 317, [Node 281]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5396,7 +5396,7 @@ Face 317, [Node 191]
 Average                158.84
 
 
-Face 318, [Node 191]
+Face 318, [Node 282]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5413,7 +5413,7 @@ Face 318, [Node 191]
 Average                0.00
 
 
-Face 319, [Node 192]
+Face 319, [Node 283]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5430,7 +5430,7 @@ Face 319, [Node 192]
 Average                158.84
 
 
-Face 320, [Node 192]
+Face 320, [Node 284]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5447,7 +5447,7 @@ Face 320, [Node 192]
 Average                0.00
 
 
-Face 321, [Node 193]
+Face 321, [Node 285]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5464,7 +5464,7 @@ Face 321, [Node 193]
 Average                158.84
 
 
-Face 322, [Node 193]
+Face 322, [Node 286]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5481,7 +5481,7 @@ Face 322, [Node 193]
 Average                0.00
 
 
-Face 323, [Node 194]
+Face 323, [Node 287]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5498,7 +5498,7 @@ Face 323, [Node 194]
 Average                158.84
 
 
-Face 324, [Node 194]
+Face 324, [Node 288]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5515,7 +5515,7 @@ Face 324, [Node 194]
 Average                0.00
 
 
-Face 325, [Node 195]
+Face 325, [Node 289]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5532,7 +5532,7 @@ Face 325, [Node 195]
 Average                158.84
 
 
-Face 326, [Node 195]
+Face 326, [Node 290]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5549,7 +5549,7 @@ Face 326, [Node 195]
 Average                0.00
 
 
-Face 327, [Node 196]
+Face 327, [Node 291]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5566,7 +5566,7 @@ Face 327, [Node 196]
 Average                158.84
 
 
-Face 328, [Node 196]
+Face 328, [Node 292]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5583,7 +5583,7 @@ Face 328, [Node 196]
 Average                0.00
 
 
-Face 329, [Node 197]
+Face 329, [Node 293]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5600,7 +5600,7 @@ Face 329, [Node 197]
 Average                0.00
 
 
-Face 330, [Node 197]
+Face 330, [Node 294]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5617,7 +5617,7 @@ Face 330, [Node 197]
 Average                2.69
 
 
-Face 331, [Node 198]
+Face 331, [Node 295]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5634,7 +5634,7 @@ Face 331, [Node 198]
 Average                0.00
 
 
-Face 332, [Node 198]
+Face 332, [Node 296]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5651,7 +5651,7 @@ Face 332, [Node 198]
 Average                0.00
 
 
-Face 333, [Node 199]
+Face 333, [Node 297]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -5668,7 +5668,7 @@ Face 333, [Node 199]
 Average                58.23
 
 
-Face 334, [Node 199]
+Face 334, [Node 298]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5685,7 +5685,7 @@ Face 334, [Node 199]
 Average                0.00
 
 
-Face 335, [Node 200]
+Face 335, [Node 299]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5702,7 +5702,7 @@ Face 335, [Node 200]
 Average                0.00
 
 
-Face 336, [Node 200]
+Face 336, [Node 300]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -5719,7 +5719,7 @@ Face 336, [Node 200]
 Average                26.00
 
 
-Face 337, [Node 201]
+Face 337, [Node 301]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5736,7 +5736,7 @@ Face 337, [Node 201]
 Average                0.00
 
 
-Face 338, [Node 201]
+Face 338, [Node 302]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5753,7 +5753,7 @@ Face 338, [Node 201]
 Average                0.00
 
 
-Face 339, [Node 202]
+Face 339, [Node 303]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5770,7 +5770,7 @@ Face 339, [Node 202]
 Average                0.00
 
 
-Face 340, [Node 202]
+Face 340, [Node 304]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5787,7 +5787,7 @@ Face 340, [Node 202]
 Average                2.22
 
 
-Face 341, [Node 203]
+Face 341, [Node 305]
 
   Angle         Time      IS
    0.00         0.00    0.00
@@ -5804,7 +5804,7 @@ Face 341, [Node 203]
 Average                 5.48
 
 
-Face 342, [Node 203]
+Face 343, [Node 306]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5821,7 +5821,7 @@ Face 342, [Node 203]
 Average                0.00
 
 
-Face 343, [Node 204]
+Face 345, [Node 307]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5838,7 +5838,7 @@ Face 343, [Node 204]
 Average                0.00
 
 
-Face 345, [Node 205]
+Face 347, [Node 308]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5855,7 +5855,7 @@ Face 345, [Node 205]
 Average                0.00
 
 
-Face 347, [Node 206]
+Face 349, [Node 309]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5872,7 +5872,7 @@ Face 347, [Node 206]
 Average                0.00
 
 
-Face 349, [Node 207]
+Face 351, [Node 310]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5889,24 +5889,7 @@ Face 349, [Node 207]
 Average                0.00
 
 
-Face 351, [Node 208]
-
-  Angle         Time     IS
-   0.00         0.00   0.00
-   5.00    440047.68   0.00
-  10.00    880095.37   0.00
-  15.00   1320143.05   0.00
-  20.00   1760190.74   0.00
-  25.00   2200238.42   0.00
-  30.00   2640286.10   0.00
-  35.00   3080333.79   0.00
-  40.00   3520381.47   0.00
-  45.00   3960429.15   0.00
-                           
-Average                0.00
-
-
-Face 353, [Node 209]
+Face 353, [Node 311]
 
   Angle         Time       IS
    0.00         0.00     0.00
@@ -5923,7 +5906,7 @@ Face 353, [Node 209]
 Average                158.84
 
 
-Face 355, [Node 210]
+Face 355, [Node 312]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5940,7 +5923,7 @@ Face 355, [Node 210]
 Average                0.00
 
 
-Face 357, [Node 211]
+Face 357, [Node 313]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5957,7 +5940,7 @@ Face 357, [Node 211]
 Average                0.00
 
 
-Face 359, [Node 212]
+Face 359, [Node 314]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5974,7 +5957,7 @@ Face 359, [Node 212]
 Average                0.00
 
 
-Face 361, [Node 213]
+Face 361, [Node 315]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -5991,7 +5974,7 @@ Face 361, [Node 213]
 Average                0.00
 
 
-Face 363, [Node 214]
+Face 363, [Node 316]
 
   Angle         Time     IS
    0.00         0.00   0.00
@@ -6008,7 +5991,7 @@ Face 363, [Node 214]
 Average                0.00
 
 
-Face 365, [Node 215]
+Face 365, [Node 317]
 
   Angle         Time       IS
    0.00         0.00     0.00

@@ -4,7 +4,13 @@ Plots local minima of multiple optimizer runs from the recorded data in 'modelna
 import numpy as np
 from pylab import *
 from openmdao.api import CaseReader
+from plot_size import set_size
 import re
+
+plt.style.use('thesis')
+fig = plt.figure(figsize=set_size('thesis', 0.85, subplots=(1,2)))
+fig.subplots_adjust(wspace=0.4, bottom=0.25)
+
 samples = [1,5,10,20, 30, 40]
 model_name = 'RU_v4_detail'
 
@@ -71,14 +77,14 @@ subplot(121)
 plot(samples, -y1, 'ob-')
 #ylim(bottom=0)
 xticks(ticks=samples)
-xlabel('Number of samples', fontsize=14)
-ylabel('Best objective function value ', fontsize=14)
+xlabel('Number of samples')
+ylabel(r'$f^\ast(x)$')
 plt.grid(ls='--')
 
 subplot(122)
 plot(-y2, 'r.')
-xlabel('Number of samples', fontsize=14)
-ylabel('Objective function values', fontsize=14)
+xlabel('Number of samples')
+ylabel(r'$f^\ast(x)$')
 plt.grid(ls='--')
 
 show()

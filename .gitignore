@@ -27,3 +27,4 @@ Template.tpl
 *.8
 *.tpl_previous
 RU/plot_size.py
+*.pkl
