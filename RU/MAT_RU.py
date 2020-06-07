@@ -3,9 +3,10 @@ import openmdao.api as om
 import numpy as np
 from RU import RemoteUnit
 from Pre_process import nodes, inits, idx_dict
+from time import time
 
 # number of design points
-npts = 1
+npts = 2
 
 # model version name
 model_name = 'RU_v5_1'
@@ -20,7 +21,7 @@ face_IDs = [
     #'Panel_body:solar_cells',
     'Panel_inner: back',
     'Panel_outer:back',
-    #'thruster_outer',
+    'thruster_outer',
     #'reel_box_inner',
     #'reel_outer'
 ]
@@ -32,16 +33,6 @@ data = model_dir+'/nodes_output.csv'
 nn, groups, output = nodes(data=data)
 QI_init, QS_init = inits(data=data)
 rad_nodes = sum([groups[group] for group in face_IDs], [])
-
-# index dictionary of radiative nodes_list
-idx = idx_dict(sorted(rad_nodes), groups)
-
-# global indices for solar cell nodes
-solar_cells = sum([idx[array] for array in [
-    'Panel_outer:solar_cells',
-    'Panel_inner:solar_cells',
-    #'Panel_body:solar_cells'
-    ]], [])
 
 # user defined node groups
 groups.update({'radiator':[158]})# extra node to disipate heat in structure
@@ -55,6 +46,9 @@ equip = sum([groups[syst] for syst in [
 
 # global indices into flattened array
 flat_indices = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
+
+# local index dictionary of radiative nodes_list
+idx = idx_dict(sorted(rad_nodes), groups)
 
 # remote unit model group instance
 model = RemoteUnit(npts=npts, labels=face_IDs, model=model_name)
@@ -75,10 +69,10 @@ model.add_design_var('Hinge_outer_2', lower=0.02, upper=.1)
 #model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
 model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
 model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-#model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
-#model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
 model.add_design_var('QI', lower = 0., upper=7., indices=(flat_indices[equip,:]).ravel())
-model.add_design_var('phi', lower=0., upper=33.)
+model.add_design_var('phi', lower=0., upper=45.)
 
 # constraints
 model.add_constraint('bat_lwr.KS', upper=0.0)
@@ -94,7 +88,7 @@ prob = om.Problem(model=model)
 prob.driver = om.ScipyOptimizeDriver()
 prob.driver.options['optimizer']='SLSQP'
 prob.driver.options['disp'] = True
-prob.driver.options['maxiter'] = 70
+prob.driver.options['maxiter'] = 200
 prob.driver.options['tol'] = 1.0e-4
 #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
 #prob.driver.opt_settings['stepsize'] = 0.01
@@ -103,17 +97,8 @@ prob.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'.sql'))
 
 prob.setup(check=True)
 
-# initial values for some input variables
-prob['cr'][solar_cells] = 1.0
-alp = prob['alp_r']
-alp[idx['Box:outer']] = 0.5
-#alp[idx['reel_box_inner']] = 0.39
-#alp[idx['reel_outer']] = 0.16
-#alp[idx['thruster_outer']] = 0.16
-prob['QI'] = QI_init
-prob['phi'] = 0.
-#prob['QI'][[-4]] = 0.3
-prob['dist'] = [3.]
+#prob['phi'] = [10., 30.]
+prob['dist'] = [1.,2.75]
 
 # load case?
 """ cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
@@ -126,12 +111,15 @@ print(num_cases) """
 best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
 prob.load_case(best_case) """
 
-prob.run_model()
-#prob.run_driver()
+run_start = time()
+#prob.run_model()
+prob.run_driver()
+run_time = time() - run_start
+print('Run Time:', run_time, 's')
 
 output['T_res'] = prob['T'][1:,0]-273.15
-#output['T_res2'] = prob['T'][1:,1]-273.15
-output['abs'] = output['T_ref']-output['T_res']
+output['T_res2'] = prob['T'][1:,1]-273.15
+#output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
 #print(output.iloc[[68,95],:])
 print(output)
@@ -140,7 +128,7 @@ output.to_csv('./Cases/' + model_name + '_out.csv')
 
 #totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])
 #print(totals)
-#check_partials_data = prob.check_partials(compact_print=True, show_only_incorrect=True, step=1e-04)
-#prob.check_totals(compact_print=True)
+#check_partials_data = prob.check_partials(compact_print=True, includes='Cond', show_only_incorrect=False, step=1e-04)
+#prob.check_totals(wrt='phi', compact_print=True)
 
 #prob.model.list_inputs(print_arrays=True)

@@ -9,7 +9,7 @@ import re
 from openmdao.api import CaseReader
 #from plot_size import set_size
 
-case_file = 'RU_v5_1.sql'
+case_file = 'MAT.sql'
 
 # load cases from recording database
 cr = CaseReader('./Cases/'+case_file)
@@ -23,7 +23,7 @@ cases = cr.list_cases('driver')
 case = cr.get_case(cases[0])
 
 # objective function name
-obj = 'P_prop'
+obj = 'P_trx'
 
 num_cases = len(cases)
 if num_cases == 0:
@@ -60,7 +60,7 @@ pylab.figure()
 
 pylab.subplot(211)
 pylab.plot(-X, 'ob-')
-pylab.xlim(0, 50)
+#pylab.xlim(0, 50)
 #pylab.ylim(top=1.0)
 pylab.xlabel('Function evaluations')
 pylab.ylabel('Sub-system 1 Power, W')
@@ -76,7 +76,7 @@ for i in range(n_con):
     pylab.plot(Z[:, i], marker='o', markersize=4, label=constraints[i])
 
 pylab.legend(loc='upper right')
-pylab.xlim(0,50)
+#pylab.xlim(0,50)
 pylab.xlabel('Function evaluations')
 pylab.ylabel('Violation of Constraints')
 
