@@ -20,7 +20,7 @@ class MainSP(om.Group):
         model_dir = fpath + '/Esatan_models/' + model
         data = model_dir+'/nodes_output.csv'
 
-        self.nn, self.groups, outp = nodes(data=data)
+        self.nn, self.groups, outp, area = nodes(data=data)
         self.npts = npts
         self.model = model
 
@@ -34,19 +34,13 @@ class MainSP(om.Group):
         self.QI_init, self.QS_init = inits(data=data)
 
         #optical properties
-        optprop = parse_vf(filepath=model_dir+'/vf_report.txt')
-        areas = parse_ar(filepath=model_dir+'/area.txt')
-        self.faces = opticals(self.groups, labels, optprop, areas) 
-        surf_nodes = []
-        surf_area = []
-        for face in self.faces:
-            surf_nodes.extend(face['nodes'])
-            surf_area.extend(face['areas'])
+        viewFactors = parse_vf(filepath=model_dir+'/vf_report.txt')
+        self.faces = opticals(self.groups, labels, viewFactors, area) 
 
-        self.surf_nodes = np.array(surf_nodes)
-        surf_area = np.array(surf_area)
-        self.surf_area = surf_area[self.surf_nodes.argsort()] # sort areas by ascending node number
+        self.surf_nodes = sum([self.groups[group] for group in labels], [])
         self.surf_nodes.sort() # sort node numbers ascending
+        self.surf_area = area[self.surf_nodes]
+
         self.n_in = len(self.surf_nodes)
 
         # index dictionary of radiative nodes_list
@@ -58,23 +52,22 @@ class MainSP(om.Group):
             ]], [])
 
         structure = sum([idx[geom] for geom in [
-            'SP_Xplus_upr',
-            'SP_Xminus_upr',
-            'SP_Yplus_upr',
-            'SP_Yminus_upr',
-            'SP_Zplus_upr',
-            'SP_Zminus_upr',
+            'SP_Xplus',
+            'SP_Xminus',
+            'SP_Yplus',
+            'SP_Yminus',
+            'SP_Zplus',
+            'SP_Zminus',
             ]], [])
 
         optics = sum([idx[geom] for geom in [
-            'Telescope_outer',
-            'StarTracker_outer',
+            'Telescope',
+            'StarTracker',
             ]], [])
 
         inside = sum([idx[geom] for geom in [
-            'SP_Yplus_lwr',
-            'Instrument_outer',
-            'BottomPlate_upr',
+            'Instrument',
+            'BottomPlate',
             ]], [])
         
 
@@ -86,8 +79,8 @@ class MainSP(om.Group):
         self.alp[structure] = 0.1
         self.alp[inside] = 0.26
         self.alp[optics] = 0.88
-        self.alp[idx['Propulsion_top']] = 0.72
-        self.alp[idx['Esail_top']] = 1.
+        self.alp[idx['Propulsion']] = 0.72
+        self.alp[idx['Esail']] = 1.
 
     def setup(self):
         nn = self.nn
@@ -98,8 +91,8 @@ class MainSP(om.Group):
         # input variables
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.tile(self.QI_init, (1,npts)), units='W')
-        params.add_output('phi', val=np.zeros(npts), units='deg' )
-        params.add_output('dist', val=np.ones(npts))
+        #params.add_output('phi', val=np.zeros(npts), units='deg' )
+        #params.add_output('dist', val=np.ones(npts))
         params.add_output('alp_r', val=self.alp, desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=self.cr_init, desc='solar cell or radiator installation decision for input nodes')
         for cond in self.user_cond:
@@ -118,10 +111,10 @@ class MainSP(om.Group):
 
         # global indices for components
         obc_nodes = groups['PCB']
-        prop_nodes = groups['Propulsion_bot']
+        prop_nodes = groups['Propulsion']
         bat_nodes = groups['Battery']
-        ins_nodes = groups['Instrument_inner']
-        es_nodes = groups['Esail_bot']
+        ins_nodes = groups['Instrument']
+        es_nodes = groups['Esail']
         trx_nodes = groups['TRx']
         aocs_nodes = groups['AOCS'] #+ groups['RW_Z']
         equip_nodes = aocs_nodes + obc_nodes + ins_nodes + trx_nodes #+ es_nodes

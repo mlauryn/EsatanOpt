@@ -20,7 +20,7 @@ class RemoteUnit(om.Group):
         model_dir = fpath + '/Esatan_models/' + model
         data = model_dir+'/nodes_output.csv'
 
-        self.nn, self.groups, outp = nodes(data=data)
+        self.nn, self.groups, outp, area = nodes(data=data)
         self.npts = npts
         self.model = model
 
@@ -34,27 +34,21 @@ class RemoteUnit(om.Group):
         self.QI_init, self.QS_init = inits(data=data)
 
         #optical properties
-        optprop = parse_vf(filepath=model_dir+'/vf_report.txt')
-        areas = parse_ar(filepath=model_dir+'/area.txt')
-        self.faces = opticals(self.groups, labels, optprop, areas) 
-        surf_nodes = []
-        surf_area = []
-        for face in self.faces:
-            surf_nodes.extend(face['nodes'])
-            surf_area.extend(face['areas'])
+        viewFactors = parse_vf(filepath=model_dir+'/vf_report.txt')
+        self.faces = opticals(self.groups, labels, viewFactors, area) 
 
-        self.surf_nodes = np.array(surf_nodes)
-        surf_area = np.array(surf_area)
-        self.surf_area = surf_area[self.surf_nodes.argsort()] # sort areas by ascending node number
+        self.surf_nodes = sum([self.groups[group] for group in labels], [])
         self.surf_nodes.sort() # sort node numbers ascending
+        self.surf_area = area[self.surf_nodes]
 
         # index dictionary of radiative nodes_list
         idx = idx_dict(self.surf_nodes, self.groups)
 
         # global indices for solar cell nodes
         solar_cells = sum([idx[array] for array in [
-            'Panel_outer:solar_cells',
-            'Panel_inner:solar_cells',
+            'SolarArrays'
+            #'Panel_outer:solar_cells',
+            #'Panel_inner:solar_cells',
             #'Panel_body:solar_cells'
             ]], [])
 
@@ -68,7 +62,7 @@ class RemoteUnit(om.Group):
         self.alp[idx['Box:outer']] = 0.5
         #alp[idx['reel_box_inner']] = 0.39
         #alp[idx['reel_outer']] = 0.16
-        self.alp[idx['thruster_outer']] = 0.16
+        self.alp[idx['thruster']] = 0.16
 
     def setup(self):
         nn = self.nn
@@ -79,8 +73,8 @@ class RemoteUnit(om.Group):
         # input variables
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.tile(self.QI_init, (1,npts)), units='W')
-        params.add_output('phi', val=np.zeros(npts), units='deg' )
-        params.add_output('dist', val=np.ones(npts))
+        #params.add_output('phi', val=np.zeros(npts), units='deg' )
+        #params.add_output('dist', val=np.ones(npts))
         params.add_output('alp_r', val=self.alp, desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=self.cr_init, desc='solar cell or radiator installation decision for input nodes')
         for cond in self.user_cond:
@@ -111,8 +105,8 @@ class RemoteUnit(om.Group):
         prop_idx = flat_indices[prop_nodes,:]
 
         # Propulsion total power
-        self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
-        self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
+        #self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
+        #self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
 
         # temperature constraint aggregation Kreisselmeier-Steinhauser Function
         self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=273., lower_flag=True))

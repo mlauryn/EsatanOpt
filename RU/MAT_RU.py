@@ -6,33 +6,33 @@ from Pre_process import nodes, inits, idx_dict
 from time import time
 
 # number of design points
-npts = 2
+npts = 1
 
 # model version name
-model_name = 'RU_v5_1'
+model_name = 'RU_v5_3'
 
 # define faces to include in radiative analysis
-#face_IDs = list(groups.keys()) # import all nodes?
-face_IDs = [
-    #'outer_surf'
-    'Box:outer',
-    'Panel_outer:solar_cells',
-    'Panel_inner:solar_cells',
+#geom = list(groups.keys()) # import all nodes?
+geom = {
+    'Box:outer' : 0.1061,
+    'SolarArrays' : 0.4625,
+    #'Panel_outer:solar_cells' : 0.89,
+    #'Panel_inner:solar_cells' : 0.89,
     #'Panel_body:solar_cells',
-    'Panel_inner: back',
-    'Panel_outer:back',
-    'thruster_outer',
-    #'reel_box_inner',
-    #'reel_outer'
-]
+    #'Panel_inner: back' : 0.035,
+    #'Panel_outer:back' : 0.035,
+    'thruster' : 0.03,
+    #'reel_box',
+    #'reel'
+    }
 
 fpath = os.path.dirname(os.path.realpath(__file__))
 model_dir = fpath + '/Esatan_models/' + model_name
 data = model_dir+'/nodes_output.csv'
 
-nn, groups, output = nodes(data=data)
+nn, groups, output, area = nodes(data=data)
 QI_init, QS_init = inits(data=data)
-rad_nodes = sum([groups[group] for group in face_IDs], [])
+rad_nodes = sum([groups[group] for group in geom], [])
 
 # user defined node groups
 groups.update({'radiator':[158]})# extra node to disipate heat in structure
@@ -51,7 +51,7 @@ flat_indices = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
 idx = idx_dict(sorted(rad_nodes), groups)
 
 # remote unit model group instance
-model = RemoteUnit(npts=npts, labels=face_IDs, model=model_name)
+model = RemoteUnit(npts=npts, labels=geom, model=model_name)
 
 ####################################
 # otpimization problem formulation #
@@ -69,8 +69,7 @@ model.add_design_var('Hinge_outer_2', lower=0.02, upper=.1)
 #model.add_design_var('cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
 model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
 model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-model.add_design_var('Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
-model.add_design_var('Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+model.add_design_var('SolarArrays', lower=0.01, upper=0.47)
 model.add_design_var('QI', lower = 0., upper=7., indices=(flat_indices[equip,:]).ravel())
 model.add_design_var('phi', lower=0., upper=45.)
 
@@ -97,8 +96,8 @@ prob.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'.sql'))
 
 prob.setup(check=True)
 
-#prob['phi'] = [10., 30.]
-prob['dist'] = [1.,2.75]
+prob['phi'] = [0.]
+prob['dist'] = [1.]
 
 # load case?
 """ cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
@@ -112,13 +111,13 @@ best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
 prob.load_case(best_case) """
 
 run_start = time()
-#prob.run_model()
-prob.run_driver()
+prob.run_model()
+#prob.run_driver()
 run_time = time() - run_start
 print('Run Time:', run_time, 's')
 
 output['T_res'] = prob['T'][1:,0]-273.15
-output['T_res2'] = prob['T'][1:,1]-273.15
+#output['T_res2'] = prob['T'][1:,1]-273.15
 #output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
 #print(output.iloc[[68,95],:])

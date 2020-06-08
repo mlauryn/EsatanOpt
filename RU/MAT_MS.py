@@ -8,39 +8,37 @@ import pandas as pd
 from time import time
 
 # number of design points
-npts = 2
+npts = 1
 
 # model version name
-model_name = 'MAT'
+model_name = 'MAT_v2_8'
 
 # define faces to include in radiative analysis
-#face_IDs = list(groups.keys()) # import all nodes?
-face_IDs = [
-    'SP_Xplus_upr',
-    'SP_Xminus_upr',
-    'SP_Yplus_upr',
-    'SP_Yplus_lwr',
-    'SP_Yminus_upr',
-    'SP_Zplus_upr',
-    'SP_Zminus_upr',
-    'SolarArray',
-    'Propulsion_top',
-    'Esail_top',
-    'Esail_bot',
-    'BottomPlate_upr',
-    'Telescope_outer',
-    'StarTracker_outer',
-    'Instrument_outer',
+#geom = list(groups.keys()) # import all nodes?
+geom = {'SP_Xplus' : 0.85,
+    'SP_Xminus' : 0.85,
+    'SP_Yplus' : 0.85,
+    'SP_Yplus' : 0.85,
+    'SP_Yminus' : 0.85,
+    'SP_Zplus' : 0.85,
+    'SP_Zminus' : 0.85,
+    'SolarArray' : 0.89,
+    'Propulsion' : 0.89,
+    'Esail' : 0.022,
+    'BottomPlate' : 0.04,
+    'Telescope' : 0.88,
+    'StarTracker': 0.88,
+    'Instrument': 0.88,
     #'Instrument_inner'
-    ]
+    }
 
 fpath = os.path.dirname(os.path.realpath(__file__))
 model_dir = fpath + '/Esatan_models/' + model_name
 data = model_dir+'/nodes_output.csv'
 
-nn, groups, output = nodes(data=data)
+nn, groups, output, area = nodes(data=data)
 QI_init, QS_init = inits(data=data)
-rad_nodes = sum([groups[group] for group in face_IDs], [])
+rad_nodes = sum([groups[group] for group in geom], [])
 
 # import user-defined conductors
 MS_cond = os.path.join(model_dir, 'cond_report.txt')
@@ -54,29 +52,30 @@ idx = idx_dict(sorted(rad_nodes), groups)
 
 # global indices for components with controlled heat disipation
 equip = sum([groups[syst] for syst in [
-    'Propulsion_bot',
+    'Propulsion',
     'PCB',
     'Battery',
-    'Instrument_inner',
-    #'Esail_bot',
+    'Instrument',
+    'Esail',
     'TRx',
     'AOCS',
+    'SolarArray'
     #'RW_Z',
     # radiators
-    'Reflectarray'
-    #'SP_Xplus_upr',
-    #'SP_Xminus_upr',
-    #'SP_Yplus_upr',
-    #'SP_Yminus_upr',
-    #'SP_Zplus_upr',
-    #'SP_Zminus_upr', 
+    #'Reflectarray'
+    #'SP_Xplus',
+    #'SP_Xminus',
+    #'SP_Yplus',
+    #'SP_Yminus',
+    #'SP_Zplus',
+    #'SP_Zminus', 
     ]], [])
 
 # global indices into flattened array
 flat_indices = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
 
 # remote unit model group instance
-model = MainSP(npts=npts, labels=face_IDs, model=model_name)
+model = MainSP(npts=npts, labels=geom, model=model_name)
 
 ####################################
 # otpimization problem formulation #
@@ -92,24 +91,24 @@ for cond in MS_conn:
 for cond in MS_hinges:
     model.add_design_var(cond['cond_name'], lower=0.01, upper=.1 ) # solar array hinges
 
-model.add_design_var('SP_Xplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('SP_Xminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('SP_Yplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('SP_Yminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('SP_Zplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('SP_Zminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('Esail_bot', lower=0.02, upper=0.94)
-model.add_design_var('Propulsion_top', lower=0.02, upper=0.94)
+model.add_design_var('SP_Xplus', lower=0.02, upper=0.94)
+model.add_design_var('SP_Xminus', lower=0.02, upper=0.94)
+model.add_design_var('SP_Yplus', lower=0.02, upper=0.94)
+model.add_design_var('SP_Yminus', lower=0.02, upper=0.94)
+model.add_design_var('SP_Zplus', lower=0.02, upper=0.94)
+model.add_design_var('SP_Zminus', lower=0.02, upper=0.94)
+model.add_design_var('Esail', lower=0.02, upper=0.94)
+model.add_design_var('Propulsion', lower=0.02, upper=0.94)
 model.add_design_var('QI', lower = 0., upper=10., indices=(flat_indices[equip,:]).ravel())
 model.add_design_var('phi', lower=0., upper=45.)
 
 radiator_surf = sum([idx[surf] for surf in [
-    #'SP_Xplus_upr',
-    'SP_Xminus_upr',
-    'SP_Yplus_upr',
-    'SP_Yminus_upr',
-    'SP_Zplus_upr',
-    'SP_Zminus_upr']], [])
+    'SP_Xplus',
+    'SP_Xminus',
+    'SP_Yplus',
+    'SP_Yminus',
+    'SP_Zplus',
+    'SP_Zminus']], [])
 
 model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=radiator_surf)
 
@@ -140,13 +139,13 @@ prob.driver.options['tol'] = 1.0e-4
 #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
 #prob.driver.opt_settings['stepsize'] = 0.01
 prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-prob.driver.add_recorder(om.SqliteRecorder('./Cases/MAT_MS' +'.sql'))
+prob.driver.add_recorder(om.SqliteRecorder('./Cases/' + model_name + '.sql'))
 
 prob.setup(check=True)
 
 # initial values for some input variables
-prob['phi'] = [15.,15.]
-prob['dist'] = [2.75, 1.]
+prob['phi'] = [0.]
+prob['dist'] = [1.]
 
 # load case?
 """ cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
@@ -160,20 +159,22 @@ best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
 prob.load_case(best_case) """
 
 run_start = time()
-#prob.run_model()
-prob.run_driver()
+prob.run_model()
+#prob.run_driver()
 run_time = time() - run_start
 print('Run Time:', run_time, 's')
 
-#output['T_res'] = prob['T'][1:,0]-273.15
+output['T_res'] = prob['T'][1:,0]-273.15
 #output['T_res2'] = prob['T'][1:,1]-273.15
-#output['abs'] = output['T_ref']-output['T_res']
+output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
-temp_MS = pd.DataFrame(data=prob['T'][1:,:]-273.15, index=output.index)
+print(output)
+output.to_csv('./Cases/' + model_name + '_out.csv')
+
+""" temp_MS = pd.DataFrame(data=prob['T'][1:,:]-273.15, index=output.index)
 temp_MS['label'] = output[0]
-temp_MS.to_csv('./Cases/MAT_MS_out.csv')
-#print(output)
-#output.to_csv('./Cases/' + model_name + '_out.csv')
+temp_MS.to_csv('./Cases/MAT_MS_out.csv') """
+
 #print(best_case)
 
 #totals = prob.compute_totals()#of=['T'], wrt=['Spacer5'])

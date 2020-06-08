@@ -60,7 +60,13 @@ def nodes(data='nodes_RU_v4_detail_cc.csv', env='99999', inact='99998' ):
     #temp.index = df['TIME']
     output = nodes.append(temp)
 
-    return nn, labels, output.T
+    # collect node areas
+    area_df = df.filter(regex = 'A(?!{})(?!{})(\d+)'.format(env, inact))
+    area = area_df.to_numpy()[0]
+
+    area = np.insert(area,0,0)
+
+    return nn, labels, output.T, area
     
 
 def inits(data='nodal_detail_cc.csv', env='99999', inact='99998'):
@@ -209,9 +215,9 @@ def parse_vf(filepath='ViewFactors.txt'):
 
     """
     rx_dict = {
-    'node number': re.compile(r'Thermal Node = (?P<node>\d*)\n'),
-    'area': re.compile(r'Area = (?P<area>\d.\d*)'),
-    'emissivity': re.compile(r'Emissivity = (?P<eps>\d.\d*)'),
+    'node number': re.compile(r'Emitting Node = (?P<node>\d*)\n'),
+    #'area': re.compile(r'Area = (?P<area>\d.\d*)'),
+    #'emissivity': re.compile(r'Emissivity = (?P<eps>\d.\d*)'),
     'view factor': re.compile(r'VF to environment = (?P<vf>\d.\d*)')
     }
 
@@ -243,12 +249,12 @@ def parse_vf(filepath='ViewFactors.txt'):
                 node = match.group('node')
 
             # extract area and emissivity
-            if key == 'area':
-                area = match.group('area')
+            #if key == 'area':
+                #area = match.group('area')
 
-                key, match = _parse_line(line.split(',')[1])
-                if key == 'emissivity':
-                    eps = match.group('eps')
+                #key, match = _parse_line(line.split(',')[1])
+                #if key == 'emissivity':
+                    #eps = match.group('eps')
                             
             #extract view factor    
             if key == 'view factor':
@@ -258,20 +264,20 @@ def parse_vf(filepath='ViewFactors.txt'):
                     #continue # filter out internal surfacess
             
                 # create a dictionary containing this row of data
-                entry = {int(node): {'area': float(area), 'eps': float(eps), 'vf': vf}}
+                entry = {int(node): {'vf': vf}}
                 
                 # append the dictionary to the data list
                 data.update(entry)
 
     return data
 
-def opticals(node_grp, keys, optprop, areas):
+def opticals(node_labels, geom, viewFactors, areas):
     """
     Returns a dictionary of external face optical properties
     """
 
     # new dict of user selected node labels
-    node_groups = {new_key: node_grp[new_key] for new_key in keys}
+    node_groups = {new_key: node_labels[new_key] for new_key in geom}
 
     faces = []
 
@@ -282,9 +288,9 @@ def opticals(node_grp, keys, optprop, areas):
         emissivities = []
 
         for node in node_groups[grp]:
-            a = areas[node-1] # minus one because areas are stored in nympy array
-            vf = optprop[node]['vf']
-            eps = optprop[node]['eps']
+            a = areas[node]
+            vf = viewFactors[node]['vf']
+            eps = geom[grp]
             ar.append(a)
             VFs.append(vf)
             emissivities.append(eps)
@@ -327,10 +333,7 @@ def parse_hf(filepath='Radiative_results.txt', start=-5.0, step=5.0):
             # at each line check for a match with a regex of a node number
             match = rx.search(line)
             if match:
-                if match.group('node') == node: # check for internal faces and drop
-                    continue
-                else:
-                    node = match.group('node')
+                node = match.group('node')
                 next(f)
                 next(f)
                 line = f.readline()

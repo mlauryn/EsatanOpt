@@ -8,44 +8,43 @@ from time import time
 
 from MAT_group import MAT_MDP_Group
 
-Sun_dist = [1., 2.75, 1.] # distance from Sun in AU
+Sun_dist = [2.75, 1.] # distance from Sun in AU
 
 npts = len(Sun_dist)
 
-MS_model = 'MAT'
-RU_model = 'RU_v5_1'
+MS_model = 'MAT_v2_8'
+RU_model = 'RU_v5_3'
 
 # define faces to include in radiative analysis
-MS_geom = [
-'SP_Xplus_upr',
-'SP_Xminus_upr',
-'SP_Yplus_upr',
-'SP_Yplus_lwr',
-'SP_Yminus_upr',
-'SP_Zplus_upr',
-'SP_Zminus_upr',
-'SolarArray',
-'Propulsion_top',
-'Esail_top',
-'Esail_bot',
-'BottomPlate_upr',
-'Telescope_outer',
-'StarTracker_outer',
-'Instrument_outer',
-#'Instrument_inner'
-]
+MS_geom = {'SP_Xplus' : 0.85,
+    'SP_Xminus' : 0.85,
+    'SP_Yplus' : 0.85,
+    'SP_Yplus' : 0.85,
+    'SP_Yminus' : 0.85,
+    'SP_Zplus' : 0.85,
+    'SP_Zminus' : 0.85,
+    'SolarArray' : 0.89,
+    'Propulsion' : 0.89,
+    'Esail' : 0.022,
+    'BottomPlate' : 0.04,
+    'Telescope' : 0.88,
+    'StarTracker': 0.88,
+    'Instrument': 0.88,
+    #'Instrument_inner'
+    }
 
-RU_geom =[
-'Box:outer',
-'Panel_outer:solar_cells',
-'Panel_inner:solar_cells',
-#'Panel_body:solar_cells',
-'Panel_inner: back',
-'Panel_outer:back',
-'thruster_outer',
-#'reel_box_inner',
-#'reel_outer'
-]
+RU_geom ={
+    'Box:outer' : 0.1061,
+    'SolarArrays' : 0.4625,
+    #'Panel_outer:solar_cells' : 0.89,
+    #'Panel_inner:solar_cells' : 0.89,
+    #'Panel_body:solar_cells',
+    #'Panel_inner: back' : 0.035,
+    #'Panel_outer:back' : 0.035,
+    'thruster' : 0.03,
+    #'reel_box',
+    #'reel'
+    }
 
 # Instantiate s/c models
 model = MAT_MDP_Group(Sun_dist=Sun_dist, MS_model=MS_model, MS_geom=MS_geom, RU_model=RU_model, RU_geom=RU_geom)
@@ -63,7 +62,7 @@ RU_user_cond = parse_cond(RU_cond)
 MS_user_cond = parse_cond(MS_cond)
 
 #import node data
-nn, groups, output_RU = nodes(data=RU_data)
+nn, groups, output_RU, area = nodes(data=RU_data)
 RU_nodes = sum([groups[group] for group in RU_geom], [])
 
 # user defined node groups
@@ -81,27 +80,20 @@ RU_glob = np.arange(0,(nn+1)*npts).reshape((nn+1,npts))
 # local index dictionary of radiative nodes_list
 RU_local = idx_dict(sorted(RU_nodes), groups)
 
-nn, groups, output_MS = nodes(data=MS_data)
+nn, groups, output_MS, area = nodes(data=MS_data)
 
 MS_nodes = sum([groups[group] for group in MS_geom], [])
 
 # global indices for components with controlled heat disipation
 MS_equip = sum([groups[syst] for syst in [
-    'Propulsion_bot',
+    'Propulsion',
     'PCB',
     'Battery',
-    'Instrument_inner',
-    'Esail_bot',
+    'Instrument',
+    'Esail',
     'TRx',
     'AOCS',
-    'RW_Z',
-    # radiators
-    'SP_Xplus_upr',
-    'SP_Xminus_upr',
-    'SP_Yplus_upr',
-    'SP_Yminus_upr',
-    'SP_Zplus_upr',
-    'SP_Zminus_upr', 
+    'SolarArray' 
     ]], [])
 
 # global indices into flattened array
@@ -128,11 +120,9 @@ model.add_design_var('RU.Hinge_inner_1', lower=0.02, upper=.1)
 model.add_design_var('RU.Hinge_inner_2', lower=0.02, upper=.1)
 model.add_design_var('RU.Hinge_outer_1', lower=0.02, upper=.1)
 model.add_design_var('RU.Hinge_outer_2', lower=0.02, upper=.1)
-#model.add_design_var('RU.cr', lower=0.0, upper=1., indices=list(idx['Panel_body:solar_cells'])) # only body solar cells are selected here
 model.add_design_var('RU.alp_r', lower=0.07, upper=0.94, indices=list(RU_local['Box:outer'])) # optimize absorbptivity for structure
 model.add_design_var('RU.Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-model.add_design_var('RU.Panel_outer:back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
-model.add_design_var('RU.Panel_inner: back', lower=0.02, upper=0.94) # optimize emissivity of solar array back surface
+model.add_design_var('RU.SolarArrays', lower=0.01, upper=0.47)
 model.add_design_var('RU.QI', lower = 0., upper=7., indices=(RU_glob[RU_equip,:]).ravel())
 
 # MS variables
@@ -146,23 +136,24 @@ for cond in MS_conn:
 for cond in MS_hinges:
     model.add_design_var('MS.'+cond['cond_name'], lower=0.02, upper=.1 ) # solar array hinges
 
-model.add_design_var('MS.SP_Xplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.SP_Xminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.SP_Yplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.SP_Yminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.SP_Zplus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.SP_Zminus_upr', lower=0.02, upper=0.94)
-model.add_design_var('MS.Esail_bot', lower=0.02, upper=0.94)
-model.add_design_var('MS.Propulsion_top', lower=0.02, upper=0.94)
+model.add_design_var('MS.SolarArray', lower=0.01, upper=0.47)
+model.add_design_var('MS.SP_Xplus', lower=0.02, upper=0.94)
+model.add_design_var('MS.SP_Xminus', lower=0.02, upper=0.94)
+model.add_design_var('MS.SP_Yplus', lower=0.02, upper=0.94)
+model.add_design_var('MS.SP_Yminus', lower=0.02, upper=0.94)
+model.add_design_var('MS.SP_Zplus', lower=0.02, upper=0.94)
+model.add_design_var('MS.SP_Zminus', lower=0.02, upper=0.94)
+model.add_design_var('MS.Esail', lower=0.02, upper=0.94)
+model.add_design_var('MS.Propulsion', lower=0.02, upper=0.94)
 model.add_design_var('MS.QI', lower = 0., upper=10., indices=(MS_glob[MS_equip,:]).ravel())
 
 radiator_surf = sum([MS_local[surf] for surf in [
-    'SP_Xplus_upr',
-    'SP_Xminus_upr',
-    'SP_Yplus_upr',
-    'SP_Yminus_upr',
-    'SP_Zplus_upr',
-    'SP_Zminus_upr']], [])
+    'SP_Xplus',
+    'SP_Xminus',
+    'SP_Yplus',
+    'SP_Yminus',
+    'SP_Zplus',
+    'SP_Zminus']], [])
 
 model.add_design_var('MS.alp_r', lower=0.07, upper=0.94, indices=radiator_surf)
 
@@ -184,9 +175,9 @@ model.add_constraint('MS.equip_lwr.KS', upper=0.0)
 
 model.add_constraint('MS.obc_pwr.KS', upper=0.0)
 model.add_constraint('MS.prop_pwr.KS', upper=0.0)
-model.add_constraint('MS.ins_pwr.KS', upper=0.0)
+#model.add_constraint('MS.ins_pwr.KS', upper=0.0)
 model.add_constraint('MS.aocs_pwr.KS', upper=0.0)
-model.add_constraint('MS.es_pwr.KS', upper=0.0)
+#model.add_constraint('MS.es_pwr.KS', upper=0.0)
 
 # spinAngle constraint at cruise
 #model.add_constraint('bp.spinAngle', equals=33., indices=[0])
@@ -198,7 +189,7 @@ prob = Problem(model=model)
 prob.driver = ScipyOptimizeDriver()
 prob.driver.options['optimizer']='SLSQP'
 prob.driver.options['disp'] = True
-prob.driver.options['maxiter'] = 300
+prob.driver.options['maxiter'] = 1200
 prob.driver.options['tol'] = 1.0e-4
 #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
 #prob.driver.opt_settings['stepsize'] = 0.01

@@ -48,7 +48,7 @@ class ElectricPower(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nodes', desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('ar', default=.76, lower=.0, upper=1., desc='solar cell to node surface area ratio')
+        self.options.declare('ar', default=.8, lower=.0, upper=1., desc='solar cell to node surface area ratio')
         self.options.declare('eta_con', default=.95, lower=.0, upper=1., desc='MPPT converter efficiency')
 
     def eta_in(self): # input path efficiency (mppt losses * area losses)
