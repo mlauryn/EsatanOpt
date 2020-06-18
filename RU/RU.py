@@ -73,8 +73,8 @@ class RemoteUnit(om.Group):
         # input variables
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.tile(self.QI_init, (1,npts)), units='W')
-        #params.add_output('phi', val=np.zeros(npts), units='deg' )
-        #params.add_output('dist', val=np.ones(npts))
+        params.add_output('phi', val=np.zeros(npts), units='deg' )
+        params.add_output('dist', val=np.ones(npts))
         params.add_output('alp_r', val=self.alp, desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=self.cr_init, desc='solar cell or radiator installation decision for input nodes')
         for cond in self.user_cond:
@@ -105,8 +105,8 @@ class RemoteUnit(om.Group):
         prop_idx = flat_indices[prop_nodes,:]
 
         # Propulsion total power
-        #self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
-        #self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
+        self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
+        self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
 
         # temperature constraint aggregation Kreisselmeier-Steinhauser Function
         self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=273., lower_flag=True))
@@ -116,7 +116,7 @@ class RemoteUnit(om.Group):
 
         # minimum power constraints
         self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.25/len(obc_nodes), lower_flag=True))
-        self.add_subsystem('prop_pwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=0.25/len(prop_nodes), lower_flag=True))
+        #self.add_subsystem('prop_pwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=0.25/len(prop_nodes), lower_flag=True))
 
         # KS connections
         self.connect('T', 'bat_lwr.g', src_indices=bat_idx, flat_src_indices=True)
@@ -124,4 +124,4 @@ class RemoteUnit(om.Group):
         self.connect('T', 'prop_lwr.g', src_indices=prop_idx, flat_src_indices=True)
         self.connect('T', 'prop_upr.g', src_indices=prop_idx, flat_src_indices=True)
         self.connect('QI', 'obc_pwr.g', src_indices=bat_idx, flat_src_indices=True)
-        self.connect('QI', 'prop_pwr.g', src_indices=prop_idx, flat_src_indices=True)
+        #self.connect('QI', 'prop_pwr.g', src_indices=prop_idx, flat_src_indices=True)

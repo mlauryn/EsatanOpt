@@ -8,7 +8,7 @@ import pandas as pd
 from time import time
 
 # number of design points
-npts = 1
+npts = 2
 
 # model version name
 model_name = 'MAT_v2_8'
@@ -91,6 +91,7 @@ for cond in MS_conn:
 for cond in MS_hinges:
     model.add_design_var(cond['cond_name'], lower=0.01, upper=.1 ) # solar array hinges
 
+model.add_design_var('SolarArray', lower=0.01, upper=0.47)
 model.add_design_var('SP_Xplus', lower=0.02, upper=0.94)
 model.add_design_var('SP_Xminus', lower=0.02, upper=0.94)
 model.add_design_var('SP_Yplus', lower=0.02, upper=0.94)
@@ -99,6 +100,8 @@ model.add_design_var('SP_Zplus', lower=0.02, upper=0.94)
 model.add_design_var('SP_Zminus', lower=0.02, upper=0.94)
 model.add_design_var('Esail', lower=0.02, upper=0.94)
 model.add_design_var('Propulsion', lower=0.02, upper=0.94)
+model.add_design_var('BottomPlate', lower=0.02, upper=0.94)
+model.add_design_var('Instrument', lower=0.02, upper=0.94)
 model.add_design_var('QI', lower = 0., upper=10., indices=(flat_indices[equip,:]).ravel())
 model.add_design_var('phi', lower=0., upper=45.)
 
@@ -108,7 +111,12 @@ radiator_surf = sum([idx[surf] for surf in [
     'SP_Yplus',
     'SP_Yminus',
     'SP_Zplus',
-    'SP_Zminus']], [])
+    'SP_Zminus',
+    'Propulsion',
+    'Esail',
+    'Instrument',
+    'BottomPlate'
+    ]], [])
 
 model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=radiator_surf)
 
@@ -134,18 +142,18 @@ prob = om.Problem(model=model)
 prob.driver = om.ScipyOptimizeDriver()
 prob.driver.options['optimizer']='SLSQP'
 prob.driver.options['disp'] = True
-prob.driver.options['maxiter'] = 300
+prob.driver.options['maxiter'] = 500
 prob.driver.options['tol'] = 1.0e-4
 #prob.driver.opt_settings['minimizer_kwargs'] = {"method": "SLSQP", "jac": True}
 #prob.driver.opt_settings['stepsize'] = 0.01
 prob.driver.options['debug_print'] = ['desvars', 'objs', 'nl_cons']
-prob.driver.add_recorder(om.SqliteRecorder('./Cases/' + model_name + '.sql'))
+prob.driver.add_recorder(om.SqliteRecorder('./Cases/' + model_name + '_case4.sql'))
 
 prob.setup(check=True)
 
 # initial values for some input variables
-prob['phi'] = [0.]
-prob['dist'] = [1.]
+prob['phi'] = [15.,15.]
+prob['dist'] = [2.75, 1.]
 
 # load case?
 """ cr = om.CaseReader('./Cases/RU_v4_detail_mstart_30.sql')
@@ -159,21 +167,21 @@ best_case = cr.get_case('Opt_run3_rank0:ScipyOptimize_SLSQP|79')
 prob.load_case(best_case) """
 
 run_start = time()
-prob.run_model()
-#prob.run_driver()
+#prob.run_model()
+prob.run_driver()
 run_time = time() - run_start
 print('Run Time:', run_time, 's')
 
-output['T_res'] = prob['T'][1:,0]-273.15
+""" output['T_res'] = prob['T'][1:,0]-273.15
 #output['T_res2'] = prob['T'][1:,1]-273.15
 output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
 print(output)
-output.to_csv('./Cases/' + model_name + '_out.csv')
+output.to_csv('./Cases/' + model_name + '_out.csv') """
 
-""" temp_MS = pd.DataFrame(data=prob['T'][1:,:]-273.15, index=output.index)
+temp_MS = pd.DataFrame(data=prob['T'][1:,:]-273.15, index=output.index)
 temp_MS['label'] = output[0]
-temp_MS.to_csv('./Cases/MAT_MS_out.csv') """
+temp_MS.to_csv('./Cases/MAT_MS_out_c4.csv')
 
 #print(best_case)
 

@@ -7,9 +7,9 @@ from matplotlib import pylab
 import re
 #import matplotlib.transforms as transforms
 from openmdao.api import CaseReader
-#from plot_size import set_size
+from plot_size import set_size
 
-case_file = 'MAT_v2_8.sql'
+case_file = 'MAT_v2_8_case4.sql'
 
 # load cases from recording database
 cr = CaseReader('./Cases/'+case_file)
@@ -55,31 +55,47 @@ for ic in range(num_cases):
 
 maximum = -data[obj]
 
-pylab.figure()
-#pylab.rcParams.update({'font.size': 14})
+# plot style
+pylab.style.use('thesis')
+pylab.figure(figsize=set_size('thesis', subplots=(2,1)))
+pylab.subplots_adjust(left=0.25, hspace=0.25)
+
+# plot objective
 
 pylab.subplot(211)
 pylab.plot(-X, '-')
-pylab.xlim(0, 300)
+pylab.xlim(0, num_cases)
 pylab.ylim(top=10.0)
 pylab.xlabel('Function evaluations')
-pylab.ylabel('Sub-system 1 Power, W')
-pylab.axhline(y=maximum, color="red", label='obj value')
+pylab.ylabel('Transmitter Power, W')
+pylab.axhline(y=maximum, color="red", label='maximum')
 #trans = transforms.blended_transform_factory(
 #    pylab.get_yticklabels()[0].get_transform(), pylab.transData)
 pylab.text(5,maximum, "{:3.2f}".format(maximum[0]), color="red",  ha="left", va="bottom",) #transform=trans,)
 pylab.legend()
 
+
+# Sum of constraints
 pylab.subplot(212)
+pylab.plot([0, len(Z)], [0, 0], 'k--')
+pylab.plot(Y, '-')
+pylab.xlim(0,num_cases)
+pylab.ylim(-10000.,7000.)
+pylab.xlabel('Function evaluations')
+pylab.ylabel('Sum of Constraints')
+pylab.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
+
+# all constraints
+""" pylab.subplot(213)
 pylab.plot([0, len(Z)], [0, 0], 'k--')
 for i in range(n_con):
     pylab.plot(Z[:, i], markersize=4, label=constraints[i])
 
 pylab.legend(loc='upper right')
-pylab.xlim(0,300)
+pylab.xlim(0,num_cases)
 pylab.ylim(-10000.,7000.)
 pylab.xlabel('Function evaluations')
-pylab.ylabel('Violation of Constraints')
+pylab.ylabel('Violation of Constraints') """
 
 #pylab.show()
 pylab.show()

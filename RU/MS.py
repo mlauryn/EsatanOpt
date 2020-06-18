@@ -4,8 +4,8 @@ import numpy as np
 from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict, parse_ar
 from Solar import Solar
 from Cond_group import Cond_group
-from Thermal_Cycle import Thermal_Cycle
-#from Thermal_direct import Thermal_direct
+#from Thermal_Cycle import Thermal_Cycle
+from Thermal_direct import Thermal_direct
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
@@ -91,21 +91,21 @@ class MainSP(om.Group):
         # input variables
         params = self.add_subsystem('params', om.IndepVarComp(), promotes=['*'])
         params.add_output('QI', val=np.tile(self.QI_init, (1,npts)), units='W')
-        #params.add_output('phi', val=np.zeros(npts), units='deg' )
-        #params.add_output('dist', val=np.ones(npts))
+        params.add_output('phi', val=np.zeros(npts), units='deg' )
+        params.add_output('dist', val=np.ones(npts))
         params.add_output('alp_r', val=self.alp, desc='absorbtivity of the input node radiating surface')
         params.add_output('cr', val=self.cr_init, desc='solar cell or radiator installation decision for input nodes')
         for cond in self.user_cond:
             params.add_output(cond['cond_name'], val=cond['values'][0] ) # adds output variable with the same name as user conductor name
         for face in self.faces:
             params.add_output(face['name'], val=face['eps'][0] ) # adds independant variable as face name and assigns emissivity of it's first node
-        #params.add_output('eta', val=np.ones((n_in,npts))*0.275/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        params.add_output('eta', val=np.ones((n_in,npts))*0.295/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
 
         self.add_subsystem('Cond', Cond_group(n=nn, conductors=self.user_cond, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
         self.add_subsystem('Solar', Solar(npts=npts, areas=self.surf_area, nodes=self.surf_nodes, model=self.model), promotes=['*'])
-        self.add_subsystem('Thermal', Thermal_Cycle(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
-        #self.add_subsystem('Thermal', Thermal_direct(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
+        #self.add_subsystem('Thermal', Thermal_Cycle(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
+        self.add_subsystem('Thermal', Thermal_direct(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
 
