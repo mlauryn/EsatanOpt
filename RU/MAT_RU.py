@@ -10,19 +10,20 @@ import pandas as pd
 npts = 2
 
 # model version name
-model_name = 'RU_v5_3'
+model_name = 'RU_v5_6'
 
 # define faces to include in radiative analysis
 #geom = list(groups.keys()) # import all nodes?
 geom = {
-    'Box:outer' : 0.1061,
-    'SolarArrays' : 0.4625,
-    #'Panel_outer:solar_cells' : 0.89,
-    #'Panel_inner:solar_cells' : 0.89,
-    #'Panel_body:solar_cells',
-    #'Panel_inner: back' : 0.035,
-    #'Panel_outer:back' : 0.035,
-    'thruster' : 0.03,
+    #'Box:outer' : 0.1061,
+    'SolarArrays' : 0.51,
+    'SideX': 0.94,
+    'SideX_': 0.94,
+    'SideY': 0.94,
+    'SideY_': 0.94,
+    'SideZ': 0.94,
+    'SideZ_': 0.94,
+    #'thruster' : 0.94,
     #'reel_box',
     #'reel'
     }
@@ -36,13 +37,13 @@ QI_init, QS_init = inits(data=data)
 rad_nodes = sum([groups[group] for group in geom], [])
 
 # user defined node groups
-groups.update({'radiator':[158]})# extra node to disipate heat in structure
+# groups.update({'radiator':[158]})# extra node to disipate heat in structure
 
 # global indices for components with controlled heat disipation
 equip = sum([groups[syst] for syst in [
     'Prop',
     'obc',
-    'radiator'
+    'SolarArrays'
     ]], [])
 
 # global indices into flattened array
@@ -67,11 +68,29 @@ model.add_design_var('Hinge_inner_1', lower=0.02, upper=.1)
 model.add_design_var('Hinge_inner_2', lower=0.02, upper=.1)
 model.add_design_var('Hinge_outer_1', lower=0.02, upper=.1)
 model.add_design_var('Hinge_outer_2', lower=0.02, upper=.1)
-model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=list(idx['Box:outer'])) # optimize absorbptivity for structure
-model.add_design_var('Box:outer', lower=0.02, upper=0.94) # optimize emissivity of structure
-model.add_design_var('SolarArrays', lower=0.01, upper=0.47)
+model.add_design_var('Hinge_screen_1', lower=0.02, upper=.1)
+model.add_design_var('Hinge_screen_2', lower=0.02, upper=.1)
+model.add_design_var('SideX', lower=0.02, upper=0.94)
+model.add_design_var('SideX_', lower=0.02, upper=0.94)
+model.add_design_var('SideY', lower=0.02, upper=0.94)
+model.add_design_var('SideY_', lower=0.02, upper=0.94)
+model.add_design_var('SideZ', lower=0.02, upper=0.94)
+model.add_design_var('SideZ_', lower=0.02, upper=0.94)
+model.add_design_var('SolarArrays', lower=0.51, upper=0.915)
 model.add_design_var('QI', lower = 0., upper=7., indices=(flat_indices[equip,:]).ravel())
-model.add_design_var('phi', lower=0., upper=45.)
+model.add_design_var('phi', lower=0., upper=30.)
+
+radiator_surf = sum([idx[surf] for surf in [
+    'SideX',
+    'SideX_',
+    'SideY',
+    'SideY_',
+    'SideZ',
+    'SideZ_',
+    #'thruster'
+    ]], [])
+
+model.add_design_var('alp_r', lower=0.07, upper=0.94, indices=radiator_surf) # optimize absorbptivity for structure
 
 # constraints
 model.add_constraint('bat_lwr.KS', upper=0.0)
@@ -79,9 +98,11 @@ model.add_constraint('bat_upr.KS', upper=0.0)
 model.add_constraint('prop_upr.KS', upper=0.0)
 model.add_constraint('prop_lwr.KS', upper=0.0)
 model.add_constraint('obc_pwr.KS', upper=0.0)
+model.add_constraint('prop_pwr.KS', upper=0.0)
 
 # objective function
-model.add_objective('P_prop')
+model.add_objective('T_margin')
+#model.add_objective('P_prop')
 
 prob = om.Problem(model=model)
 prob.driver = om.ScipyOptimizeDriver()
@@ -94,7 +115,7 @@ prob.driver.add_recorder(om.SqliteRecorder('./Cases/'+ model_name +'_case1.sql')
 
 prob.setup(check=True)
 
-prob['phi'] = [3.78850149, 45.]
+#prob['phi'] = [0, 30.]
 prob['dist'] = [2.75, 1.]
 
 # load case?
@@ -119,12 +140,12 @@ print('Run Time:', run_time, 's')
 #output['abs'] = output['T_ref']-output['T_res']
 #output['rel'] = output['abs']/output['T_ref']
 #print(output.iloc[[68,95],:])
-print(output)
+
 output.to_csv('./Cases/' + model_name + '_out.csv') """
 
 temp_RU = pd.DataFrame(data=prob['T'][1:,:]-273.15, index=output.index)
 temp_RU['label'] = output[0]
-temp_RU.to_csv('./Cases/MAT_RU_out_c1.csv')
+temp_RU.to_csv('./Cases/MAT_RU_out_v6.csv')
 
 #print(best_case)
 

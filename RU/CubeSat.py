@@ -8,7 +8,7 @@ import pandas as pd
 
 model_name = 'CUBESAT1'
 model_dir = './Esatan_models/'+model_name
-n, groups, output = nodes(data=model_dir+'/nodes_output.csv')
+n, groups, output, area = nodes(data=model_dir+'/nodes_output.csv')
 GL_init, GR_init = conductors(nn=n, data=model_dir+'/cond_output.csv')
 QI_init, QS_init = inits(data=model_dir+'/nodes_output.csv')
 optprop = parse_vf(filepath=model_dir+'/vf_report.txt')

@@ -21,18 +21,18 @@ t_fem = fem_spl(x)
 
 # generate plots
 fig, ax1 = plt.subplots(figsize=set_size('thesis'))
-fig.subplots_adjust(left=0.15, bottom=0.15)
+fig.subplots_adjust(left=0.14, bottom=0.15)
 
 
 ax1.plot(fd['nn'], fd['t'], '-o', label='FDM')
 ax1.plot(fem['nn'], fem['t'], '-s', label='FEM')
-ax1.set(xlabel='Number of nodes', xticks=fd['nn'], ylabel=r'$T_1, ^\circ C$')
+ax1.set(xlabel='Number of nodes', ylabel=r'$T_1, ^\circ C$')#, xticks=fd['nn'])
 
 ax2 = ax1.twinx()
 ax2.plot(fd['nn'], fd['rel'], '-o', label='FDM')
 ax2.plot(fem['nn'], fem['rel'], '-s', label='FEM')
 ax2.set(ylabel='rel error')
-ax2.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
+#ax2.ticklabel_format(axis='y', style='sci', scilimits=(0,0))
 ax1.grid(False)
 
 plt.legend()

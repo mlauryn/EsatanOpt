@@ -11,8 +11,8 @@ from Pre_process import nodes, idx_dict, parse_cond
 import pandas as pd
 import os
 
-case_file = 'RU_v5_3_case1.sql'
-model_name = 'RU_v5_3'
+case_file = 'RU_v5_6_case1.sql'
+model_name = 'RU_v5_6'
 
 # load cases from recording database
 cr = CaseReader('./Cases/'+case_file)
@@ -29,17 +29,34 @@ objs = case.get_objectives()
 dvs = case.get_design_vars(use_indices=False)
 
 geom = {
-    'Box:outer' : 0.1061,
-    'SolarArrays' : 0.4625,
-    #'Panel_outer:solar_cells' : 0.89,
-    #'Panel_inner:solar_cells' : 0.89,
-    #'Panel_body:solar_cells',
-    #'Panel_inner: back' : 0.035,
-    #'Panel_outer:back' : 0.035,
+    #'Box:outer' : 0.1061,
+    'SolarArrays' : 0.51,
+    'SideX': 0.1061,
+    'SideX_': 0.1061,
+    'SideY': 0.1061,
+    'SideY_': 0.1061,
+    'SideZ': 0.1061,
+    'SideZ_': 0.1061,
     'thruster' : 0.03,
     #'reel_box',
     #'reel'
     }
+
+radiators = [
+    'SideX',
+    'SideX_',
+    'SideY',
+    'SideY_',
+    'SideZ',
+    'SideZ_',
+    #'thruster'
+    ]
+
+equip = [
+    'SolarArrays',
+    'obc',
+    'Prop'
+    ]
 
 
 fpath = os.path.dirname(os.path.realpath(__file__))
@@ -50,19 +67,31 @@ nn, groups, output, area = nodes(data=data)
 print('number of nodes', nn)
 rad_nodes = sum([groups[group] for group in geom], [])
 
-# import user-defined conductors
-MS_cond = os.path.join(model_dir, 'cond_report.txt')
-MS_user_cond = parse_cond(MS_cond)
-
 # index dictionary of radiative nodes_list
 idx = idx_dict(sorted(rad_nodes), groups)
 
+opt = pd.DataFrame(index=radiators+['SolarArrays'] , columns=['eps', 'alp'])
+Qdis = pd.DataFrame(index=equip, columns=['cold', 'hot'])
 
-res = pd.DataFrame(index=['Box:outer', 'SolarArrays'], columns=['eps', 'alp'])
+for comp in equip:
+    Qdis.loc[comp,'cold'] = np.sum(dvs['QI'][groups[comp], 0])
+    Qdis.loc[comp,'hot'] = np.sum(dvs['QI'][groups[comp], 1])
 
-eps = [dvs[name] for name in res.index]
-res.loc['Box:outer','alp'] = np.mean(dvs['alp_r'][idx['Box:outer']])
-res['eps'] = eps
+eps = [dvs[name] for name in opt.index]
+for var in radiators:
+    opt.loc[var,'alp'] = np.mean(dvs['alp_r'][idx[var]])
+opt['eps'] = eps
 
-print(res)
+print(opt, '\n', Qdis)
 
+for i in range(1, 6):
+    for k in range(1, 5):
+        cond = 'Spacer{}_{}'.format(i,k)
+        print(cond, dvs[cond])
+print(
+    'Hinge_inner_1', dvs['Hinge_inner_1'],
+    'Hinge_inner_2', dvs['Hinge_inner_2'],
+    'Hinge_outer_1', dvs['Hinge_outer_1'],
+    'Hinge_outer_2', dvs['Hinge_outer_2'],
+    'Hinge_screen_1', dvs['Hinge_screen_1'],
+    'Hinge_screen_2', dvs['Hinge_screen_2'])

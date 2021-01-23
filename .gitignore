@@ -28,3 +28,7 @@ Template.tpl
 *.tpl_previous
 RU/plot_size.py
 *.pkl
+.VSCodeCounter/results.md
+.VSCodeCounter/details.md
+.VSCodeCounter/results.csv
+.VSCodeCounter/results.txt

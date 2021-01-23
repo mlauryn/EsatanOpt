@@ -4,8 +4,8 @@ import numpy as np
 from Pre_process import parse_vf, parse_cond, inits, conductors, nodes, opticals, idx_dict, parse_ar
 from Solar import Solar
 from Cond_group import Cond_group
-from Thermal_Cycle import Thermal_Cycle
-#from Thermal_direct import Thermal_direct
+#from Thermal_Cycle import Thermal_Cycle
+from Thermal_direct import Thermal_direct
 from PowerOutput import PowerOutput
 from PowerInput import PowerInput
 
@@ -51,6 +51,15 @@ class RemoteUnit(om.Group):
             #'Panel_inner:solar_cells',
             #'Panel_body:solar_cells'
             ]], [])
+        
+        structure = sum([idx[surf] for surf in [
+            'SideX',
+            'SideX_',
+            'SideY',
+            'SideY_',
+            'SideZ',
+            'SideZ_'
+            ]], [])
 
         self.n_in = len(self.surf_nodes)
 
@@ -59,7 +68,7 @@ class RemoteUnit(om.Group):
         self.alp = np.zeros(self.n_in)
 
         self.cr_init[solar_cells] = 1.0
-        self.alp[idx['Box:outer']] = 0.5
+        self.alp[structure] = 0.07
         #alp[idx['reel_box_inner']] = 0.39
         #alp[idx['reel_outer']] = 0.16
         self.alp[idx['thruster']] = 0.16
@@ -85,8 +94,8 @@ class RemoteUnit(om.Group):
         self.add_subsystem('Cond', Cond_group(n=nn, conductors=self.user_cond, faces=self.faces, 
                             GL_init=self.GL_init, GR_init=self.GR_init), promotes=['*'])
         self.add_subsystem('Solar', Solar(npts=npts, areas=self.surf_area, nodes=self.surf_nodes, model=self.model), promotes=['*'])
-        self.add_subsystem('Thermal', Thermal_Cycle(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
-        #self.add_subsystem('Thermal', Thermal_direct(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
+        #self.add_subsystem('Thermal', Thermal_Cycle(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
+        self.add_subsystem('Thermal', Thermal_direct(nn=nn, npts=npts, nodes=self.surf_nodes), promotes=['*'])
         self.add_subsystem('Pout', PowerOutput(nn=nn, npts=npts), promotes=['*'])
         self.add_subsystem('Pin', PowerInput(n_in=n_in, npts=npts), promotes=['*'])
 
@@ -105,8 +114,8 @@ class RemoteUnit(om.Group):
         prop_idx = flat_indices[prop_nodes,:]
 
         # Propulsion total power
-        self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
-        self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
+        #self.add_subsystem('P_prop', om.ExecComp('P_prop = -sum(QI_prop)', QI_prop=np.ones((len(prop_nodes),npts))), promotes=['*'])
+        #self.connect('QI', 'QI_prop', src_indices=prop_idx, flat_src_indices=True)
 
         # temperature constraint aggregation Kreisselmeier-Steinhauser Function
         self.add_subsystem('bat_lwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=273., lower_flag=True))
@@ -115,8 +124,20 @@ class RemoteUnit(om.Group):
         self.add_subsystem('prop_lwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=-10.+273., lower_flag=True))
 
         # minimum power constraints
-        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.25/len(obc_nodes), lower_flag=True))
-        #self.add_subsystem('prop_pwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=0.25/len(prop_nodes), lower_flag=True))
+        self.add_subsystem('obc_pwr', om.KSComp(width=npts, vec_size=len(obc_nodes), upper=0.2/len(obc_nodes), lower_flag=True))
+        self.add_subsystem('prop_pwr', om.KSComp(width=npts, vec_size=len(prop_nodes), upper=0.3/len(prop_nodes), lower_flag=True))
+
+        # Total temp margin
+        self.add_subsystem('T_margin', om.ExecComp('T_margin = sum(bat_)', 
+            #bat={'shape' : (9,1)}, 
+            bat_={'shape' : (9,1)},
+            #prop={'shape' : (9,1)}, 
+            #prop_={'shape' : (9,1)}
+            ), promotes=['*'])
+        #self.connect('bat_upr.KS', 'bat')
+        self.connect('bat_lwr.KS', 'bat_')
+        #self.connect('prop_upr.KS', 'prop')
+        #self.connect('prop_lwr.KS', 'prop_')
 
         # KS connections
         self.connect('T', 'bat_lwr.g', src_indices=bat_idx, flat_src_indices=True)
@@ -124,4 +145,4 @@ class RemoteUnit(om.Group):
         self.connect('T', 'prop_lwr.g', src_indices=prop_idx, flat_src_indices=True)
         self.connect('T', 'prop_upr.g', src_indices=prop_idx, flat_src_indices=True)
         self.connect('QI', 'obc_pwr.g', src_indices=bat_idx, flat_src_indices=True)
-        #self.connect('QI', 'prop_pwr.g', src_indices=prop_idx, flat_src_indices=True)
+        self.connect('QI', 'prop_pwr.g', src_indices=prop_idx, flat_src_indices=True)

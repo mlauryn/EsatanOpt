@@ -6,8 +6,8 @@ class ElectricPower(om.ExplicitComponent):
     def initialize(self):
         self.options.declare('nodes', desc='list of input external surface node numbers')
         self.options.declare('npts', default=1, types=int, desc='number of points')
-        self.options.declare('ar', default=0.8, lower=.0, upper=1., desc='solar cell to node surface area ratio')
-        self.options.declare('eta_con', default=0.95, lower=.0, upper=1., desc='MPPT converter efficiency')
+        self.options.declare('ar', default=0.86, lower=.0, upper=1., desc='solar cell to node surface area ratio')
+        self.options.declare('eta_con', default=0.85, lower=.0, upper=1., desc='MPPT converter efficiency')
 
     def eta_in(self): # input path efficiency (mppt losses * area losses)
         ar = self.options['ar']
@@ -19,7 +19,7 @@ class ElectricPower(om.ExplicitComponent):
         n = len(self.options['nodes'])
         m = self.options['npts']
     
-        self.add_input('eta', val=np.ones((n,m))*0.295/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
+        self.add_input('eta', val=np.ones((n,m))*0.3/0.91, desc='solar cell efficiency with respect to absorbed power for input surface nodes over time ')
         self.add_input('QS_c', shape=(n,m), desc='solar cell absorbed power over time', units='W')
         self.add_output('P_el', shape=(n,m), desc='Electrical power output over time', units='W')
         rows = np.arange(n*m)
